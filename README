@@ -1,0 +1,29 @@
+This is a free, open-source, sample application demonstrating use of the
+Asana API. It takes the form of a Chrome Extension that, when installed,
+integrates Asana into your web experience in the following ways:
+
+  * Creates a button in your button-bar which, when clicked, pops up a
+    QuickAdd window to create a new task associated with the current web page.
+    It will populate the task name with the page title by default, and
+    put the URL in the notes, along with any text you may have selected
+    when you pressed the button.
+
+  * Installs the special Asana TAB+Q keyboard shortcut. When this key combo
+    is pressed from any web page, it brings up the same popup.
+
+YOU MUST HAVE THE ASANA API ENABLED FOR YOUR ACCOUNT IN ORDER TO USE
+THIS EXTENSION.
+
+Files of special interest:
+
+  api_bridge.js:
+    Handles generic communication with the API.
+
+  server_model.js:
+    Wraps specifics of individual API calls to return objects to calling code.
+    This is not a real ORM, just the bare bones necessary to get a few
+    simple things done.
+
+  popup.html
+    Source for the popup window, contains the top-level logic which drives
+    most of the user-facing functionality.

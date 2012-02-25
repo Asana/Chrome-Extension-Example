@@ -1,0 +1,40 @@
+{
+  "name": "Asana Extension for Chrome",
+  "version": "0.9.1",
+  "description": "Integrates Asana with your browsing experience.",
+  "icons": {
+    "128": "icon128.png"
+  },
+  "minimum_chrome_version": "16",
+
+  "browser_action": {
+    "default_icon": "icon19.png",
+    "default_title": "Asana",
+    "default_popup": "popup.html"
+  },
+  "background_page": "background.html",
+  "options_page": "options.html",
+  "permissions": [
+    "tabs",
+    "*://*/*",
+    "cookies",
+    "*://*.asana.com/*",
+    "*://localhost.org/*"
+  ],
+
+  "content_scripts": [{
+    "matches": [
+      "<all_urls>"
+    ],
+    "exclude_matches": [
+      "*://*.asana.com/*"
+    ],
+    "js": [
+      "asana.js",
+      "selection_client.js",
+      "quick_add_client.js"
+    ],
+    "run_at": "document_start",
+    "all_frames": false
+  }]
+}

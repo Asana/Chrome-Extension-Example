@@ -14,6 +14,8 @@ integrates Asana into your web experience in the following ways:
 YOU MUST HAVE THE ASANA API ENABLED FOR YOUR ACCOUNT IN ORDER TO USE
 THIS EXTENSION.
 
+See: http://developer.asana.com/
+
 Files of special interest:
 
   api_bridge.js:

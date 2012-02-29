@@ -10,11 +10,11 @@ body, td, div {
   width: 14px;
   height: 14px;
   background-image: url(sprite.png);
-  background-position: 0px -1300px;
+  background-position: 0px -100px;
   background-repeat: no-repeat;
 }
 .close-x:hover {
-  background-position: -100px -1300px;
+  background-position: -50px -100px;
 }
 
 .button {

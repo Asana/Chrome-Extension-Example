@@ -3,8 +3,9 @@ body {
   overflow: hidden;
   width: 410px;
   height: 310px;  /* keep this correct for the window-based (non-button) version */
-  padding: 0;
-  margin: 0;
+  padding: 0px;
+  margin: 0px;
+  margin-top: 1px;
   background-color: #fff;
   border: 1px solid #AFBCC8;
   -webkit-border-radius: 6px;
@@ -23,6 +24,8 @@ body {
   text-shadow: 0px 1px #fff;
   border-bottom: 1px solid #E5E5E5;
   -webkit-box-shadow: inset 0px -1px rgba(0,0,0,0.1);
+  -webkit-border-radius: 5px 5px 0px 0px;
+
 }
 
 #content {
@@ -39,7 +42,7 @@ body {
 }
 .error-icon {
   background-image: url(sprite.png);
-  background-position: 0px -1600px;
+  background-position: 0px 0px;
   background-repeat: no-repeat;
   width: 19px;
   min-width: 19px;
@@ -101,7 +104,7 @@ body {
 }
 .success-icon {
   background-image: url(sprite.png);
-  background-position: -100px -1600px;
+  background-position: 0px -50px;
   background-repeat: no-repeat;
   width: 19px;
   min-width: 19px;

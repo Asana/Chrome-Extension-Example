@@ -15,7 +15,7 @@ Asana.ApiBridge = {
   /**
    * @type {String} Version of the Asana API to use.
    */
-  API_VERSION: "0.1",
+  API_VERSION: "1.0",
 
   /**
    * @param opt_options {dict} Options to use; if unspecified will be loaded.
@@ -23,7 +23,7 @@ Asana.ApiBridge = {
    */
   baseApiUrl: function(opt_options) {
     var options = opt_options || Asana.Options.loadOptions();
-    return 'https://' + options.asana_host_port + '/-/api/' + this.API_VERSION;
+    return 'https://' + options.asana_host_port + '/api/' + this.API_VERSION;
   },
 
   /**

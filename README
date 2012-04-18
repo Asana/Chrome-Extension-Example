@@ -11,9 +11,6 @@ integrates Asana into your web experience in the following ways:
   * Installs the special Asana TAB+Q keyboard shortcut. When this key combo
     is pressed from any web page, it brings up the same popup.
 
-YOU MUST HAVE THE ASANA API ENABLED FOR YOUR ACCOUNT IN ORDER TO USE
-THIS EXTENSION.
-
 See: http://developer.asana.com/
 
 Files of special interest:

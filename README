@@ -26,3 +26,10 @@ Files of special interest:
   popup.html
     Source for the popup window, contains the top-level logic which drives
     most of the user-facing functionality.
+
+To install:
+
+  1. Download the code, e.g. `git clone git://github.com/Asana/Chrome-Extension-Example.git`
+  2. Navigate chrome to `chrome://extensions`
+  3. Click on `Load Unpacked Extension...`
+  4. Select the folder containing the extension

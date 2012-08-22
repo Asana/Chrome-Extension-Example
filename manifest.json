@@ -1,4 +1,5 @@
 {
+  "manifest_version": 2,
   "name": "Asana Extension for Chrome",
   "version": "0.9.1",
   "description": "Integrates Asana with your browsing experience.",
@@ -12,7 +13,9 @@
     "default_title": "Asana",
     "default_popup": "popup.html"
   },
-  "background_page": "background.html",
+  "background": {
+    "page": "background.html"
+  },
   "options_page": "options.html",
   "permissions": [
     "tabs",

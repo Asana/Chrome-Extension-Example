@@ -10,9 +10,8 @@ integrates Asana into your web experience in the following ways:
 
   * Installs the special Asana TAB+Q keyboard shortcut. When this key combo
     is pressed from any web page, it brings up the same popup.
-
-YOU MUST HAVE THE ASANA API ENABLED FOR YOUR ACCOUNT IN ORDER TO USE
-THIS EXTENSION.
+    This functionality will operate on any window opened after the extension
+    is loaded.
 
 See: http://developer.asana.com/
 
@@ -29,3 +28,11 @@ Files of special interest:
   popup.html
     Source for the popup window, contains the top-level logic which drives
     most of the user-facing functionality.
+
+To install:
+
+  1. Download the code, e.g. `git clone git://github.com/Asana/Chrome-Extension-Example.git`
+  2. Navigate chrome to `chrome://extensions`
+  3. Check the `Developer mode` toggle
+  4. Click on `Load Unpacked Extension...`
+  5. Select the folder containing the extension

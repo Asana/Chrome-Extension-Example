@@ -67,7 +67,7 @@ window.addEventListener('load', function() {
 
 // Helper to show a named view.
 var showView = function(name) {
-  ["login", "add", "success"].forEach(function(view_name) {
+  ["login", "add"].forEach(function(view_name) {
     $("#" + view_name + "_view").css("display", view_name === name ? "" : "none");
   });
 };
@@ -116,6 +116,11 @@ var setAddEnabled = function(enabled) {
     button.unbind('click');
     button.unbind('keydown');
   }
+};
+
+var resetFields = function() {
+  $("#name").val("");
+  $("#notes").val("");
 };
 
 // Set the add button as being "working", waiting for the Asana request
@@ -197,7 +202,8 @@ var showSuccess = function(task) {
       window.close();
       return false;
     });
-    showView("success");
+    resetFields();
+    $("#success").css("display", "");
   });
 };
 

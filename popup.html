@@ -24,7 +24,12 @@
 
   <div id="content">
     <div id="add_view" style="display:none">
-      <table class="form">
+        <div id="success" style="display:none">
+            <span class="success-icon"></span>
+            Created task <a id="new_task_link" target="_blank" href=""></a>.
+        </div>
+
+        <table class="form">
         <tr>
           <td class="field-name">Name:</td>
           <td class="field-value">
@@ -62,11 +67,6 @@
           </td>
         </tr>
       </table>
-    </div>
-
-    <div id="success_view" style="display:none">
-      <span class="success-icon"></span>
-      Created task <a id="new_task_link" target="_blank" href=""></a>.
     </div>
 
     <div id="login_view" style="display:none">

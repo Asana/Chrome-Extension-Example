@@ -1,7 +1,7 @@
 /**
  * Functionality to communicate with the Asana API. This should get loaded
  * in the "server" portion of the chrome extension because it will make
- * HTTP requests and needs cross-domain priveleges.
+ * HTTP requests and needs cross-domain privileges.
  *
  * The bridge does not need to use an auth token to connect to
  * the API, because since it is a browser extension it can access
@@ -16,6 +16,26 @@ Asana.ApiBridge = {
    * @type {String} Version of the Asana API to use.
    */
   API_VERSION: "1.0",
+
+  /**
+   * @type {Integer} How long an entry stays in the cache.
+   */
+  CACHE_TTL_MS: 15 * 60 * 1000,
+
+  /**
+   * @type {Boolean} Set to true on the server (background page), which will
+   *     actually make the API requests. Clients will just talk to the API
+   *     through the ExtensionServer.
+   *
+   */
+  is_server: false,
+
+  /**
+   * @type {dict} Map from API path to cache entry for recent GET requests.
+   *     date {Date} When cache entry was last refreshed
+   *     response {*} Cached request.
+   */
+  _cache: {},
 
   /**
    * @param opt_options {dict} Options to use; if unspecified will be loaded.
@@ -37,9 +57,37 @@ Asana.ApiBridge = {
    *     data {dict} Object representing response of API call, depends on
    *         method. Only available if response was a 200.
    *     error {String?} Error message, if there was a problem.
+   * @param options {dict?}
+   *     miss_cache {Boolean} Do not check cache before requesting
    */
-  request: function(http_method, path, params, callback) {
-    var url = this.baseApiUrl() + path;
+  request: function(http_method, path, params, callback, options) {
+    var me = this;
+
+    // If we're not the server page, send a message to it to make the
+    // API request.
+    if (!me.is_server) {
+      chrome.extension.sendRequest({
+        type: "api",
+        method: http_method,
+        path: path,
+        params: params,
+        options: options || {}
+      }, callback);
+      return;
+    }
+
+    // Serve from cache first.
+    if (!options.miss_cache && http_method.toLowerCase() === "get") {
+      var data = me._readCache(path, new Date());
+      if (data) {
+        console.log("Serving request from cache", path);
+        callback(data);
+        return;
+      }
+    }
+
+    console.log("Making request to API", http_method, path);
+    var url = me.baseApiUrl() + path;
     chrome.cookies.get({
       url: url,
       name: 'ticket'
@@ -63,6 +111,9 @@ Asana.ApiBridge = {
         },
         accept: "application/json",
         success: function(data, status, xhr) {
+          if (http_method.toLowerCase() === "get") {
+            me._writeCache(path, data, new Date());
+          }
           callback(data);
         },
         error: function(xhr, status, error) {
@@ -80,7 +131,7 @@ Asana.ApiBridge = {
             }
             callback(response);
           } else {
-            callback({ error: error || status });
+            callback({ errors: [{message: error || status }]});
           }
         },
         xhrFields: {
@@ -95,5 +146,20 @@ Asana.ApiBridge = {
       }
       $.ajax(attrs);
     });
+  },
+
+  _readCache: function(path, date) {
+    var entry = this._cache[path];
+    if (entry && entry.date >= date - this.CACHE_TTL_MS) {
+      return entry.response;
+    }
+    return null;
+  },
+
+  _writeCache: function(path, response, date) {
+    this._cache[path] = {
+      response: response,
+      date: date
+    };
   }
 };

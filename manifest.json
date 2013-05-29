@@ -1,12 +1,12 @@
 {
   "manifest_version": 2,
   "name": "Asana Extension for Chrome",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "description": "Integrates Asana with your browsing experience.",
   "icons": {
     "128": "icon128.png"
   },
-  "minimum_chrome_version": "16",
+  "minimum_chrome_version": "24",
 
   "browser_action": {
     "default_icon": "icon19.png",
@@ -30,7 +30,7 @@
       "<all_urls>"
     ],
     "exclude_matches": [
-      "*://*.asana.com/*"
+      "*://app.asana.com/*"
     ],
     "js": [
       "asana.js",

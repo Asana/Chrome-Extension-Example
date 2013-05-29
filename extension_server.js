@@ -9,13 +9,14 @@ Asana.ExtensionServer = {
    * requests from page clients, which can't make cross-domain requests.
    */
   listen: function() {
-    var self = this;
+    Asana.ApiBridge.is_server = true;
     chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
       if (request.type === "api") {
         // Request to the API. Pass it on to the bridge.
-        Asana.ApiBridge.api(
-            request.method, request.path, request.data || {}, sendResponse);
-
+        Asana.ApiBridge.request(
+            request.method, request.path, request.data || {}, sendResponse,
+            request.options || {});
+        return true;  // will call sendResponse asynchronously
       } else if (request.type === "quick_add") {
         // QuickAdd request, made from a content window.
         // Open up a new popup, and set the request information on its window

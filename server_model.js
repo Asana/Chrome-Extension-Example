@@ -140,9 +140,9 @@ Asana.ServerModel = {
   startPrimingCache: function() {
     var me = this;
     me._cache_refresh_interval = setInterval(function() {
-      me._refreshCache();
+      me.refreshCache();
     }, me.CACHE_REFRESH_INTERVAL_MS);
-    me._refreshCache();
+    me.refreshCache();
   },
 
   refreshCache: function() {

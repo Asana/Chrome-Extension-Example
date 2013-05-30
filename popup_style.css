@@ -10,13 +10,14 @@ body {
   border: 1px solid #AFBCC8;
   -webkit-border-radius: 6px;
   font-size: 14px;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
 }
 
 
 #banner {
   font-size: 17px;
   font-weight: 800;
+  font-family: proxima-nova;
   background-color:#f2f2f2;
   padding: 10px 14px 8px;
   color: #596573;
@@ -25,7 +26,6 @@ body {
   border-bottom: 1px solid #E5E5E5;
   -webkit-box-shadow: inset 0px -1px rgba(0,0,0,0.1);
   -webkit-border-radius: 5px 5px 0px 0px;
-
 }
 
 #content {
@@ -123,6 +123,6 @@ input, textarea {
 }
 select, input, textarea {
   font-size: 14px;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
   color: #212F40;
 }

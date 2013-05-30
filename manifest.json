@@ -18,11 +18,14 @@
   },
   "permissions": [
     "tabs",
-    "*://*/*",
     "cookies",
+    "webRequest",
+    "webRequestBlocking",
+    "*://*/*",
     "*://*.asana.com/*",
     "*://localhost.org/*"
   ],
+  "content_security_policy": "script-src 'self' https://use.typekit.net; object-src 'self'",
 
   "content_scripts": [{
     "matches": [

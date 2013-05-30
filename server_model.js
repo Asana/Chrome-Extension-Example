@@ -23,10 +23,21 @@ Asana.ServerModel = {
    * Requests the user's preferences for the extension.
    *
    * @param callback {Function(options)} Callback on completion.
-   *     workspaces {dict[]} See Asana.Options for details.
+   *     options {dict} See Asana.Options for details.
    */
   options: function(callback) {
     callback(Asana.Options.loadOptions());
+  },
+
+  /**
+   * Saves the user's preferences for the extension.
+   *
+   * @param options {dict} See Asana.Options for details.
+   * @param callback {Function()} Callback on completion.
+   */
+  saveOptions: function(options, callback) {
+    Asana.Options.saveOptions(options);
+    callback();
   },
 
   /**

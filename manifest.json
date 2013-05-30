@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Asana Extension for Chrome",
   "version": "1.0.0",
-  "description": "Integrates Asana with your browsing experience.",
+  "description": "Allows quick adding of tasks to Asana from any web page in your browser.",
   "icons": {
     "128": "icon128.png"
   },
@@ -16,7 +16,6 @@
   "background": {
     "page": "background.html"
   },
-  "options_page": "options.html",
   "permissions": [
     "tabs",
     "*://*/*",

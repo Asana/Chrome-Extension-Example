@@ -89,8 +89,8 @@ var showAddUi = function(url, title, selected_text, options) {
             "<option value='" + workspace.id + "'>" + workspace.name + "</option>");
       });
       $("#workspace").val(options.default_workspace_id);
-      onWorkspaceChanged();
-      $("#workspace").change(onWorkspaceChanged);
+      onWorkspaceChanged(options);
+      $("#workspace").change(function() { onWorkspaceChanged(options); });
     });
   });
 };
@@ -132,10 +132,12 @@ var setAddWorking = function(working) {
 };
 
 // When the user changes the workspace, update the list of users.
-var onWorkspaceChanged = function() {
+var onWorkspaceChanged = function(options) {
   var workspace_id = readWorkspaceId();
   $("#assignee").html("<option>Loading...</option>");
   setAddEnabled(false);
+  options.default_workspace_id = workspace_id;
+  Asana.ServerModel.saveOptions(options, function() {});
   Asana.ServerModel.users(workspace_id, function(users) {
     $("#assignee").html("");
     users = users.sort(function(a, b) {

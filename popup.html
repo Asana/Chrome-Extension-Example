@@ -15,13 +15,17 @@
 
 <body>
 
-  <div id="banner">
-    Add to Asana
-    <a id="close-banner" class="close-x"></a>
-  </div>
-
-  <div id="content">
-    <div id="add_view" style="display:none">
+  <div id="add_view" style="display:none">
+    <div class="banner">
+      <span class="banner-add">
+        Add to
+        <span id="workspace"></span>
+        <span class="button"><span class="dropdown-arrow"></span></span>
+        <select id="workspace_select"><option>Loading...</option></select>
+      </span>
+      <a id="close_banner" class="close-x"></a>
+    </div>
+    <div class="content">
       <table class="form">
         <tr>
           <td class="field-name">Name:</td>
@@ -34,13 +38,6 @@
           <td class="field-name">Notes:</td>
           <td class="field-value">
             <textarea id="notes"></textarea>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="field-name">Workspace:</td>
-          <td class="field-value">
-            <select id="workspace"><option>Loading...</option></select>
           </td>
         </tr>
 
@@ -69,14 +66,18 @@
         <span class="error-icon"></span>
         Sorry, an error occurred. Please try again later.
       </div>
-
     </div>
+  </div>
 
-    <div id="login_view" style="display:none">
-      Please <a id="login_link" href="#">log into Asana</a> to start adding
-      tasks.
+  <div id="login_view" style="display:none">
+    <div class="banner">
+      Add to Asana
+      <a id="close-banner" class="close-x"></a>
     </div>
-
+    <div class="content">
+      You must log in to Asana before you can add tasks.
+      <span class="button"><span class="button-text">Log In to Asana</span></span>
+    </div>
   </div>
 
 </body>

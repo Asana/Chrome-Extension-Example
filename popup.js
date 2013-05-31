@@ -83,14 +83,15 @@ var showAddUi = function(url, title, selected_text, options) {
   Asana.ServerModel.me(function(user) {
     // Just to cache result.
     Asana.ServerModel.workspaces(function(workspaces) {
-      $("#workspace").html("");
+      var select = $("#workspace_select");
+      select.html("");
       workspaces.forEach(function(workspace) {
-        $("#workspace").append(
+        $("#workspace_select").append(
             "<option value='" + workspace.id + "'>" + workspace.name + "</option>");
       });
-      $("#workspace").val(options.default_workspace_id);
+      select.val(options.default_workspace_id);
       onWorkspaceChanged(options);
-      $("#workspace").change(function() { onWorkspaceChanged(options); });
+      select.change(function() { onWorkspaceChanged(options); });
     });
   });
 };
@@ -134,10 +135,17 @@ var setAddWorking = function(working) {
 // When the user changes the workspace, update the list of users.
 var onWorkspaceChanged = function(options) {
   var workspace_id = readWorkspaceId();
-  $("#assignee").html("<option>Loading...</option>");
-  setAddEnabled(false);
+
+  // Update selected workspace
+  $("#workspace").html($("#workspace_select option:selected").text());
+
+  // Save selection as new default.
   options.default_workspace_id = workspace_id;
   Asana.ServerModel.saveOptions(options, function() {});
+
+  // Update assignee list.
+  $("#assignee").html("<option>Loading...</option>");
+  setAddEnabled(false);
   Asana.ServerModel.users(workspace_id, function(users) {
     $("#assignee").html("");
     users = users.sort(function(a, b) {
@@ -159,7 +167,7 @@ var readAssignee = function() {
 };
 
 var readWorkspaceId = function() {
-  return $("#workspace").val();
+  return $("#workspace_select").val();
 };
 
 var createTask = function() {
@@ -228,4 +236,4 @@ window.addEventListener("keydown", function(e) {
   }
 }, /*capture=*/false);
 
-$("#close-banner").click(function() { window.close(); });
+$("#close_banner").click(function() { window.close(); });

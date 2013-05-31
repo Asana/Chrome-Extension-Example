@@ -15,7 +15,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
   requestHeaders.push({
     name: 'referer',
     // Host must match the domain in our Typekit kit settings
-    value: 'https://app.asana.com/chrome-extension/abkfopjdddhbjkiamjhkmogkcfedcnml'
+    value: 'https://abkfopjdddhbjkiamjhkmogkcfedcnml'
   });
   console.info(requestHeaders);
   return {

@@ -66,7 +66,8 @@ Asana.ApiBridge = {
     // If we're not the server page, send a message to it to make the
     // API request.
     if (!me.is_server) {
-      chrome.extension.sendRequest({
+      console.info("Client API Request", http_method, path, params);
+      chrome.runtime.sendMessage({
         type: "api",
         method: http_method,
         path: path,
@@ -75,6 +76,8 @@ Asana.ApiBridge = {
       }, callback);
       return;
     }
+
+    console.info("Server API Request", http_method, path, params);
 
     // Serve from cache first.
     if (!options.miss_cache && http_method.toLowerCase() === "get") {

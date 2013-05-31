@@ -32,7 +32,7 @@ Asana.QuickAddClient = {
         // We cannot open the popup programmatically.
         // http://code.google.com/chrome/extensions/faq.html#faq-open-popups
         // So we do this roundabout thing.
-        chrome.extension.sendRequest({
+        chrome.runtime.sendMessage({
           type: "quick_add",
           url: window.location.href,
           title: document.title,

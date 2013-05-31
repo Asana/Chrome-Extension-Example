@@ -9,7 +9,7 @@ Asana.SelectionClient = {
   sendSelection: function() {
     var selected_text = "" + window.getSelection();
     console.info("Sending selection to Asana popup");
-    chrome.extension.sendRequest({
+    chrome.runtime.sendMessage({
       type: "selection",
       value: selected_text
     });

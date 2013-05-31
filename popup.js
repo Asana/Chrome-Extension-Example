@@ -313,6 +313,7 @@ UserTypeahead = function(id) {
     console.info("keydown", e.which);
     if (e.which === 13) {
       me._confirmSelection();
+      $("#add_button").focus();
       return false;
     } else if (e.which === 9) {
       me._confirmSelection();
@@ -349,7 +350,7 @@ UserTypeahead = function(id) {
   me.render();
 };
 
-update(UserTypeahead, {
+Asana.update(UserTypeahead, {
 
   SILHOUETTE_URL: "xcxc",
 
@@ -362,7 +363,7 @@ update(UserTypeahead, {
 
 });
 
-update(UserTypeahead.prototype, {
+Asana.update(UserTypeahead.prototype, {
 
   render: function() {
     var me = this;
@@ -480,6 +481,14 @@ update(UserTypeahead.prototype, {
     }
   },
 
+  _ensureSelectedUserVisible: function() {
+    var index = this._indexOfSelectedUser();
+    if (index !== -1) {
+      var el = this.list.children().eq(index);
+      this.list_container.scrollTo(el);
+    }
+  },
+
   setSelectedUserId: function(id) {
     if (this.selected_user_id !== null) {
       $("#user_" + this.selected_user_id).removeClass("selected");
@@ -488,6 +497,7 @@ update(UserTypeahead.prototype, {
     if (this.selected_user_id !== null) {
       $("#user_" + this.selected_user_id).addClass("selected");
     }
+    this._ensureSelectedUserVisible();
   }
 
 });

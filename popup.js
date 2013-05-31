@@ -313,6 +313,7 @@ UserTypeahead = function(id) {
     me.selected_user_id = me.user_id_to_select;
     me.has_focus = false;
     me.render();
+    me._shrinkWindow();
   });
   me.input.keydown(function(e) {
     console.info("keydown", e.which);
@@ -360,7 +361,7 @@ Asana.update(UserTypeahead, {
   SILHOUETTE_URL: "xcxc",
 
   photoForUser: function(user) {
-    var url = user.photo ? user.photo.image_21x21 : UserTypeahead.SILHOUETTE_URL;
+    var url = user.photo ? user.photo.image_27x27 : UserTypeahead.SILHOUETTE_URL;
     var photo = $('<div class="user-photo"></div>"');
     photo.css("background-image", "url(" + url + ")");
     return $('<div class="user-photo-frame"></div>').append(photo);
@@ -451,10 +452,6 @@ Asana.update(UserTypeahead.prototype, {
 
   updateUsers: function(users) {
     var me = this;
-    // TODO: get from API in top contact order
-    users = users.sort(function(a, b) {
-      return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0);
-    });
     me.users = users;
     me.user_id_to_user = {};
     users.forEach(function(user) {

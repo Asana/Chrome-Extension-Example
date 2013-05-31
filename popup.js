@@ -287,6 +287,7 @@ UserTypeahead = function(id) {
   var me = this;
   me.id = id;
   me.users = [];
+  me.filtered_users = [];
   me.user_id_to_user = {};
   me.selected_user_id = null;
   me.user_id_to_select = null;
@@ -299,6 +300,7 @@ UserTypeahead = function(id) {
 
   me.input.focus(function() {
     me.user_id_to_select = me.selected_user_id;
+    me.selected_user_id = null;
     me.has_focus = true;
     me.render();
   });
@@ -307,24 +309,41 @@ UserTypeahead = function(id) {
     me.has_focus = false;
     me.render();
   });
-  me.input.keypress(function(e) {
+  me.input.keydown(function(e) {
+    console.info("keydown", e.which);
     if (e.which === 13) {
       me._confirmSelection();
       return false;
-    } else if (e.which === 8) {
+    } else if (e.which === 9) {
       me._confirmSelection();
       return true;
     } else if (e.which === 27) {
-      //xcxc for some reason this still exits the popup
+      // TODO: for some reason this still exits the popup
       e.stopPropagation();
       me.input.blur();
       return false;
+    } else if (e.which === 40) {
+      // Down: select next.
+      var index = me._indexOfSelectedUser();
+      console.info(index, me.filtered_users.length);
+      if (index === -1 && me.filtered_users.length > 0) {
+        me.setSelectedUserId(me.filtered_users[0].id);
+      } else if (index >= 0 && index < me.filtered_users.length) {
+        me.setSelectedUserId(me.filtered_users[index + 1].id);
+      }
+    } else if (e.which === 38) {
+      // Up: select prev.
+      var index = me._indexOfSelectedUser();
+      if (index > 0) {
+        me.setSelectedUserId(me.filtered_users[index - 1].id);
+      }
     }
   });
   me.input.bind("input", function() {
+    me._updateFilteredUsers();
     me._renderList();
   });
-  me.label.click(function() {
+  me.label.focus(function() {
     me.input.focus();
   });
   me.render();
@@ -376,7 +395,7 @@ update(UserTypeahead.prototype, {
   _renderList: function() {
     var me = this;
     me.list.empty();
-    me._filteredUsers().forEach(function(user) {
+    me.filtered_users.forEach(function(user) {
       me.list.append(me._entryForUser(user));
     });
   },
@@ -394,18 +413,6 @@ update(UserTypeahead.prototype, {
       me.setSelectedUserId(user.id);
     });
     return node;
-  },
-
-  _filteredUsers: function() {
-    var regexp = this._regexpFromFilterText(this.input.val());
-    return this.users.filter(function(user) {
-      if (regexp !== null) {
-        var parts = user.name.split(regexp);
-        return parts.length > 1;
-      } else {
-        return true;  // no filter
-      }
-    });
   },
 
   /**
@@ -447,7 +454,30 @@ update(UserTypeahead.prototype, {
     users.forEach(function(user) {
       me.user_id_to_user[user.id] = user;
     });
+    me._updateFilteredUsers();
     me.render();
+  },
+
+  _updateFilteredUsers: function() {
+    var regexp = this._regexpFromFilterText(this.input.val());
+    this.filtered_users = this.users.filter(function(user) {
+      if (regexp !== null) {
+        var parts = user.name.split(regexp);
+        return parts.length > 1;
+      } else {
+        return user.name.trim() !== "";  // no filter
+      }
+    });
+  },
+
+  _indexOfSelectedUser: function() {
+    var me = this;
+    var selected_user = me.user_id_to_user[me.selected_user_id];
+    if (selected_user) {
+      return me.filtered_users.indexOf(selected_user);
+    } else {
+      return -1;
+    }
   },
 
   setSelectedUserId: function(id) {

@@ -28,7 +28,7 @@
         </span>
       </div>
       <div class="right-column">
-        <a id="close_popup" class="close-x"></a>
+        <a id="close_popup" class="close-x" tabindex="-1"></a>
       </div>
     </div>
     <div class="name-row">
@@ -36,7 +36,7 @@
         <span class="icon-checkbox"></span>
       </div>
       <div class="middle-column">
-        <input id="name_input"/>
+        <input id="name_input" tabindex="0"/>
       </div>
       <div class="right-column">
         <span id="use_page_details" class="button" title="Use page title for task details"><span class="icon-use-link"></span></span>
@@ -47,7 +47,7 @@
         <span class="icon-notes"></span>
       </div>
       <div class="middle-column">
-        <textarea id="notes_input" placeholder="Description"></textarea>
+        <textarea id="notes_input" tabindex="0" placeholder="Description"></textarea>
       </div>
       <div class="right-column"></div>
     </div>
@@ -57,7 +57,7 @@
       </div>
       <div class="middle-column">
         <input id="assignee_input"/>
-        <div id="assignee"></div>
+        <div id="assignee" tabindex="0"></div>
         <div id="assignee_list_container">
           <div id="assignee_list"></div>
         </div>
@@ -99,7 +99,7 @@
   <div id="login_view" style="display:none">
     <div class="banner">
       Add to Asana
-      <a id="close-banner" class="close-x"></a>
+      <a id="close-banner" class="close-x" tabindex="-1"></a>
     </div>
     <div class="content">
       You must log in to Asana before you can add tasks.

@@ -149,6 +149,9 @@ body {
   height: 96px;
 }
 
+.user.selected {
+  background-color: #cccccc;
+}
 .user-photo-frame {
   display: inline-block;
 }

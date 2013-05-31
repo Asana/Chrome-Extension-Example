@@ -204,9 +204,9 @@ Popup = {
     me.setAddEnabled(false);
     Asana.ServerModel.users(workspace_id, function(users) {
       me.typeahead.updateUsers(users);
-      Asana.ServerModel.me(function(user) {
-        me.typeahead.setSelectedUserId(user.id);
-      });
+//      Asana.ServerModel.me(function(user) {
+//        me.typeahead.setSelectedUserId(user.id);
+//      });
       me.setAddEnabled(true);
     });
   },
@@ -300,7 +300,7 @@ UserTypeahead = function(id) {
 
   me.input.focus(function() {
     me.user_id_to_select = me.selected_user_id;
-    me.selected_user_id = null;
+    me.input.val("");
     me.has_focus = true;
     me.render();
   });
@@ -397,7 +397,7 @@ Asana.update(UserTypeahead.prototype, {
     var me = this;
     me.list.empty();
     me.filtered_users.forEach(function(user) {
-      me.list.append(me._entryForUser(user));
+      me.list.append(me._entryForUser(user, user.id === me.selected_user_id));
     });
   },
 
@@ -484,8 +484,8 @@ Asana.update(UserTypeahead.prototype, {
   _ensureSelectedUserVisible: function() {
     var index = this._indexOfSelectedUser();
     if (index !== -1) {
-      var el = this.list.children().eq(index);
-      this.list_container.scrollTo(el);
+      var node = this.list.children().get(index);
+      Asana.Node.ensureBottomVisible(node);
     }
   },
 

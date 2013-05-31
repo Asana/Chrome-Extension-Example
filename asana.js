@@ -24,16 +24,14 @@ Asana.Node = {
    * Note: this does not take account of the size of the window. That's ok for
    * now because the scrolling element is not the top-level element.
    */
-  ensureBottomVisible: function(el) {
-    //xcxc
-    var item_element_dimensions = this.dimensions;
-
+  ensureBottomVisible: function(node) {
+    var el = $(node);
+    var pos = el.position();
     var element_from_point = document.elementFromPoint(
-        this.dimensions.x(),
-        this.dimensions.y() + this.dimensions.height());
+        pos.left, pos.top + el.height());
     if (element_from_point === null ||
-        !MochiKit.DOM.isChildNode(element_from_point, this)) {
-      this.scrollIntoView(/*alignWithTop=*/ false);
+        $(element_from_point).closest(node).size() === 0) {
+      node.scrollIntoView(/*alignWithTop=*/ false);
     }
   },
 

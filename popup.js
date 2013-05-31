@@ -1,3 +1,9 @@
+PopupState = {
+  title: null,
+  url: null,
+  selected_text: null
+};
+
 window.addEventListener('load', function() {
 
   // Our default error handler.
@@ -78,8 +84,9 @@ var showAddUi = function(url, title, selected_text, options) {
   showView("add");
   $("#notes").val(url + selected_text);
   $("#name").val(title);
-  $("#name").focus();
-  $("#name").select();
+  var name_input = $("#name");
+  name_input.focus();
+  name_input.select();
   Asana.ServerModel.me(function(user) {
     // Just to cache result.
     Asana.ServerModel.workspaces(function(workspaces) {
@@ -89,6 +96,11 @@ var showAddUi = function(url, title, selected_text, options) {
         $("#workspace_select").append(
             "<option value='" + workspace.id + "'>" + workspace.name + "</option>");
       });
+      if (workspaces.length > 1) {
+        $("workspace_select_container").show();
+      } else {
+        $("workspace_select_container").hide();
+      }
       select.val(options.default_workspace_id);
       onWorkspaceChanged(options);
       select.change(function() { onWorkspaceChanged(options); });
@@ -204,10 +216,12 @@ var hideError = function() {
 var showSuccess = function(task) {
   Asana.ServerModel.taskViewUrl(task, function(url) {
     var name = task.name.replace(/^\s*/, "").replace(/\s*$/, "");
-    $("#new_task_link").attr("href", url);
-    $("#new_task_link").text(name !== "" ? name : "unnamed task");
-    $("#new_task_link").unbind("click");
-    $("#new_task_link").click(function() {
+    $("#new_task_workspace_name").text("xcxc");
+    var link = $("#new_task_link");
+    link.attr("href", url);
+    link.text(name !== "" ? name : "unnamed task");
+    link.unbind("click");
+    link.click(function() {
       chrome.tabs.create({url: url});
       window.close();
       return false;
@@ -219,9 +233,7 @@ var showSuccess = function(task) {
 
 // Helper to show the login page.
 var showLogin = function(url) {
-  $("#login_link").attr("href", url);
-  $("#login_link").unbind("click");
-  $("#login_link").click(function() {
+  $("#login_button").click(function() {
     chrome.tabs.create({url: url});
     window.close();
     return false;
@@ -236,4 +248,10 @@ window.addEventListener("keydown", function(e) {
   }
 }, /*capture=*/false);
 
-$("#close_banner").click(function() { window.close(); });
+$("#close_popup").click(function() {
+  window.close();
+});
+
+$("#use_page_details").click(function() {
+  //xcxc
+});

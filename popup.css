@@ -1,0 +1,215 @@
+/* Styles for popup.html */
+
+/* Common widgets, from Asana app */
+
+.close-x {
+  display: block;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  background-image: url(sprite.png);
+  background-position: 0px -100px;
+  background-repeat: no-repeat;
+}
+.close-x:hover {
+  background-position: -50px -100px;
+}
+
+
+.button {
+  border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  box-shadow: inset 0px -1px rgba(0,0,0,0.12);
+  -webkit-box-shadow: inset 0px -1px rgba(0,0,0,0.12);
+  display:inline-block;
+  padding: 4px 10px 5px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  white-space: nowrap;
+  cursor: pointer;
+  text-align: center;
+}
+.button .button-text {
+  display: inline-block;
+}
+
+.primary-button {
+  color: white;
+  text-shadow: 0px -1px #114D97;
+  border: 1px solid #114D97;
+  background-color: #1F8DD6;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#74C1ED), color-stop(10%, #1F8DD6));
+}
+.primary-button:hover {
+  background-color: #1F8DD6;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#74C1ED), color-stop(100%, #1F8DD6));
+  border: 1px solid #114D97;
+}
+.primary-button:hover .button-text {
+  color: white;
+  text-shadow: 0px -1px #114D97;
+}
+.primary-button:focus {
+  box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  -webkit-box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  outline: none;
+}
+
+.primary-button.disabled, .primary-button.disabled:hover {
+  background: #F2F2F2;
+  border-color: #CCCCCC;
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.primary-button.disabled .button-text, .primary-button.disabled:hover .button-text {
+  color: #999999;
+  text-shadow: none;
+}
+
+a:link, a:visited {
+  color: #1F8DD6;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Popup-specific layout */
+
+body {
+  overflow: hidden;
+  width: 410px;
+  height: 310px;  /* keep this correct for the window-based (non-button) version */
+  padding: 0px;
+  margin: 0px;
+  margin-top: 1px;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
+}
+
+.left-column {
+  display: inline-block;
+  margin-left: 12px;
+  width: 26px;
+}
+.middle-column {
+  display: inline-block;
+  width: 342px;
+  padding: 0 8px 0 8px;
+}
+.right-column {
+  display: inline-block;
+  margin-right: 12px;
+  width: 26px;
+}
+
+/* Popup areas */
+
+.banner {
+  font-size: 20px;
+  font-weight: 600;
+  background-color:#f2f2f2;
+  padding: 10px 14px 8px;
+  color: #596573;
+  text-shadow: 0px 1px #fff;
+  border-bottom: 1px solid #E5E5E5;
+  -webkit-box-shadow: inset 0px -1px rgba(0,0,0,0.1);
+  -webkit-border-radius: 5px 5px 0px 0px;
+}
+
+.banner-add {
+  position: relative;
+}
+
+.banner-add #workspace {
+  font-weight: 200;
+}
+
+#workspace_select {
+  opacity: 0;
+  position: absolute;
+  right: 0px;
+}
+
+
+.name-row {
+  padding-top: 14px;
+}
+.name-row #name {
+  font-size: 20px;
+  width: 100%;
+}
+
+.notes-row #notes {
+  width: 100%;
+  resize: none;
+  height: 96px;
+}
+
+.footer {
+  background: xcxc;
+  padding: 8px 0 10px 0;
+}
+
+
+#error {
+  width: 100%;
+  padding: 10px 14px;
+  background-color: #434C56;
+  font-weight: 500;
+  color: #ECF0F3;
+}
+.icon-error {
+  background-image: url(sprite.png);
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+  width: 19px;
+  min-width: 19px;
+  height: 16px;
+  min-height: 16px;
+  margin-bottom: -2px;
+  display: inline-block;
+
+}
+
+
+#add_view {
+  padding-bottom: 12px;
+}
+
+
+#login_view {
+  padding-top: 10px;
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  width: 382px;
+}
+
+.icon-success {
+  background-image: url(sprite.png);
+  background-position: 0px -50px;
+  background-repeat: no-repeat;
+  width: 19px;
+  min-width: 19px;
+  height: 16px;
+  min-height: 16px;
+  margin-bottom: -2px;
+  display: inline-block;
+}
+
+input, textarea {
+  -webkit-border-radius: 3px;
+  border: 1px solid rgba(0,0,0,0.2);
+  color: #212F40;
+  padding: 4px 5px 3px;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1), 0px 1px #fff;
+}
+select, input, textarea {
+  font-size: 14px;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
+  color: #212F40;
+}

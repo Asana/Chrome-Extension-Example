@@ -1,3 +1,4 @@
+/* Common styles? */
 body, td, div {
   font-size: 14px;
   font-family: "Helvetica Neue", Arial, sans-serif;
@@ -5,8 +6,8 @@ body, td, div {
 }
 
 .close-x {
+  display: block;
   cursor: pointer;
-  float: right;
   width: 14px;
   height: 14px;
   background-image: url(sprite.png);
@@ -75,4 +76,60 @@ a:link, a:visited {
 }
 a:hover {
   text-decoration: underline;
+}
+
+
+
+/* Styles for options.html */
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #DDE4EA;
+}
+body, td, div {
+  font-size: 13px;
+}
+
+#layout {
+  width: 100%;
+}
+#options {
+  width: 600px;
+  min-width: 600px;
+  max-width: 600px;
+}
+
+#status {
+  height: 30px;
+}
+
+.v-spacer {
+  height: 100px;
+}
+.form {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+td.field-name {
+    width: 150px;
+    padding: 2px 2px 2px 0;
+    vertical-align: top;
+}
+td.field-value {
+    padding: 2px 0 2px 2px;
+    vertical-align: top;
+}
+td.field-notes {
+    font-size: 11px;
+    margin-top: 12px;
+    padding: 2px 0 2px 2px;
+    vertical-align: top;
+}
+td.field-spacer {
+    height: 12px;
+}
+
+#reset_button {
+    margin-left: 10px;
 }

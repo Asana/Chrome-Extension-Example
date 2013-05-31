@@ -9,63 +9,91 @@
   <!-- TODO: detect non-latin language and use alternate typekit -->
   <script type="text/javascript" src="https://use.typekit.net/sli4yxq.js"></script>
   <script type="text/javascript" src="load_typekit.js"></script>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="popup_style.css"/>
+  <link rel="stylesheet" href="popup.css"/>
 </head>
 
 <body>
 
   <div id="add_view" style="display:none">
     <div class="banner">
-      <span class="banner-add">
-        Add to
-        <span id="workspace"></span>
-        <span class="button"><span class="dropdown-arrow"></span></span>
-        <select id="workspace_select"><option>Loading...</option></select>
-      </span>
-      <a id="close_banner" class="close-x"></a>
+      <div class="left-column"></div>
+      <div class="middle-column">
+        <span class="banner-add">
+          Add to
+          <span id="workspace"></span>
+          <span id="workspace_select_container">
+            <span class="button"><span class="dropdown-arrow"></span></span>
+            <select id="workspace_select"><option>Loading...</option></select>
+          </span>
+        </span>
+      </div>
+      <div class="right-column">
+        <a id="close_popup" class="close-x"></a>
+      </div>
     </div>
-    <div class="content">
-      <table class="form">
-        <tr>
-          <td class="field-name">Name:</td>
-          <td class="field-value">
-            <input id="name"/>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="field-name">Notes:</td>
-          <td class="field-value">
-            <textarea id="notes"></textarea>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="field-name">Assignee:</td>
-          <td class="field-value">
-            <select id="assignee"><option>Loading...</option></select>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="field-name"></td>
-          <td class="field-value">
-            <div id="add_button" tabindex="0" class="button primary-button disabled">
-              <span class="button-text">Add to Asana</span>
-            </div>
-          </td>
-        </tr>
-      </table>
-
-      <div id="success" style="display:none">
-        <span class="success-icon"></span>
-        Created task <a id="new_task_link" target="_blank" href=""></a>.
+    <div class="name-row">
+      <div class="left-column">
+        <span class="icon-checkbox"></span>
       </div>
-      <div id="error" style="display:none">
-        <span class="error-icon"></span>
-        Sorry, an error occurred. Please try again later.
+      <div class="middle-column">
+        <input id="name"/>
       </div>
+      <div class="right-column">
+        <span id="use_page_details" class="button" title="Use page title for task details"><span class="icon-use-link"></span></span>
+      </div>
+    </div>
+    <div class="notes-row">
+      <div class="left-column">
+        <span class="icon-notes"></span>
+      </div>
+      <div class="middle-column">
+        <textarea id="notes" placeholder="Description"></textarea>
+      </div>
+      <div class="right-column"></div>
+    </div>
+    <div class="assignee-row">
+      <div class="left-column">
+        <span class="icon-assignee"></span>
+      </div>
+      <div class="middle-column">
+        <div class="without-assignee">
+          <input id=""
+        </div>
+        <div class="with-assignee">
+
+        </div>
+
+      </div>
+      <div class="right-column"></div>
+    </div>
+
+    <div class="footer">
+      <div class="left-column"></div>
+      <div class="middle-column">
+        <div id="add_button" tabindex="0" class="button primary-button disabled">
+          <span class="button-text">Add to Asana</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="success" style="display:none">
+      <div class="left-column">
+        <span class="icon-success"></span>
+      </div>
+      <div class="middle-column">
+        Added <a id="new_task_link" target="_blank" href=""></a> to <span id="new_task_workspace_name"></span>.
+      </div>
+      <div class="right-column"></div>
+    </div>
+
+    <div id="error" style="display:none">
+      <div class="left-column">
+        <span class="icon-error"></span>
+      </div>
+      <div class="middle-column">
+        There was an error. Your task was not added.
+      </div>
+      <div class="right-column"></div>
     </div>
   </div>
 
@@ -76,7 +104,7 @@
     </div>
     <div class="content">
       You must log in to Asana before you can add tasks.
-      <span class="button"><span class="button-text">Log In to Asana</span></span>
+      <span id="login_button" class="button"><span class="button-text">Log In to Asana</span></span>
     </div>
   </div>
 

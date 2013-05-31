@@ -138,15 +138,32 @@ body {
 .name-row {
   padding-top: 14px;
 }
-.name-row #name {
+.name-row #name_input {
   font-size: 20px;
   width: 100%;
 }
 
-.notes-row #notes {
+.notes-row #notes_input {
   width: 100%;
   resize: none;
   height: 96px;
+}
+
+.user-photo-frame {
+  display: inline-block;
+}
+.user-photo {
+}
+.user-name {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#assignee_list_container {
+  height: 126px;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .footer {

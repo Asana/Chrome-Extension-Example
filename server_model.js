@@ -92,7 +92,9 @@ Asana.ServerModel = {
    */
   users: function(workspace_id, callback, errback, options) {
     var self = this;
-    Asana.ApiBridge.request("GET", "/workspaces/" + workspace_id + "/users", {},
+    Asana.ApiBridge.request(
+        "GET", "/workspaces/" + workspace_id + "/users",
+        { opt_fields: "name, photo.image_21x21" },
         function(response) {
           self._makeCallback(response, callback, errback);
         }, options);

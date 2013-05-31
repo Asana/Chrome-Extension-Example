@@ -10,6 +10,7 @@ Popup = {
 
   workspaces: null,
   users: null,
+  typeahead: null,
 
   onLoad: function() {
     var me = this;
@@ -82,11 +83,11 @@ Popup = {
     // Wire up some events to DOM elements on the page.
 
     // Close the popup if the ESCAPE key is pressed.
-    window.addEventListener("keydown", function(e) {
-      if (e.keyCode === 27) {
+    $(window).keypress(function(e) {
+      if (e.which === 27) {
         window.close();
       }
-    }, /*capture=*/false);
+    });
 
     $("#close_popup").click(function() {
       window.close();
@@ -97,6 +98,8 @@ Popup = {
       var notes = $("#notes");
       notes.val(notes.val() + me.page_url + me.page_selection);
     });
+
+    me.typeahead = new UserTypeahead("assignee");
   },
 
   showView: function(name) {
@@ -198,19 +201,11 @@ Popup = {
     Asana.ServerModel.saveOptions(me.options, function() {});
 
     // Update assignee list.
-    $("#assignee").html("<option>Loading...</option>");
     me.setAddEnabled(false);
     Asana.ServerModel.users(workspace_id, function(users) {
-      $("#assignee").html("");
-      users = users.sort(function(a, b) {
-        return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0);
-      });
-      users.forEach(function(user) {
-        $("#assignee").append(
-            "<option value='" + user.id + "'>" + user.name + "</option>");
-      });
+      me.typeahead.updateUsers(users);
       Asana.ServerModel.me(function(user) {
-        $("#assignee").val(user.id);
+        me.typeahead.setSelectedUserId(user.id);
       });
       me.setAddEnabled(true);
     });
@@ -288,6 +283,186 @@ Popup = {
   }
 };
 
-window.addEventListener('load', function() {
+UserTypeahead = function(id) {
+  var me = this;
+  me.id = id;
+  me.users = [];
+  me.user_id_to_user = {};
+  me.selected_user_id = null;
+  me.user_id_to_select = null;
+  me.has_focus = false;
+
+  me.input = $("#" + id + "_input");
+  me.label = $("#" + id);
+  me.list = $("#" + id + "_list");
+  me.list_container = $("#" + id + "_list_container");
+
+  me.input.focus(function() {
+    me.user_id_to_select = me.selected_user_id;
+    me.has_focus = true;
+    me.render();
+  });
+  me.input.blur(function() {
+    me.selected_user_id = me.user_id_to_select;
+    me.has_focus = false;
+    me.render();
+  });
+  me.input.keypress(function(e) {
+    if (e.which === 13) {
+      me._confirmSelection();
+      return false;
+    } else if (e.which === 8) {
+      me._confirmSelection();
+      return true;
+    } else if (e.which === 27) {
+      //xcxc for some reason this still exits the popup
+      e.stopPropagation();
+      me.input.blur();
+      return false;
+    }
+  });
+  me.input.bind("input", function() {
+    me._renderList();
+  });
+  me.label.click(function() {
+    me.input.focus();
+  });
+  me.render();
+};
+
+update(UserTypeahead, {
+
+  SILHOUETTE_URL: "xcxc",
+
+  photoForUser: function(user) {
+    var url = user.photo ? user.photo.image_21x21 : UserTypeahead.SILHOUETTE_URL;
+    var photo = $('<div class="user-photo"></div>"');
+    photo.css("background-image", "url(" + url + ")");
+    return $('<div class="user-photo-frame"></div>').append(photo);
+  }
+
+});
+
+update(UserTypeahead.prototype, {
+
+  render: function() {
+    var me = this;
+    me._renderLabel();
+
+    if (this.has_focus) {
+      me._renderList();
+      me.input.show();
+      me.label.hide();
+      me.list_container.show();
+    } else {
+      me.input.hide();
+      me.label.show();
+      me.list_container.hide();
+    }
+  },
+
+  _renderLabel: function() {
+    var me = this;
+    me.label.empty();
+    var selected_user = me.user_id_to_user[me.selected_user_id];
+    if (selected_user) {
+      me.label.append(UserTypeahead.photoForUser(selected_user));
+      me.label.append($('<div class="user-name">').text(selected_user.name));
+    } else {
+      me.label.append($('<span class="unassigned">').text("Assignee"));
+    }
+  },
+
+  _renderList: function() {
+    var me = this;
+    me.list.empty();
+    me._filteredUsers().forEach(function(user) {
+      me.list.append(me._entryForUser(user));
+    });
+  },
+
+  _entryForUser: function(user, is_selected) {
+    var me = this;
+    var node = $('<div id="user_' + user.id + '" class="user"></div>');
+    node.append(UserTypeahead.photoForUser(user));
+    node.append($('<div class="user-name">').text(user.name));
+    if (is_selected) {
+      node.addClass("selected");
+    }
+    node.mousedown(function() {
+      me.user_id_to_select = user.id;
+      me.setSelectedUserId(user.id);
+    });
+    return node;
+  },
+
+  _filteredUsers: function() {
+    var regexp = this._regexpFromFilterText(this.input.val());
+    return this.users.filter(function(user) {
+      if (regexp !== null) {
+        var parts = user.name.split(regexp);
+        return parts.length > 1;
+      } else {
+        return true;  // no filter
+      }
+    });
+  },
+
+  /**
+   * Generates a regular expression that will match strings which contain words
+   * that start with the words in filter_text. The matching is case-insensitive
+   * and the matching words do not need to be consecutive but they must be in
+   * the same order as those in filter_text.
+   *
+   * @param filter_text {String|null} The input text used to generate the regular
+   *  expression.
+   * @returns {Regexp}
+   */
+  _regexpFromFilterText: function(filter_text) {
+    if (!filter_text || filter_text.trim() === '') {
+      return null;
+    } else {
+      var escaped_filter_text = RegExp.escape(
+          filter_text.trim(),
+          /*opt_do_not_escape_spaces=*/true);
+      var parts = escaped_filter_text.trim().split(/\s+/).map(function(word) {
+        return "(" + word + ")";
+      }).join("(.*\\s+)");
+      return new RegExp("(?:\\b|^|(?=\\W))" + parts, "i");
+    }
+  },
+
+  _confirmSelection: function() {
+    this.user_id_to_select = this.selected_user_id;
+  },
+
+  updateUsers: function(users) {
+    var me = this;
+    // TODO: get from API in top contact order
+    users = users.sort(function(a, b) {
+      return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0);
+    });
+    me.users = users;
+    me.user_id_to_user = {};
+    users.forEach(function(user) {
+      me.user_id_to_user[user.id] = user;
+    });
+    me.render();
+  },
+
+  setSelectedUserId: function(id) {
+    if (this.selected_user_id !== null) {
+      $("#user_" + this.selected_user_id).removeClass("selected");
+    }
+    this.selected_user_id = id;
+    if (this.selected_user_id !== null) {
+      $("#user_" + this.selected_user_id).addClass("selected");
+    }
+  }
+
+});
+
+
+$(window).load(function() {
   Popup.onLoad();
 });

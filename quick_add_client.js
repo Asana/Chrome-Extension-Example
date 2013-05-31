@@ -36,7 +36,7 @@ Asana.QuickAddClient = {
           type: "quick_add",
           url: window.location.href,
           title: document.title,
-          selected_text: "" + window.getSelection()
+          selected_text: "" + window.getSelection(),
         });
         e.preventDefault();
         return false;

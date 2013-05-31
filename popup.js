@@ -7,6 +7,7 @@ Popup = {
   page_title: null,
   page_url: null,
   page_selection: null,
+  favicon_url: null,
 
   workspaces: null,
   users: null,
@@ -24,58 +25,57 @@ Popup = {
     // To initialize, we've got to gather various bits of information.
     // Starting with a reference to the window and tab that were active when
     // the popup was opened ...
-    chrome.windows.getCurrent(function(w) {
-      chrome.tabs.query({
-        active: true,
-        windowId: w.id
-      }, function(tabs) {
-        // Now load our options ...
-        Asana.ServerModel.options(function(options) {
-          me.options = options;
-          // And ensure the user is logged in ...
-          Asana.ServerModel.isLoggedIn(function(is_logged_in) {
-            if (is_logged_in) {
-              if (window.quick_add_request) {
-                // If this was a QuickAdd request (set by the code popping up
-                // the window in Asana.ExtensionServer), then we have all the
-                // info we need and should show the add UI right away.
-                me.showAddUi(
-                    quick_add_request.url, quick_add_request.title,
-                    quick_add_request.selected_text);
-              } else {
-                // Otherwise we want to get the selection from the tab that
-                // was active when we were opened. So we set up a listener
-                // to listen for the selection send event from the content
-                // window ...
-                var selection = "";
-                var listener = function(request, sender, sendResponse) {
-                  if (request.type === "selection") {
-                    chrome.runtime.onMessage.removeListener(listener);
-                    console.info("Asana popup got selection");
-                    selection = "\n" + request.value;
-                  }
-                };
-                chrome.runtime.onMessage.addListener(listener);
-
-                // ... and then we make a request to the content window to
-                // send us the selection.
-                var tab = tabs[0];
-                chrome.tabs.executeScript(tab.id, {
-                  code: "(Asana && Asana.SelectionClient) ? Asana.SelectionClient.sendSelection() : 0"
-                }, function() {
-                  // The requests appear to be handled synchronously, so the
-                  // selection should have been sent by the time we get this
-                  // completion callback. If the timing ever changes, however,
-                  // that could break and we would never show the add UI.
-                  // So this could be made more robust.
-                  me.showAddUi(tab.url, tab.title, selection);
-                });
-              }
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function(tabs) {
+      // Now load our options ...
+      Asana.ServerModel.options(function(options) {
+        me.options = options;
+        // And ensure the user is logged in ...
+        Asana.ServerModel.isLoggedIn(function(is_logged_in) {
+          if (is_logged_in) {
+            if (window.quick_add_request) {
+              // If this was a QuickAdd request (set by the code popping up
+              // the window in Asana.ExtensionServer), then we have all the
+              // info we need and should show the add UI right away.
+              me.showAddUi(
+                  quick_add_request.url, quick_add_request.title,
+                  quick_add_request.selected_text,
+                  quick_add_request.favicon_url);
             } else {
-              // The user is not even logged in. Prompt them to do so!
-              me.showLogin(Asana.Options.loginUrl(options));
+              // Otherwise we want to get the selection from the tab that
+              // was active when we were opened. So we set up a listener
+              // to listen for the selection send event from the content
+              // window ...
+              var selection = "";
+              var listener = function(request, sender, sendResponse) {
+                if (request.type === "selection") {
+                  chrome.runtime.onMessage.removeListener(listener);
+                  console.info("Asana popup got selection");
+                  selection = "\n" + request.value;
+                }
+              };
+              chrome.runtime.onMessage.addListener(listener);
+
+              // ... and then we make a request to the content window to
+              // send us the selection.
+              var tab = tabs[0];
+              chrome.tabs.executeScript(tab.id, {
+                code: "(Asana && Asana.SelectionClient) ? Asana.SelectionClient.sendSelection() : 0"
+              }, function() {
+                // The requests appear to be handled synchronously, so the
+                // selection should have been sent by the time we get this
+                // completion callback. If the timing ever changes, however,
+                // that could break and we would never show the add UI.
+                // So this could be made more robust.
+                me.showAddUi(tab.url, tab.title, selection, tab.favIconUrl);
+              });
             }
-          });
+          } else {
+            // The user is not even logged in. Prompt them to do so!
+            me.showLogin(Asana.Options.loginUrl(options));
+          }
         });
       });
     });
@@ -94,8 +94,8 @@ Popup = {
     });
 
     $("#use_page_details").click(function() {
-      $("#name").val(me.page_title);
-      var notes = $("#notes");
+      $("#name_input").val(me.page_title);
+      var notes = $("#notes_input");
       notes.val(notes.val() + me.page_url + me.page_selection);
     });
 
@@ -108,19 +108,24 @@ Popup = {
     });
   },
 
-  showAddUi: function(url, title, selected_text) {
+  showAddUi: function(url, title, selected_text, favicon_url) {
     var me = this;
 
     // Store off info from page we got triggered from.
     me.page_url = url;
     me.page_title = title;
     me.page_selection = selected_text;
+    me.favicon_url = favicon_url;
 
     me.resetFields();
     me.showView("add");
-    var name_input = $("#name");
+    var name_input = $("#name_input");
     name_input.focus();
     name_input.select();
+
+    // TODO: handle when no favicon
+    $(".icon-use-link").css("background-image", "url(" + favicon_url + ")");
+
     Asana.ServerModel.me(function(user) {
       // Just to cache result.
       Asana.ServerModel.workspaces(function(workspaces) {
@@ -176,8 +181,8 @@ Popup = {
   },
 
   resetFields: function() {
-    $("#name").val("");
-    $("#notes").val("");
+    $("#name_input").val("");
+    $("#notes_input").val("");
   },
 
   // Set the add button as being "working", waiting for the Asana request
@@ -237,8 +242,8 @@ Popup = {
     Asana.ServerModel.createTask(
         me.readWorkspaceId(),
         {
-          name: $("#name").val(),
-          notes: $("#notes").val(),
+          name: $("#name_input").val(),
+          notes: $("#notes_input").val(),
           assignee: me.readAssigneeId()
         },
         function(task) {

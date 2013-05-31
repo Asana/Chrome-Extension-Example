@@ -26,6 +26,9 @@ Asana.ExtensionServer = {
             "asana_quick_add",
             "dependent=1,resizable=0,location=0,menubar=0,status=0,toolbar=0,width=410,height=310");
         popup.quick_add_request = request;
+        // Quick Add should only come from a content script, so it must have
+        // a `tab`.
+        popup.quick_add_request.favicon_url = sender.tab.favIconUrl;
       }
     });
   }

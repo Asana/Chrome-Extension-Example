@@ -89,17 +89,28 @@ Popup = {
       }
     });
 
-    $("#close_popup").click(function() {
+    $(".close-x").click(function() {
       window.close();
     });
 
+    $("#name_input").keyup(me.checkToDisablePageDetailsButton);
+    $("#notes_input").keyup(me.checkToDisablePageDetailsButton);
+
     $("#use_page_details").click(function() {
-      $("#name_input").val(me.page_title);
-      var notes = $("#notes_input");
-      notes.val(notes.val() + me.page_url + me.page_selection);
+      if(!($("#use_page_details").hasClass('disabled'))) {
+        $("#name_input").val(me.page_title);
+        var notes = $("#notes_input");
+        notes.val(notes.val() + me.page_url + me.page_selection);
+      }
     });
 
     me.typeahead = new UserTypeahead("assignee");
+  },
+
+  checkToDisablePageDetailsButton: function() {
+    console.log($("#name_input").val(),$("#notes_input").val());
+    if($("#name_input").val() != "" || $("#notes_input").val() != "") { $("#use_page_details").addClass('disabled'); }
+    else { $("#use_page_details").removeClass('disabled'); }  
   },
 
   showView: function(name) {
@@ -124,7 +135,11 @@ Popup = {
     name_input.select();
 
     // TODO: handle when no favicon
-    $(".icon-use-link").css("background-image", "url(" + favicon_url + ")");
+    if(favicon_url) {
+      $(".icon-use-link").css("background-image", "url(" + favicon_url + ")");
+    } else {
+      $(".icon-use-link").addClass("no-favicon sprite");
+    }
 
     Asana.ServerModel.me(function(user) {
       // Just to cache result.
@@ -173,7 +188,7 @@ Popup = {
 
   showError: function(message) {
     console.log("Error: " + message);
-    $("#error").css("display", "");
+    $("#error").css("display", "inline-block");
   },
 
   hideError: function() {
@@ -257,10 +272,10 @@ Popup = {
     var me = this;
     Asana.ServerModel.taskViewUrl(task, function(url) {
       var name = task.name.replace(/^\s*/, "").replace(/\s*$/, "");
-      $("#new_task_workspace_name").text(me.workspaceById(me.readWorkspaceId()).name);
+      //$("#new_task_workspace_name").text(me.workspaceById(me.readWorkspaceId()).name);
       var link = $("#new_task_link");
       link.attr("href", url);
-      link.text(name !== "" ? name : "unnamed task");
+      link.text(name !== "" ? name : "Task");
       link.unbind("click");
       link.click(function() {
         chrome.tabs.create({url: url});
@@ -268,7 +283,7 @@ Popup = {
         return false;
       });
       me.resetFields();
-      $("#success").css("display", "");
+      $("#success").css("display", "inline-block");
     });
   },
 

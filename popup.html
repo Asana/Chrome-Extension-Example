@@ -29,8 +29,8 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
           Add to
           <span id="workspace"></span>
           <div id="workspace_select_container">
-            <div class="button"><div class="dropdown-arrow sprite"></div></div>
             <select id="workspace_select"><option>Loading...</option></select>
+            <div class="button"><div class="dropdown-arrow sprite"></div></div>
           </div>
         </span>
       </div>
@@ -43,10 +43,10 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
         <span class="icon-checkbox sprite"></span>
       </div>
       <div class="middle-column">
-        <input id="name_input" tabindex="0"/>
+        <input id="name_input" tabindex="0" placeholder="Task" />
       </div>
       <div class="right-column">
-        <span id="use_page_details" class="button" title="Insert page title and URL"><span class="icon-use-link"></span></span>
+        <div id="use_page_details" title="Insert page title and URL"><div class="icon-use-link-arrow sprite"></div><div class="icon-use-link"></div></div>
       </div>
     </div>
     <div class="notes-row">
@@ -63,15 +63,16 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
         <span class="icon-assignee sprite"></span>
       </div>
       <div class="middle-column">
-        <input id="assignee_input"/>
+        <input id="assignee_input" placeholder="Assignee" />
         <div id="assignee" tabindex="0"></div>
-        <div id="assignee_list_container">
-          <div id="assignee_list"></div>
-        </div>
-
       </div>
       <div class="right-column"></div>
     </div>
+
+    <div id="assignee_list_container">
+      <div id="assignee_list"></div>
+    </div>
+
 
     <div class="footer">
       <div class="left-column"></div>
@@ -79,38 +80,37 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
         <div id="add_button" tabindex="0" class="button primary-button disabled">
           <span class="button-text">Add to Asana</span>
         </div>
+        <div id="error" style="display:none">
+          <div class="sprite icon-error"></div>
+          Error. Please try again.
+        </div>
+        <div id="success" style="display:none">
+          <div class="sprite icon-success"></div>
+          Added <a id="new_task_link" target="_blank" href=""></a>
+        </div>
       </div>
     </div>
 
-    <div id="success" style="display:none">
-      <div class="left-column">
-        <span class="icon-success"></span>
-      </div>
-      <div class="middle-column">
-        Added <a id="new_task_link" target="_blank" href=""></a> to <span id="new_task_workspace_name"></span>.
-      </div>
-      <div class="right-column"></div>
-    </div>
 
-    <div id="error" style="display:none">
-      <div class="left-column">
-        <span class="icon-error"></span>
-      </div>
-      <div class="middle-column">
-        There was an error. Your task was not added.
-      </div>
-      <div class="right-column"></div>
-    </div>
   </div>
 
   <div id="login_view" style="display:none">
     <div class="banner">
-      Add to Asana
-      <a id="close-banner" class="close-x" tabindex="-1"></a>
+      <div class="left-column">
+        <div id="logo" class="sprite"></div>
+      </div>
+      <div class="middle-column">
+        <span class="banner-add">
+          Add to Asana
+        </span>
+      </div>
+      <div class="right-column">
+        <a id="close_login" class="sprite close-x" tabindex="-1"></a>
+      </div>
     </div>
     <div class="content">
       You must log in to Asana before you can add tasks.
-      <span id="login_button" class="button"><span class="button-text">Log In to Asana</span></span>
+      <span id="login_button" class="primary-button button big-button"><span class="button-text">Log In to Asana</span></span>
     </div>
   </div>
 

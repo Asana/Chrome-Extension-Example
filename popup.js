@@ -132,11 +132,13 @@ Popup = {
       me.checkToDisablePageDetailsButton();
     });
 
-    $("#use_page_details").click(function() {
-      if (!($("#use_page_details").hasClass('disabled'))) {
+    var use_page_details_button = $("#use_page_details");
+    use_page_details_button.click(function() {
+      if (!(use_page_details_button.hasClass('disabled'))) {
         $("#name_input").val(me.page_title);
         var notes = $("#notes_input");
         notes.val(notes.val() + me.page_url + me.page_selection);
+        use_page_details_button.addClass('disabled');
         if (!me.has_used_page_details) {
           me.has_used_page_details = true;
           Asana.ServerModel.logEvent({
@@ -269,7 +271,6 @@ Popup = {
     me.setAddEnabled(false);
     Asana.ServerModel.users(workspace_id, function(users) {
       me.typeahead.updateUsers(users);
-      me.typeahead.setSelectedUserId(me.user_id);
       me.setAddEnabled(true);
     });
   },
@@ -304,7 +305,8 @@ Popup = {
         {
           name: $("#name_input").val(),
           notes: $("#notes_input").val(),
-          assignee: me.typeahead.selected_user_id
+          // Default assignee to self
+          assignee: me.typeahead.selected_user_id || me.user_id
         },
         function(task) {
           Asana.ServerModel.logEvent({
@@ -386,10 +388,12 @@ UserTypeahead = function(id) {
   me.input.blur(function() {
     me.selected_user_id = me.user_id_to_select;
     me.has_focus = false;
-    if (!Popup.has_reassigned && me.selected_user_id !== Popup.user_id) {
+    if (!Popup.has_reassigned) {
       Popup.has_reassigned = true;
       Asana.ServerModel.logEvent({
-        name: "ChromeExtension-Reassigned"
+        name: me.selected_user_id === Popup.user_id ?
+            "ChromeExtension-AssignToSelf" :
+            "ChromeExtension-AssignToOther"
       });
     }
     me.render();

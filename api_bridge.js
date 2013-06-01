@@ -90,6 +90,7 @@ Asana.ApiBridge = {
       }
     }
 
+    // Be polite to Asana API and tell them who we are.
     var manifest = chrome.runtime.getManifest();
     var client_name = [
       "chrome-extension",

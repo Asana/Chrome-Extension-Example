@@ -96,7 +96,7 @@ Asana.ApiBridge = {
       chrome.i18n.getMessage("@@extension_id"),
       manifest.version,
       manifest.name
-    ];
+    ].join(":");
 
     var url = me.baseApiUrl() + path;
     var body_data;

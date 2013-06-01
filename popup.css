@@ -177,6 +177,18 @@ a, input, textarea {
   font-weight: 200;
 }
 
+.icon-checkbox {
+  background-position: -25px 0px;
+}
+
+.icon-notes {
+  background-position: -50px 0px;
+}
+
+.icon-assignee {
+  background-position: -75px 0px;
+}
+
 #workspace_select_container {
   display: inline-block;
   vertical-align: middle;
@@ -187,6 +199,11 @@ a, input, textarea {
   opacity: 0;
   position: absolute;
   right: 0px;
+  top: 0px;
+}
+
+#workspace_select:hover ~ .button {
+  background-color: red;
 }
 
 .name-row {

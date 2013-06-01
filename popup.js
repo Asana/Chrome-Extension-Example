@@ -14,6 +14,7 @@ Popup = {
   has_edited_notes: false,
   has_reassigned: false,
   has_used_page_details: false,
+  is_first_add: true,
 
   workspaces: null,
   users: null,
@@ -268,9 +269,7 @@ Popup = {
     me.setAddEnabled(false);
     Asana.ServerModel.users(workspace_id, function(users) {
       me.typeahead.updateUsers(users);
-      Asana.ServerModel.me(function(user) {
-        me.typeahead.setSelectedUserId(user.id);
-      });
+      me.typeahead.setSelectedUserId(me.user_id);
       me.setAddEnabled(true);
     });
   },
@@ -294,6 +293,12 @@ Popup = {
     console.info("Creating task");
     me.hideError();
     me.setAddWorking(true);
+    if (!me.is_first_add) {
+      Asana.ServerModel.logEvent({
+        name: "ChromeExtension-CreateTask-MultipleTasks"
+      });
+    }
+
     Asana.ServerModel.createTask(
         me.readWorkspaceId(),
         {
@@ -333,6 +338,13 @@ Popup = {
         return false;
       });
       me.resetFields();
+
+      // Reset logging for multi-add
+      me.has_edited_name = true;
+      me.has_edited_notes = true;
+      me.has_reassigned = true;
+      me.is_first_add = false;
+
       $("#success").css("display", "inline-block");
     });
   },
@@ -369,6 +381,7 @@ UserTypeahead = function(id) {
     me.input.val("");
     me.has_focus = true;
     me.render();
+    me._ensureSelectedUserVisible();
   });
   me.input.blur(function() {
     me.selected_user_id = me.user_id_to_select;
@@ -562,7 +575,10 @@ Asana.update(UserTypeahead.prototype, {
     if (this.selected_user_id !== null) {
       $("#user_" + this.selected_user_id).addClass("selected");
     }
-    this._ensureSelectedUserVisible();
+    this._renderLabel();
+    if (this.has_focus) {
+      this._ensureSelectedUserVisible();
+    }
   }
 
 });

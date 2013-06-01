@@ -21,24 +21,26 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
 
   <div id="add_view" style="display:none">
     <div class="banner">
-      <div class="left-column"></div>
+      <div class="left-column">
+        <div id="logo" class="sprite"></div>
+      </div>
       <div class="middle-column">
         <span class="banner-add">
           Add to
           <span id="workspace"></span>
-          <span id="workspace_select_container">
-            <span class="button"><span class="dropdown-arrow"></span></span>
+          <div id="workspace_select_container">
+            <div class="button"><div class="dropdown-arrow sprite"></div></div>
             <select id="workspace_select"><option>Loading...</option></select>
-          </span>
+          </div>
         </span>
       </div>
       <div class="right-column">
-        <a id="close_popup" class="close-x" tabindex="-1"></a>
+        <a id="close_popup" class="sprite close-x" tabindex="-1"></a>
       </div>
     </div>
     <div class="name-row">
       <div class="left-column">
-        <span class="icon-checkbox"></span>
+        <span class="icon-checkbox sprite"></span>
       </div>
       <div class="middle-column">
         <input id="name_input" tabindex="0"/>
@@ -49,7 +51,7 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
     </div>
     <div class="notes-row">
       <div class="left-column">
-        <span class="icon-notes"></span>
+        <span class="icon-notes sprite"></span>
       </div>
       <div class="middle-column">
         <textarea id="notes_input" tabindex="0" placeholder="Description"></textarea>
@@ -58,7 +60,7 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
     </div>
     <div class="assignee-row">
       <div class="left-column">
-        <span class="icon-assignee"></span>
+        <span class="icon-assignee sprite"></span>
       </div>
       <div class="middle-column">
         <input id="assignee_input"/>

@@ -319,7 +319,6 @@ UserTypeahead = function(id) {
       me._confirmSelection();
       return true;
     } else if (e.which === 27) {
-      // TODO: for some reason this still exits the popup
       e.stopPropagation();
       me.input.blur();
       return false;

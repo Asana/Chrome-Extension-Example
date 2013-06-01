@@ -62,6 +62,7 @@ Asana.ApiBridge = {
    */
   request: function(http_method, path, params, callback, options) {
     var me = this;
+    http_method = http_method.toUpperCase();
 
     // If we're not the server page, send a message to it to make the
     // API request.
@@ -80,7 +81,7 @@ Asana.ApiBridge = {
     console.info("Server API Request", http_method, path, params);
 
     // Serve from cache first.
-    if (!options.miss_cache && http_method.toLowerCase() === "get") {
+    if (!options.miss_cache && http_method === "GET") {
       var data = me._readCache(path, new Date());
       if (data) {
         console.log("Serving request from cache", path);
@@ -89,8 +90,24 @@ Asana.ApiBridge = {
       }
     }
 
-    console.log("Making request to API", http_method, path);
     var url = me.baseApiUrl() + path;
+    var body_data;
+    var client_name = "chrome-extension:" +
+        chrome.i18n.getMessage("@@extension_id");
+    if (http_method === "PUT" || http_method === "POST") {
+      // POST/PUT request, put params in body
+      body_data = {
+        data: params,
+        options: { client_name: client_name }
+      };
+    } else {
+      // GET/DELETE request, add params as URL parameters.
+      var url_params = Asana.update({ opt_client_name: client_name }, params);
+      url += "?" + $.param(url_params);
+    }
+
+    console.log("Making request to API", http_method, url);
+
     chrome.cookies.get({
       url: url,
       name: 'ticket'
@@ -114,7 +131,7 @@ Asana.ApiBridge = {
         },
         accept: "application/json",
         success: function(data, status, xhr) {
-          if (http_method.toLowerCase() === "get") {
+          if (http_method === "GET") {
             me._writeCache(path, data, new Date());
           }
           callback(data);
@@ -142,7 +159,7 @@ Asana.ApiBridge = {
         }
       };
       if (http_method === "POST" || http_method === "PUT") {
-        attrs.data = JSON.stringify({data: params});
+        attrs.data = JSON.stringify(body_data);
         attrs.dataType = "json";
         attrs.processData = false;
         attrs.contentType = "application/json";

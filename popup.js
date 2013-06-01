@@ -226,10 +226,6 @@ Popup = {
     return found;
   },
 
-  readAssigneeId: function() {
-    return parseInt($("#assignee").val(), 10);
-  },
-
   readWorkspaceId: function() {
     return parseInt($("#workspace_select").val(), 10);
   },
@@ -244,7 +240,7 @@ Popup = {
         {
           name: $("#name_input").val(),
           notes: $("#notes_input").val(),
-          assignee: me.readAssigneeId()
+          assignee: me.typeahead.selected_user_id
         },
         function(task) {
           me.setAddWorking(false);
@@ -313,10 +309,8 @@ UserTypeahead = function(id) {
     me.selected_user_id = me.user_id_to_select;
     me.has_focus = false;
     me.render();
-    me._shrinkWindow();
   });
   me.input.keydown(function(e) {
-    console.info("keydown", e.which);
     if (e.which === 13) {
       me._confirmSelection();
       $("#add_button").focus();
@@ -332,7 +326,6 @@ UserTypeahead = function(id) {
     } else if (e.which === 40) {
       // Down: select next.
       var index = me._indexOfSelectedUser();
-      console.info(index, me.filtered_users.length);
       if (index === -1 && me.filtered_users.length > 0) {
         me.setSelectedUserId(me.filtered_users[0].id);
       } else if (index >= 0 && index < me.filtered_users.length) {

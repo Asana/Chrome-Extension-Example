@@ -9,9 +9,16 @@ Popup = {
   page_selection: null,
   favicon_url: null,
 
+  // State to track so we only log events once.
+  has_edited_name: false,
+  has_edited_notes: false,
+  has_reassigned: false,
+  has_used_page_details: false,
+
   workspaces: null,
   users: null,
   typeahead: null,
+  user_id: null,
 
   onLoad: function() {
     var me = this;
@@ -36,6 +43,9 @@ Popup = {
         Asana.ServerModel.isLoggedIn(function(is_logged_in) {
           if (is_logged_in) {
             if (window.quick_add_request) {
+              Asana.ServerModel.logEvent({
+                name: "ChromeExtension-Open-QuickAdd"
+              });
               // If this was a QuickAdd request (set by the code popping up
               // the window in Asana.ExtensionServer), then we have all the
               // info we need and should show the add UI right away.
@@ -44,6 +54,9 @@ Popup = {
                   quick_add_request.selected_text,
                   quick_add_request.favicon_url);
             } else {
+              Asana.ServerModel.logEvent({
+                name: "ChromeExtension-Open-Button"
+              });
               // Otherwise we want to get the selection from the tab that
               // was active when we were opened. So we set up a listener
               // to listen for the selection send event from the content
@@ -85,22 +98,50 @@ Popup = {
     // Close the popup if the ESCAPE key is pressed.
     $(window).keypress(function(e) {
       if (e.which === 27) {
+        Asana.ServerModel.logEvent({
+          name: "ChromeExtension-Abort"
+        });
         window.close();
       }
     });
 
     $(".close-x").click(function() {
+      Asana.ServerModel.logEvent({
+        name: "ChromeExtension-Abort"
+      });
       window.close();
     });
 
-    $("#name_input").keyup(me.checkToDisablePageDetailsButton);
-    $("#notes_input").keyup(me.checkToDisablePageDetailsButton);
+    $("#name_input").keyup(function() {
+      if (!me.has_edited_name && $("#name_input").val() !== "") {
+        me.has_edited_name = true;
+        Asana.ServerModel.logEvent({
+          name: "ChromeExtension-ChangedTaskName"
+        });
+      }
+      me.checkToDisablePageDetailsButton();
+    });
+    $("#notes_input").keyup(function() {
+      if (!me.has_edited_notes && $("#notes_input").val() !== "") {
+        me.has_edited_notes= true;
+        Asana.ServerModel.logEvent({
+          name: "ChromeExtension-ChangedTaskNotes"
+        });
+      }
+      me.checkToDisablePageDetailsButton();
+    });
 
     $("#use_page_details").click(function() {
-      if(!($("#use_page_details").hasClass('disabled'))) {
+      if (!($("#use_page_details").hasClass('disabled'))) {
         $("#name_input").val(me.page_title);
         var notes = $("#notes_input");
         notes.val(notes.val() + me.page_url + me.page_selection);
+        if (!me.has_used_page_details) {
+          me.has_used_page_details = true;
+          Asana.ServerModel.logEvent({
+            name: "ChromeExtension-UsedPageDetails"
+          });
+        }
       }
     });
 
@@ -108,9 +149,11 @@ Popup = {
   },
 
   checkToDisablePageDetailsButton: function() {
-    console.log($("#name_input").val(),$("#notes_input").val());
-    if($("#name_input").val() != "" || $("#notes_input").val() != "") { $("#use_page_details").addClass('disabled'); }
-    else { $("#use_page_details").removeClass('disabled'); }  
+    if ($("#name_input").val() !== "" || $("#notes_input").val() !== "") {
+      $("#use_page_details").addClass('disabled');
+    } else {
+      $("#use_page_details").removeClass('disabled');
+    }
   },
 
   showView: function(name) {
@@ -134,15 +177,14 @@ Popup = {
     name_input.focus();
     name_input.select();
 
-    // TODO: handle when no favicon
-    if(favicon_url) {
+    if (favicon_url) {
       $(".icon-use-link").css("background-image", "url(" + favicon_url + ")");
     } else {
       $(".icon-use-link").addClass("no-favicon sprite");
     }
 
     Asana.ServerModel.me(function(user) {
-      // Just to cache result.
+      me.user_id = user.id;
       Asana.ServerModel.workspaces(function(workspaces) {
         me.workspaces = workspaces;
         var select = $("#workspace_select");
@@ -158,7 +200,9 @@ Popup = {
         }
         select.val(me.options.default_workspace_id);
         me.onWorkspaceChanged();
-        select.change(function() { me.onWorkspaceChanged(); });
+        select.change(function() {
+          me.onWorkspaceChanged();
+        });
       });
     });
   },
@@ -224,9 +268,9 @@ Popup = {
     me.setAddEnabled(false);
     Asana.ServerModel.users(workspace_id, function(users) {
       me.typeahead.updateUsers(users);
-//      Asana.ServerModel.me(function(user) {
-//        me.typeahead.setSelectedUserId(user.id);
-//      });
+      Asana.ServerModel.me(function(user) {
+        me.typeahead.setSelectedUserId(user.id);
+      });
       me.setAddEnabled(true);
     });
   },
@@ -258,10 +302,16 @@ Popup = {
           assignee: me.typeahead.selected_user_id
         },
         function(task) {
+          Asana.ServerModel.logEvent({
+            name: "ChromeExtension-CreateTask-Success"
+          });
           me.setAddWorking(false);
           me.showSuccess(task);
         },
         function(response) {
+          Asana.ServerModel.logEvent({
+            name: "ChromeExtension-CreateTask-Failure"
+          });
           me.setAddWorking(false);
           me.showError(response.errors[0].message);
         });
@@ -323,6 +373,12 @@ UserTypeahead = function(id) {
   me.input.blur(function() {
     me.selected_user_id = me.user_id_to_select;
     me.has_focus = false;
+    if (!Popup.has_reassigned && me.selected_user_id !== Popup.user_id) {
+      Popup.has_reassigned = true;
+      Asana.ServerModel.logEvent({
+        name: "ChromeExtension-Reassigned"
+      });
+    }
     me.render();
   });
   me.input.keydown(function(e) {
@@ -423,8 +479,8 @@ Asana.update(UserTypeahead.prototype, {
       node.addClass("selected");
     }
     node.mousedown(function() {
-      me.user_id_to_select = user.id;
       me.setSelectedUserId(user.id);
+      me._confirmSelection();
     });
     return node;
   },

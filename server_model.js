@@ -131,6 +131,14 @@ Asana.ServerModel = {
         });
   },
 
+  logEvent: function(event) {
+    Asana.ApiBridge.request(
+        "POST",
+        "/logs",
+        event,
+        function(response) {});
+  },
+
   _makeCallback: function(response, callback, errback) {
     if (response.errors) {
       (errback || this.onError).call(null, response);

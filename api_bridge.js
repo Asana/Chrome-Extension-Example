@@ -90,10 +90,16 @@ Asana.ApiBridge = {
       }
     }
 
+    var manifest = chrome.runtime.getManifest();
+    var client_name = [
+      "chrome-extension",
+      chrome.i18n.getMessage("@@extension_id"),
+      manifest.version,
+      manifest.name
+    ];
+
     var url = me.baseApiUrl() + path;
     var body_data;
-    var client_name = "chrome-extension:" +
-        chrome.i18n.getMessage("@@extension_id");
     if (http_method === "PUT" || http_method === "POST") {
       // POST/PUT request, put params in body
       body_data = {

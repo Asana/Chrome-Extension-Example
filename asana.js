@@ -1,7 +1,14 @@
 /**
  * Define the top-level Asana namespace.
  */
-Asana = {};
+Asana = {
+
+  CHROME_TITLEBAR_HEIGHT: 24,
+  POPUP_UI_HEIGHT: 310,
+  POPUP_EXPANDED_UI_HEIGHT: 310 + 129,
+  POPUP_UI_WIDTH: 410
+
+};
 
 /**
  * Things borrowed from asana library.

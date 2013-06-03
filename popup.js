@@ -1,5 +1,8 @@
 Popup = {
 
+  // Is this an external popup window? (vs. the one from the menu)
+  is_external: false,
+
   // Options loaded when popup opened.
   options: null,
 
@@ -23,6 +26,8 @@ Popup = {
 
   onLoad: function() {
     var me = this;
+
+    me.is_external = ('' + window.location.search).indexOf("external=true") !== -1;
 
     // Our default error handler.
     Asana.ServerModel.onError = function(response) {
@@ -153,6 +158,15 @@ Popup = {
       $("#use_page_details").addClass('disabled');
     } else {
       $("#use_page_details").removeClass('disabled');
+    }
+  },
+
+  setExpandedUi: function(is_expanded) {
+    if (this.is_external) {
+      window.resizeTo(
+          Asana.POPUP_UI_WIDTH,
+          (is_expanded ? Asana.POPUP_EXPANDED_UI_HEIGHT : Asana.POPUP_UI_HEIGHT)
+              + 10 + Asana.CHROME_TITLEBAR_HEIGHT);
     }
   },
 
@@ -388,6 +402,7 @@ UserTypeahead = function(id) {
       me.input.val("");
     }
     me.has_focus = true;
+    Popup.setExpandedUi(true);
     me.render();
     me._ensureSelectedUserVisible();
   });
@@ -403,6 +418,7 @@ UserTypeahead = function(id) {
       });
     }
     me.render();
+    Popup.setExpandedUi(false);
   });
   me.input.keydown(function(e) {
     if (e.which === 13) {

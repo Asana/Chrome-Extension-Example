@@ -45,8 +45,10 @@ Asana.ExtensionServer = {
                 favicon_url: favicon_url
               };
               chrome.windows.get(window_id, function(w) {
-                var width = 410;
-                var height = 310;
+                var width = Asana.POPUP_UI_WIDTH;
+                // Chrome popup window adds this padding on the bottom;
+                // so must we when we pop up our own window.
+                var height = Asana.POPUP_UI_HEIGHT + 10;
                 var top = w.top + 72;
                 var left = w.left + w.width - width;
 

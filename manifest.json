@@ -36,7 +36,6 @@
     ],
     "js": [
       "asana.js",
-      "selection_client.js",
       "quick_add_client.js"
     ],
     "run_at": "document_start",

@@ -17,7 +17,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     // Host must match the domain in our Typekit kit settings
     value: 'https://abkfopjdddhbjkiamjhkmogkcfedcnml'
   });
-  console.info(requestHeaders);
   return {
     requestHeaders: requestHeaders
   };

@@ -76,14 +76,9 @@ Popup = {
               // send us the selection.
               var tab = tabs[0];
               chrome.tabs.executeScript(tab.id, {
-                code: "(Asana && Asana.SelectionClient) ? Asana.SelectionClient.sendSelection() : 0"
-              }, function() {
-                // The requests appear to be handled synchronously, so the
-                // selection should have been sent by the time we get this
-                // completion callback. If the timing ever changes, however,
-                // that could break and we would never show the add UI.
-                // So this could be made more robust.
-                me.showAddUi(tab.url, tab.title, selection, tab.favIconUrl);
+                code: "'' + window.getSelection()"
+              }, function(results) {
+                me.showAddUi(tab.url, tab.title, results[0], tab.favIconUrl);
               });
             }
           } else {
@@ -137,7 +132,7 @@ Popup = {
       if (!(use_page_details_button.hasClass('disabled'))) {
         $("#name_input").val(me.page_title);
         var notes = $("#notes_input");
-        notes.val(notes.val() + me.page_url + me.page_selection);
+        notes.val(notes.val() + me.page_url + "\n" + me.page_selection);
         use_page_details_button.addClass('disabled');
         if (!me.has_used_page_details) {
           me.has_used_page_details = true;

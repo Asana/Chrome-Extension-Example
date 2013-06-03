@@ -42,6 +42,28 @@
   display: inline-block;
 }
 
+.default-button {
+  color: #596573;
+  text-shadow: 0px 1px white;
+  border: 1px solid #C0CCD7;
+  background-color: #F2F2F2;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(white), color-stop(10%, #F2F2F2));
+}
+.default-button:hover {
+  background-color: #F2F2F2;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(white), color-stop(100%, #CED7E0));
+  border: 1px solid #C0CCD7;
+}
+.default-button:hover .button-text {
+  color: #596573;
+  text-shadow: 0px 1px white;
+}
+.default-button:focus {
+  box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  -webkit-box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  outline: none;
+}
+
 .primary-button {
   color: white;
   text-shadow: 0px -1px #114D97;
@@ -308,12 +330,14 @@ a, input, textarea {
 .icon-use-link {
   height: 16px;
   width: 16px;
+  background-size: 16px 16px;
 }
 
 .icon-use-link.no-favicon {
   height: 18px;
   width: 18px;
   background-position: -200px 0px;
+  background-size: auto auto;
 }
 
 #use_page_details:not(.disabled):hover .icon-use-link.no-favicon {
@@ -330,7 +354,7 @@ a, input, textarea {
 }
 
 #assignee {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 #assignee .user-photo-frame {
@@ -345,7 +369,7 @@ a, input, textarea {
 .user {
   line-height: 34px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 600;
   padding-left: 54px;
 }
 
@@ -399,7 +423,7 @@ a, input, textarea {
 }
 
 #success a, #error a {
-  font-weight: bold;
+  font-weight: 600;
   text-decoration: none;
   color: #5998c0;
 }
@@ -423,6 +447,10 @@ a, input, textarea {
 
 #login_view .button {
   margin-top: 24px;
+}
+
+#login_view #signup_button {
+  margin-right: 8px;
 }
 
 .icon-success, .icon-error {

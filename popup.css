@@ -349,7 +349,7 @@ a, input, textarea {
   padding-left: 54px;
 }
 
-.user.selected, .user:hover {
+.user.selected {
   background-color: #1F8DD6;
   color: white;
 }

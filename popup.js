@@ -245,6 +245,7 @@ Popup = {
   resetFields: function() {
     $("#name_input").val("");
     $("#notes_input").val("");
+    this.typeahead.setSelectedUserId(null);
   },
 
   // Set the add button as being "working", waiting for the Asana request
@@ -340,6 +341,7 @@ Popup = {
         return false;
       });
       me.resetFields();
+      $("#name_input").focus();
 
       // Reset logging for multi-add
       me.has_edited_name = true;

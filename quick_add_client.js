@@ -16,43 +16,62 @@
  */
 Asana.QuickAddClient = {
 
-  _tab_down_time: 0,
+  KEY: "_asana_heokijphbgfagjocdkdaedfehiokfifg_tab_down_time",
+
+  USE_TAB: false,
+
+  state: function() {
+    return window[Asana.QuickAddClient.KEY];
+  },
 
   keyDown: function(e) {
     var self = Asana.QuickAddClient;
-    if (e.keyCode === 9) {
+    var now = new Date().getTime();
+    var state = self.state();
+
+    console.info("Asana quickadd keydown", e.keyCode, now, state.id, state.tab_down_time);
+    if (self.USE_TAB && e.keyCode === 9) {
       // Mark tab key as pressed at the current time.
       // If the Q key gets pressed soon enough afterward, we've hit our
       // hotkey combo.
-      self._tab_down_time = new Date().getTime();
-    } else if (e.keyCode === 81) {
-      if (new Date().getTime() < self._tab_down_time + 5000) {  // 5s timeout
-        self._tab_down_time = 0;
-        // Tab-Q!
-        // We cannot open the popup programmatically.
-        // http://code.google.com/chrome/extensions/faq.html#faq-open-popups
-        // So we do this roundabout thing.
-        chrome.runtime.sendMessage({
-          type: "quick_add",
-          url: window.location.href,
-          title: document.title,
-          selected_text: "" + window.getSelection(),
-        });
-        e.preventDefault();
-        return false;
-      }
+      state.tab_down_time = now;
+      console.info(state.tab_down_time);
+    } else if (e.keyCode === 81 &&
+        ((self.USE_TAB && now < state.tab_down_time + 5000) || e.altKey)) {
+      state.tab_down_time = 0;
+      console.info("Asana quickadd invoked");
+      // We cannot open the popup programmatically.
+      // http://code.google.com/chrome/extensions/faq.html#faq-open-popups
+      // So we do this roundabout thing.
+      chrome.runtime.sendMessage({
+        type: "quick_add",
+        url: window.location.href,
+        title: document.title,
+        selected_text: "" + window.getSelection()
+      });
+      e.preventDefault();
+      return false;
     }
   },
 
   keyUp: function(e) {
+
+    console.info("Asana quickadd keyup", e.keyCode);
     var self = Asana.QuickAddClient;
     if (e.keyCode === 9) {
       // Mark tab key as released.
-      self._tab_down_time = 0;
+      self.state().tab_down_time = 0;
     }
   },
 
   listen: function() {
+    console.info("listening");
+    if (!window[Asana.QuickAddClient.KEY]) {
+      window[Asana.QuickAddClient.KEY] = {
+        tab_down_time: 0,
+        id: Math.random()
+      };
+    }
     // Don't run against Asana, which already has a QuickAdd feature. ;)
     if (!/^https?:\/\/app[.]asana[.]com/.test(window.location.href) &&
         !/^https?:\/\/localhost/.test(window.location.href)) {

@@ -40,6 +40,6 @@
       "quick_add_client.js"
     ],
     "run_at": "document_start",
-    "all_frames": false
+    "all_frames": true
   }]
 }

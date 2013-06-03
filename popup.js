@@ -78,7 +78,9 @@ Popup = {
               chrome.tabs.executeScript(tab.id, {
                 code: "'' + window.getSelection()"
               }, function(results) {
-                me.showAddUi(tab.url, tab.title, results[0], tab.favIconUrl);
+                me.showAddUi(
+                    tab.url, tab.title, results ? results[0] : '',
+                    tab.favIconUrl);
               });
             }
           } else {
@@ -92,7 +94,7 @@ Popup = {
     // Wire up some events to DOM elements on the page.
 
     // Close the popup if the ESCAPE key is pressed.
-    $(window).keypress(function(e) {
+    $(window).keydown(function(e) {
       if (e.which === 27) {
         Asana.ServerModel.logEvent({
           name: "ChromeExtension-Abort"
@@ -377,7 +379,14 @@ UserTypeahead = function(id) {
 
   me.input.focus(function() {
     me.user_id_to_select = me.selected_user_id;
-    me.input.val("");
+    if (me.selected_user_id !== null) {
+      // If a user was already selected, fill the field with their name
+      // and select it all.
+      var assignee_name = me.user_id_to_user[me.selected_user_id].name;
+      me.input.val(assignee_name);
+    } else {
+      me.input.val("");
+    }
     me.has_focus = true;
     me.render();
     me._ensureSelectedUserVisible();
@@ -415,12 +424,14 @@ UserTypeahead = function(id) {
       } else if (index >= 0 && index < me.filtered_users.length) {
         me.setSelectedUserId(me.filtered_users[index + 1].id);
       }
+      e.preventDefault();
     } else if (e.which === 38) {
       // Up: select prev.
       var index = me._indexOfSelectedUser();
       if (index > 0) {
         me.setSelectedUserId(me.filtered_users[index - 1].id);
       }
+      e.preventDefault();
     }
   });
   me.input.bind("input", function() {
@@ -429,6 +440,7 @@ UserTypeahead = function(id) {
   });
   me.label.focus(function() {
     me.input.focus();
+    me.input.get(0).setSelectionRange(0, me.input.val().length);
   });
   me.render();
 };
@@ -492,6 +504,9 @@ Asana.update(UserTypeahead.prototype, {
     if (is_selected) {
       node.addClass("selected");
     }
+    node.mouseenter(function() {
+      me.setSelectedUserId(user.id);
+    });
     node.mousedown(function() {
       me.setSelectedUserId(user.id);
       me._confirmSelection();

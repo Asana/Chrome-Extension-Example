@@ -33,7 +33,7 @@ Asana.Node = {
         $(element_from_point).closest(node).size() === 0) {
       node.scrollIntoView(/*alignWithTop=*/ false);
     }
-  },
+  }
 
 };
 

@@ -561,7 +561,7 @@ UserTypeahead = function(id) {
 
 Asana.update(UserTypeahead, {
 
-  SILHOUETTE_URL: "./xcxc.png",
+  SILHOUETTE_URL: "./nopicture.png",
 
   /**
    * @param user {dict}

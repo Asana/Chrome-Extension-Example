@@ -28,8 +28,7 @@ Asana.Options = {
    * @return {String} The URL for the signup page.
    */
   signupUrl: function(opt_options) {
-    var options = opt_options || Asana.Options.loadOptions();
-    return 'https://asana.com/';
+    return 'http://asana.com/?utm_source=chrome&utm_medium=ext&utm_campaign=ext';
   },
 
   /**

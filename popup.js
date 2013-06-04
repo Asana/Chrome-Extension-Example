@@ -609,6 +609,11 @@ Asana.update(UserTypeahead.prototype, {
     users.forEach(function(user) {
       me.user_id_to_user[user.id] = user;
     });
+    // If selected user is not in this workspace, unselect them.
+    if (!(me.selected_user_id in me.user_id_to_user)) {
+      me.selected_user_id = null;
+      me.input.val("");
+    }
     me._updateFilteredUsers();
     me.render();
   },
@@ -618,7 +623,9 @@ Asana.update(UserTypeahead.prototype, {
     me.label.empty();
     var selected_user = me.user_id_to_user[me.selected_user_id];
     if (selected_user) {
-      me.label.append(UserTypeahead.photoForUser(selected_user));
+      if (selected_user.photo) {
+        me.label.append(UserTypeahead.photoForUser(selected_user));
+      }
       me.label.append($('<div class="user-name">').text(selected_user.name));
     } else {
       me.label.append($('<span class="unassigned">').text("Assignee"));

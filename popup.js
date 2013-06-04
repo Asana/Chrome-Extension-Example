@@ -559,18 +559,16 @@ UserTypeahead = function(id) {
 
 Asana.update(UserTypeahead, {
 
+  SILHOUETTE_URL: "./xcxc.png",
+
   /**
    * @param user {dict}
    * @returns {jQuery} photo element
    */
   photoForUser: function(user) {
     var photo = $('<div class="user-photo"></div>"');
-    if (user.photo) {
-      photo.css("background-image", "url(" + user.photo.image_27x27 + ")");
-    } else {
-//      photo.addClass("sprite");
-//      photo.addClass("icon-assignee");
-    }
+    var url = user.photo ? user.photo.image_60x60 : UserTypeahead.SILHOUETTE_URL;
+    photo.css("background-image", "url(" + url + ")");
     return $('<div class="user-photo-frame"></div>').append(photo);
   }
 

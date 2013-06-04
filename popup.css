@@ -388,6 +388,8 @@ a, input, textarea {
 .user-photo {
   height: 27px;
   width: 27px;
+  background-size: 27px 27px;
+  background-repeat: no-repeat;
   border-radius: 2px;
 }
 .user-name {

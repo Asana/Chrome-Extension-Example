@@ -10,6 +10,8 @@ Asana.ServerModel = {
   // Make requests to API to refresh cache at this interval.
   CACHE_REFRESH_INTERVAL_MS: 15 * 60 * 1000,
 
+  _url_to_cached_image: {},
+
   /**
    * Called by the model whenever a request is made and error occurs.
    * Override to handle in a context-appropriate way. Some requests may
@@ -95,7 +97,7 @@ Asana.ServerModel = {
     var self = this;
     Asana.ApiBridge.request(
         "GET", "/workspaces/" + workspace_id + "/users",
-        { opt_fields: "name,photo.image_27x27" },
+        { opt_fields: "name,photo.image_60x60" },
         function(response) {
           self._makeCallback(response, callback, errback);
         }, options);
@@ -148,6 +150,18 @@ Asana.ServerModel = {
     }
   },
 
+  _cacheUserPhoto: function(user) {
+    var me = this;
+    if (user.photo) {
+      var url = user.photo.image_60x60;
+      if (!(url in me._url_to_cached_image)) {
+        var image = new Image();
+        image.src = url;
+        me._url_to_cached_image[url] = image;
+      }
+    }
+  },
+
   /**
    * Start fetching all the data needed by the extension so it is available
    * whenever a popup is opened.
@@ -171,7 +185,11 @@ Asana.ServerModel = {
             var i = 0;
             // Fetch users in each workspace.
             var fetchUsers = function() {
-              me.users(workspaces[i].id, function(workspace) {
+              me.users(workspaces[i].id, function(users) {
+                // Prefetch images too
+                users.forEach(function(user) {
+                  me._cacheUserPhoto(user);
+                });
                 if (++i < workspaces.length) {
                   fetchUsers();
                 }

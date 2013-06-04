@@ -530,6 +530,7 @@ UserTypeahead = function(id) {
       } else if (index >= 0 && index < me.filtered_users.length) {
         me.setSelectedUserId(me.filtered_users[index + 1].id);
       }
+      me._ensureSelectedUserVisible();
       e.preventDefault();
     } else if (e.which === 38) {
       // Up: select prev.
@@ -537,6 +538,7 @@ UserTypeahead = function(id) {
       if (index > 0) {
         me.setSelectedUserId(me.filtered_users[index - 1].id);
       }
+      me._ensureSelectedUserVisible();
       e.preventDefault();
     }
   });
@@ -714,6 +716,11 @@ Asana.update(UserTypeahead.prototype, {
     }
   },
 
+  /**
+   * Helper to call this when the selection was changed by something that
+   * was not the mouse (which is pointing directly at a visible element),
+   * to ensure the selected user is always visible in the list.
+   */
   _ensureSelectedUserVisible: function() {
     var index = this._indexOfSelectedUser();
     if (index !== -1) {
@@ -731,9 +738,6 @@ Asana.update(UserTypeahead.prototype, {
       $("#user_" + this.selected_user_id).addClass("selected");
     }
     this._renderLabel();
-    if (this.has_focus) {
-      this._ensureSelectedUserVisible();
-    }
   }
 
 });

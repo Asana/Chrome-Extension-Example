@@ -236,6 +236,11 @@ Popup = {
         select.val(me.options.default_workspace_id);
         me.onWorkspaceChanged();
         select.change(function() {
+          if (select.val() !== me.options.default_workspace_id) {
+            Asana.ServerModel.logEvent({
+              name: "ChromeExtension-ChangedWorkspace"
+            });
+          }
           me.onWorkspaceChanged();
         });
       });

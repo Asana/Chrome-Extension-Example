@@ -1,23 +1,24 @@
 /**
  * A module to run in a content window to enable QuickAdd from that window.
- * That is, pressing Tab+Q anywhere in the window will open the same popup
- * as is available from the chrome menu.
+ * That is, pressing Alt+Q (or maybe Tab+Q) anywhere in the window will open
+ * the same popup as is available from the chrome menu.
  *
- * This is not a perfect solution (though it might be refined further with
- * a little more effort). For one thing, we don't swallow the TAB key because
+ * There's no way to trigger the chrome extension popup itself, so this
+ * opens a new window with the popup content in it. This looks slightly
+ * different than the real popup.
+ *
+ * Using TAB+Q, while a good mirror of Asana webapp functionality, is not a
+ * perfect solution (though it might be refined further with a little more
+ * effort). For one thing, we don't swallow the TAB key because
  * we don't want to interfere with the underlying page (especially if the user
  * wasn't going to press TAB+Q). So using the hotkey may cause you to focus
- * a new input on the page before opening the popup.
+ * a new input on the page before opening the popup. But that tabbing can also
+ * be an annoyance, and causes you to lose your selection too.
  *
- * Also, there's no way to trigger the chrome extension popup itself, so this
- * opens a new window with the popup content in it. This looks slightly
- * different than the real popup (and appears in a different place), but it
- * does the job.
  */
 Asana.QuickAddClient = {
 
-  KEY: "_asana_heokijphbgfagjocdkdaedfehiokfifg_tab_down_time",
-
+  // True iff we are using Tab+Q instead of Alt+Q.
   USE_TAB: false,
 
   keyDown: function(e) {

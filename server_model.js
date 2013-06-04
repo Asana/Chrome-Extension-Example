@@ -7,6 +7,7 @@
  */
 Asana.ServerModel = {
 
+  // Make requests to API to refresh cache at this interval.
   CACHE_REFRESH_INTERVAL_MS: 15 * 60 * 1000,
 
   /**
@@ -147,6 +148,10 @@ Asana.ServerModel = {
     }
   },
 
+  /**
+   * Start fetching all the data needed by the extension so it is available
+   * whenever a popup is opened.
+   */
   startPrimingCache: function() {
     var me = this;
     me._cache_refresh_interval = setInterval(function() {

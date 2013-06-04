@@ -1,3 +1,7 @@
+/**
+ * Loads the appropriate typekit resource for fonts in the popup.
+ */
+
 (function() {
 
   // From luna_page.js
@@ -47,6 +51,8 @@
     // Couldn't find Inuit
   ];
 
+  // If the page could be in a language which is not covered by our latin1
+  // font, then load the (larger) full font.
   chrome.i18n.getAcceptLanguages(function(language_list) {
     var languages = language_list.join(",");
     var non_latin1 = ISO3316_LANGUAGE_CODES_FOR_NON_LATIN1.filter(function(code) {

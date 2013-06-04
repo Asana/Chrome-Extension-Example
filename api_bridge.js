@@ -4,11 +4,10 @@
  * HTTP requests and needs cross-domain privileges.
  *
  * The bridge does not need to use an auth token to connect to
- * the API, because since it is a browser extension it can access
- * the user's cookies, and can use them to authenticate to the API.
- * This capability is specific to browser extensions, and other
- * types of applications would have to obtain an auth token to communicate
- * with the API.
+ * the API. Since it is a browser extension it can access the user's cookies
+ * and can use them to authenticate to the API. This capability is specific
+ * to browser extensions, and other types of applications would have to obtain
+ * an auth token to communicate with the API.
  */
 Asana.ApiBridge = {
 

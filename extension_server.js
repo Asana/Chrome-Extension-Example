@@ -12,7 +12,11 @@ Asana.ExtensionServer = {
    */
   listen: function() {
     var me = this;
+
+    // Mark our Api Bridge as the server side (the one that actually makes
+    // API requests to Asana vs. just forwarding them to the server window).
     Asana.ApiBridge.is_server = true;
+
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if (request.type === "api") {
         // Request to the API. Pass it on to the bridge.
@@ -30,14 +34,17 @@ Asana.ExtensionServer = {
           me._quick_add_modifier_keydown_time = 0;
         } else if (request.name === "q_down") {
           if (request.force ||
-              request.time < me._quick_add_modifier_keydown_time + 5000) {
+              request.time < me._quick_add_modifier_keydown_time +
+                  Asana.QUICK_ADD_WINDOW_MS) {
             // Quick Add should only come from a content script, so it must have
-            // a `tab`.
+            // a `tab`. Get its URL and title.
             var window_id = sender.tab.windowId;
             var favicon_url = sender.tab.favIconUrl;
             chrome.tabs.executeScript(sender.tab.id, {
-              code: "({ url: window.top.location.href, title: window.top.document.title })"
+              code: "({ url: window.top.location.href, " +
+                  "title: window.top.document.title })"
             }, function(results) {
+              // Form a request object to stick in our popup.
               var quick_add_request = {
                 url: results[0].url,
                 title: results[0].title,
@@ -45,18 +52,17 @@ Asana.ExtensionServer = {
                 favicon_url: favicon_url
               };
               chrome.windows.get(window_id, function(w) {
+                // Popup the window in the upper right, near where it would be
+                // if the user had clicked the Asana button.
                 var width = Asana.POPUP_UI_WIDTH;
-                // Chrome popup window adds this padding on the bottom;
-                // so must we when we pop up our own window.
-                var height = Asana.POPUP_UI_HEIGHT + 10;
+                var height = Asana.POPUP_UI_HEIGHT;
                 var top = w.top + 72;
                 var left = w.left + w.width - width;
 
-                // QuickAdd request, made from a content window.
-                // Open up a new popup, and set the request information on its window
-                // (see popup.html for how it's used)
-                // We cannot open the popup menu itself programmatically, so it's
-                // just a regular HTML popup.
+                // Open up a new popup, and set the request information on its
+                // window (see popup.html for how it's used)
+                // We cannot open the popup menu itself programmatically, so
+                // it's just a regular HTML popup.
                 // http://code.google.com/chrome/extensions/faq.html#faq-open-popups
                 var popup = window.open(
                     chrome.extension.getURL('popup.html') + '?external=true',

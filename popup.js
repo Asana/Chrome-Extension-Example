@@ -606,11 +606,24 @@ Asana.update(UserTypeahead.prototype, {
    */
   updateUsers: function(users) {
     var me = this;
-    me.users = users;
+    // Build a map from user ID to user
+    var this_user = null;
+    var users_without_this_user = [];
     me.user_id_to_user = {};
     users.forEach(function(user) {
+      if (user.id === Popup.user_id) {
+        this_user = user;
+      } else {
+        users_without_this_user.push(user);
+      }
       me.user_id_to_user[user.id] = user;
     });
+
+    // Put current user at the beginning of the list.
+    // We really should have found this user, but if not .. let's not crash.
+    me.users = this_user ?
+        [this_user].concat(users_without_this_user) : users_without_this_user;
+
     // If selected user is not in this workspace, unselect them.
     if (!(me.selected_user_id in me.user_id_to_user)) {
       me.selected_user_id = null;

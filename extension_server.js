@@ -30,15 +30,13 @@ Asana.ExtensionServer = {
           var window_id = tab.windowId;
           var favicon_url = tab.favIconUrl;
           chrome.tabs.executeScript(tab.id, {
-            code: "({ url: window.top.location.href, " +
-                "title: window.top.document.title, " +
-                "selected_text: '' + window.getSelection() })"
+            code: "('' + window.getSelection())"
           }, function(results) {
             // Form a request object to stick in our popup.
             var quick_add_request = {
-              url: results[0].url,
-              title: results[0].title,
-              selected_text: results[0].selected_text,
+              url: tab.url,
+              title: tab.title,
+              selected_text: results[0] || '',
               favicon_url: favicon_url
             };
             chrome.windows.get(window_id, function(w) {

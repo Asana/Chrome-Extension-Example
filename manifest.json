@@ -1,10 +1,12 @@
 {
   "manifest_version": 2,
   "name": "Asana Extension for Chrome",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Quickly add tasks to Asana from any web page.",
   "icons": {
-    "128": "icon128.png"
+    "128": "icon128.png",
+    "48": "icon48.png",
+    "16": "icon16.png"
   },
   "minimum_chrome_version": "25",
 
@@ -14,7 +16,16 @@
     "default_popup": "popup.html"
   },
   "background": {
-    "page": "background.html"
+    "persistent": true,
+    "scripts": [
+      "jquery-1.7.1.min.js",
+      "asana.js",
+      "api_bridge.js",
+      "extension_server.js",
+      "server_model.js",
+      "options.js",
+      "background.js"
+    ]
   },
   "incognito": "split",
   "offline_enabled": false,
@@ -25,23 +36,15 @@
     "webRequest",
     "webRequestBlocking",
     "*://*/*",
-    "*://*.asana.com/*",
-    "*://localhost.org/*"
+    "*://*.asana.com/*"
   ],
   "content_security_policy": "script-src 'self' https://use.typekit.net; object-src 'self'",
-
-  "content_scripts": [{
-    "matches": [
-      "<all_urls>"
-    ],
-    "exclude_matches": [
-      "*://app.asana.com/*"
-    ],
-    "js": [
-      "asana.js",
-      "quick_add_client.js"
-    ],
-    "run_at": "document_start",
-    "all_frames": true
-  }]
+  "commands": {
+    "quick_add": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Add a new task"
+    }
+  }
 }

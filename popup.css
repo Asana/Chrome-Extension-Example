@@ -25,6 +25,10 @@
   background-position: -150px -25px;
 }
 
+.dropdown-arrow:hover, #workspace_select:focus ~ .button .dropdown-arrow {
+  background-position: -150px -25px;
+}
+
 .button {
   border-radius: 3px 3px 3px 3px;
   -webkit-border-radius: 3px 3px 3px 3px;
@@ -239,6 +243,11 @@ a, input, textarea {
   background: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(100%, #dde4ea));
 }
 
+#workspace_select:focus ~ .button {
+  border: 1px solid #74C1ED;
+  box-shadow: 0px 0px 5px 1px rgba(31, 141, 214, 0.3);
+}
+
 .banner-add {
   position: relative;
 }
@@ -281,6 +290,8 @@ a, input, textarea {
   padding-top: 11px;
   padding-bottom: 12px;
 }
+
+.name-row .left-column .sprite { margin-top: 2px; }
 
 #name_input, #notes_input, #assignee, #assignee_input {
   width: 100%;
@@ -371,6 +382,7 @@ a, input, textarea {
   font-size: 12px;
   font-weight: 600;
   padding-left: 54px;
+  cursor: pointer;
 }
 
 .user.selected {
@@ -432,18 +444,17 @@ a, input, textarea {
 
 #login_view {
   width: 100%;
-  font-weight: 600;
   height: 100%;
   background-color: #edf1f4;
 }
 
 #login_view .content {
-  padding-top: 70px;
+  padding-top: 65px;
   width: 250px;
   margin: 0 auto;
   text-align: center;
   font-size: 19px;
-  font-weight: 600;
+  font-weight: 400;
   color: #596573;
 }
 

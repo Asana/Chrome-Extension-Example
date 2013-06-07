@@ -97,8 +97,8 @@ Popup = {
 
     // Wire up some events to DOM elements on the page.
 
-    // Close the popup if the ESCAPE key is pressed.
     $(window).keydown(function(e) {
+      // Close the popup if the ESCAPE key is pressed.
       if (e.which === 27) {
         if (me.is_first_add) {
           Asana.ServerModel.logEvent({
@@ -106,6 +106,17 @@ Popup = {
           });
         }
         window.close();
+      } else if (e.which === 9) {
+        // Don't let ourselves TAB to focus the document body, so if we're
+        // at the beginning or end of the tab ring, explicitly focus the
+        // other end (setting body.tabindex = -1 does not prevent this)
+        if (e.shiftKey && document.activeElement === me.firstInput().get(0)) {
+          me.lastInput().focus();
+          e.preventDefault();
+        } else if (!e.shiftKey && document.activeElement === me.lastInput().get(0)) {
+          me.firstInput().focus();
+          e.preventDefault();
+        }
       }
     });
 
@@ -425,6 +436,14 @@ Popup = {
       return false;
     });
     me.showView("login");
+  },
+
+  firstInput: function() {
+    return $("#workspace_select");
+  },
+
+  lastInput: function() {
+    return $("#add_button");
   }
 };
 

@@ -29,37 +29,38 @@ Asana.ExtensionServer = {
           // a `tab`. Get its URL and title.
           var window_id = tab.windowId;
           var favicon_url = tab.favIconUrl;
-          chrome.tabs.executeScript(tab.id, {
-            code: "('' + window.getSelection())"
-          }, function(results) {
-            // Form a request object to stick in our popup.
-            var quick_add_request = {
-              url: tab.url,
-              title: tab.title,
-              selected_text: results[0] || '',
-              favicon_url: favicon_url
-            };
-            chrome.windows.get(window_id, function(w) {
-              // Popup the window in the upper right, near where it would be
-              // if the user had clicked the Asana button.
-              var width = Asana.POPUP_UI_WIDTH;
-              var height = Asana.POPUP_UI_HEIGHT;
-              var top = w.top + 72;
-              var left = w.left + w.width - width;
 
-              // Open up a new popup, and set the request information on its
-              // window (see popup.html for how it's used)
-              // We cannot open the popup menu itself programmatically, so
-              // it's just a regular HTML popup.
-              // http://code.google.com/chrome/extensions/faq.html#faq-open-popups
-              var popup = window.open(
-                  chrome.extension.getURL('popup.html') + '?external=true',
-                  "asana_quick_add",
-                  "dependent=1,resizable=0,location=0,menubar=0,status=0," +
-                      "toolbar=0,width=" + width + ",height=" + height +
-                      ",top=" + top + ",left=" + left);
-              popup.quick_add_request = quick_add_request;
-            });
+          // If we wanted to get the selection, we'd have to add *://*/* to
+          // our permissions so we can execute a script on the tab and call
+          // window.getSelection(). Here and in popup.js.
+
+          // Form a request object to stick in our popup.
+          var quick_add_request = {
+            url: tab.url,
+            title: tab.title,
+            selected_text: '',
+            favicon_url: favicon_url
+          };
+          chrome.windows.get(window_id, function(w) {
+            // Popup the window in the upper right, near where it would be
+            // if the user had clicked the Asana button.
+            var width = Asana.POPUP_UI_WIDTH;
+            var height = Asana.POPUP_UI_HEIGHT;
+            var top = w.top + 72;
+            var left = w.left + w.width - width;
+
+            // Open up a new popup, and set the request information on its
+            // window (see popup.html for how it's used)
+            // We cannot open the popup menu itself programmatically, so
+            // it's just a regular HTML popup.
+            // http://code.google.com/chrome/extensions/faq.html#faq-open-popups
+            var popup = window.open(
+                chrome.extension.getURL('popup.html') + '?external=true',
+                "asana_quick_add",
+                "dependent=1,resizable=0,location=0,menubar=0,status=0," +
+                    "toolbar=0,width=" + width + ",height=" + height +
+                    ",top=" + top + ",left=" + left);
+            popup.quick_add_request = quick_add_request;
           });
         });
       }

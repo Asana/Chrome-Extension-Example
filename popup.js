@@ -48,6 +48,7 @@ Popup = {
       active: true,
       currentWindow: true
     }, function(tabs) {
+      var tab = tabs[0];
       // Now load our options ...
       Asana.ServerModel.options(function(options) {
         me.options = options;
@@ -82,17 +83,7 @@ Popup = {
                 }
               };
               chrome.runtime.onMessage.addListener(listener);
-
-              // ... and then we make a request to the content window to
-              // send us the selection.
-              var tab = tabs[0];
-              chrome.tabs.executeScript(tab.id, {
-                code: "'' + window.getSelection()"
-              }, function(results) {
-                me.showAddUi(
-                    tab.url, tab.title, results ? results[0] : '',
-                    tab.favIconUrl);
-              });
+              me.showAddUi(tab.url, tab.title, '', tab.favIconUrl);
             }
           } else {
             // The user is not even logged in. Prompt them to do so!
@@ -204,19 +195,6 @@ Popup = {
     me.page_selection = selected_text;
     me.favicon_url = favicon_url;
 
-    // Set initial UI state
-    me.resetFields();
-    me.showView("add");
-    var name_input = $("#name_input");
-    name_input.focus();
-    name_input.select();
-
-    if (favicon_url) {
-      $(".icon-use-link").css("background-image", "url(" + favicon_url + ")");
-    } else {
-      $(".icon-use-link").addClass("no-favicon sprite");
-    }
-
     // Populate workspace selector and select default.
     Asana.ServerModel.me(function(user) {
       me.user_id = user.id;
@@ -243,6 +221,19 @@ Popup = {
           }
           me.onWorkspaceChanged();
         });
+
+        // Set initial UI state
+        me.resetFields();
+        me.showView("add");
+        var name_input = $("#name_input");
+        name_input.focus();
+        name_input.select();
+
+        if (favicon_url) {
+          $(".icon-use-link").css("background-image", "url(" + favicon_url + ")");
+        } else {
+          $(".icon-use-link").addClass("no-favicon sprite");
+        }
       });
     });
   },
@@ -290,7 +281,7 @@ Popup = {
   resetFields: function() {
     $("#name_input").val("");
     $("#notes_input").val("");
-    this.typeahead.setSelectedUserId(null);
+    this.typeahead.setSelectedUserId(this.user_id);
   },
 
   /**
@@ -483,6 +474,7 @@ UserTypeahead = function(id) {
     }
     me.has_focus = true;
     Popup.setExpandedUi(true);
+    me._updateFilteredUsers();
     me.render();
     me._ensureSelectedUserVisible();
   });

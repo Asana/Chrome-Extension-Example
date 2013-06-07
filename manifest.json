@@ -35,7 +35,6 @@
     "cookies",
     "webRequest",
     "webRequestBlocking",
-    "*://*/*",
     "*://*.asana.com/*"
   ],
   "content_security_policy": "script-src 'self' https://use.typekit.net; object-src 'self'",

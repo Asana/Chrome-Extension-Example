@@ -7,7 +7,7 @@ integrates Asana into your web experience in the following ways:
     You can click a button to populate the task name with the page title and
     the URL and current selected text in the notes.
 
-  * Installs the special Asana TAB+Q keyboard shortcut. When this key combo
+  * Installs the special Asana ALT+A keyboard shortcut. When this key combo
     is pressed from any web page, it brings up the same popup.
     This functionality will operate on any window opened after the extension
     is loaded.

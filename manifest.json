@@ -39,11 +39,10 @@
   ],
   "content_security_policy": "script-src 'self' https://use.typekit.net; object-src 'self'",
   "commands": {
-    "quick_add": {
+    "_execute_browser_action": {
       "suggested_key": {
-        "default": "Alt+Q"
-      },
-      "description": "Add a new task"
+        "default": "Alt+Shift+A"
+      }
     }
   }
 }

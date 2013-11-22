@@ -19,6 +19,7 @@
     "persistent": true,
     "scripts": [
       "jquery-1.7.1.min.js",
+      "navigator.js",
       "asana.js",
       "api_bridge.js",
       "extension_server.js",
@@ -35,6 +36,7 @@
     "cookies",
     "webRequest",
     "webRequestBlocking",
+    "webNavigation",
     "*://*.asana.com/*",
     "*://use.typekit.net/*"
   ],

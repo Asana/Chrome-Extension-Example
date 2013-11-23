@@ -1,4 +1,5 @@
 console.log(chrome.windows)
+console.log("LOADED");
 
 //chrome.windows.create({height: 10, top: 10000, width:1}, function(hiddenWindow) {
 //  console.log(hiddenWindow)
@@ -64,3 +65,17 @@ var urlFilter = {hostEquals: "app.asana.com"}
 //  })
   }, {url: [urlFilter]})
 //})
+
+console.log("registering new listener");
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (!sender.tab) { 
+      console.log("not a tab!");
+      return; 
+    }
+    console.log("got a fragment from a tab! woohoo");
+    navigateExistingAsana(request, -1, function(b) {});
+    sendResponse("returned successfully");
+  });
+
+console.log("registered new listener");

@@ -31,8 +31,13 @@ function clickHandler(e){
   //var isAsanaLink = ($(e.target).attr("href").indexof("app.asana.com") != -1);
   if ( ((asanaKeyDown) || e.button == 1) && $(e.target).prop("tagName") == "A"){
     console.log("is link");
-    if ($(e.target).prop("href").indexOf("app.asana.com") != -1) {
+    var link_url =$(e.target).prop("href") ;
+    if (link_url.indexOf("https://app.asana.com") != -1) {
       console.log("asana link clicked!")
+      var fragment = link_url.substr("https://app.asana.com".length)
+      chrome.runtime.sendMessage({fragment: fragment}, function(response) {
+        console.log("response was: " + response);
+      });
       e.preventDefault();
     }
     console.log($(event.target));

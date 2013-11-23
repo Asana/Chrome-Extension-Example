@@ -28,8 +28,13 @@ function keyUpHandler(e){
 
 function clickHandler(e){
   if (!e) var e = window.event;
-  if ( (asanaKeyDown) || e.button == 1){
+  //var isAsanaLink = ($(e.target).attr("href").indexof("app.asana.com") != -1);
+  if ( ((asanaKeyDown) || e.button == 1) && $(e.target).prop("tagName") == "A"){
+    console.log("is link");
+    if ($(e.target).prop("href").indexOf("app.asana.com") != -1) {
+      console.log("asana link clicked!")
+      e.preventDefault();
+    }
     console.log($(event.target));
-    e.preventDefault();
   } 
 }

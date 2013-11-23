@@ -13,7 +13,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": [ "jquery-1.7.1.min.js", "click_commandeer.js" ],
+      "exclude_matches": ["*://app.asana.com/*"],
+      "js": [ "jquery-1.7.1.min.js", "navigator.js", "click_commandeer.js" ],
       "run_at": "document_end"
     }
   ],

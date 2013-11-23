@@ -8,19 +8,42 @@ var urlFilter = {hostEquals: "app.asana.com"}
   chrome.webNavigation.onBeforeNavigate.addListener(function (event) {
     console.log(event)
 
+    // Check the url being navigated to follows the exact pattern we expect
+    if (event.url.lastIndexOf("https://app.asana.com") !== 0) return
+    var fragment = event.url.substr("https://app.asana.com".length)
+    console.log("fragment was", fragment)
+
     chrome.tabs.query({
       url: "https://app.asana.com/*",
       currentWindow: true
     }, function(asanaTabs) {
+
+      // Filter out the tab that just opened, we don't want to reuse that!
+      asanaTabs = asanaTabs.filter(function (eachAsanaTab) {
+        return eachAsanaTab.id !== event.tabId
+      })
+
       if (asanaTabs.length > 0) {
         var chosenAsanaTab = asanaTabs[0]
+        console.log(chosenAsanaTab)
         chrome.tabs.get(event.tabId, function(tab) {
           console.log(tab)
 
           if (!tab.highlighted) {
-            // They opened in a new tab, close it
+            // They opened in a new tab, close that one, select the asana one,
+            // and navigate to the right fragment
+            chrome.tabs.highlight({tabs:chosenAsanaTab.index}, function() {
+              console.log("highlighted the tab")
+            })
             chrome.tabs.remove(tab.id)
-//            chrome.tabs.
+
+
+            chrome.tabs.executeScript(chosenAsanaTab.id, {
+              code: "window.postMessage('" + fragment + "', '*')"
+
+              // Monkey patch for an asana tab to make this work:
+              // window.addEventListener("message", function(message) {srun(function() {env.datastore_manager.enactChange(FragmentChange.create({fragment: message.data}))})})
+            })
           }
         })
       }

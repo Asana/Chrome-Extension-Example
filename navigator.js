@@ -3,7 +3,7 @@ console.log(chrome.windows)
 //chrome.windows.create({height: 10, top: 10000, width:1}, function(hiddenWindow) {
 //  console.log(hiddenWindow)
 
-function navigateExistingAsana(fragment) {
+function navigateExistingAsana(fragment, tabToAvoid, callback) {
   chrome.tabs.query({
     url: "https://*.asana.com/*",
     currentWindow: true
@@ -11,33 +11,24 @@ function navigateExistingAsana(fragment) {
 
     // Filter out the tab that just opened, we don't want to reuse that!
     asanaTabs = asanaTabs.filter(function (eachAsanaTab) {
-      return eachAsanaTab.id !== event.tabId
+      return eachAsanaTab.id !== tabToAvoid
     })
 
     if (asanaTabs.length > 0) {
       var chosenAsanaTab = asanaTabs[0]
-      console.log(chosenAsanaTab)
-      chrome.tabs.get(event.tabId, function(tab) {
-        console.log(tab)
-
-        if (!tab.highlighted) {
-          // They opened in a new tab, close that one, select the asana one,
-          // and navigate to the right fragment
-          chrome.tabs.highlight({tabs:chosenAsanaTab.index}, function() {
-            console.log("highlighted the tab")
-          })
-          chrome.tabs.remove(tab.id)
-
-
-          chrome.tabs.executeScript(chosenAsanaTab.id, {
-            code: "window.postMessage('fragment|" + fragment + "', '*')"
-
-            // Monkey patch for an asana tab to make this work:
-            // window.addEventListener("message", function(message) {srun(function() {env.datastore_manager.enactChange(FragmentChange.create({fragment: message.data}))})})
-          })
-        }
+      chrome.tabs.highlight({tabs:chosenAsanaTab.index}, function() {
+        console.log("highlighted the tab")
       })
+      chrome.tabs.executeScript(chosenAsanaTab.id, {
+        code: "window.postMessage('fragment|" + fragment + "', '*')"
+
+        // Monkey patch for an asana tab to make this work:
+        // window.addEventListener("message", function(message) {srun(function() {env.datastore_manager.enactChange(FragmentChange.create({fragment: message.data}))})})
+      })
+      callback(true)
     }
+
+    callback(false)
   })
 }
 
@@ -51,7 +42,15 @@ var urlFilter = {hostEquals: "app.asana.com"}
     var fragment = event.url.substr("https://app.asana.com".length)
     console.log("fragment was", fragment)
 
-    navigateExistingAsana(fragment)
+    chrome.tabs.get(event.tabId, function(tab) {
+      if (!tab.highlighted) {
+        navigateExistingAsana(fragment, event.tabId, function(succeeded) {
+          if (succeeded) {
+            chrome.tabs.remove(tab.id)
+          }
+        })
+      }
+    })
 
 //    chrome.tabs.reload(event.tabId)
 

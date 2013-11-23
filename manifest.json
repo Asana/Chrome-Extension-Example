@@ -10,6 +10,14 @@
   },
   "minimum_chrome_version": "25",
 
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [ "jquery-1.7.1.min.js", "click_commandeer.js" ],
+      "run_at": "document_end"
+    }
+  ],
+
   "browser_action": {
     "default_icon": "icon19.png",
     "default_title": "Asana",

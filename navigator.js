@@ -14,7 +14,7 @@ var urlFilter = {hostEquals: "app.asana.com"}
     console.log("fragment was", fragment)
 
     chrome.tabs.query({
-      url: "https://app.asana.com/*",
+      url: "https://*.asana.com/*",
       currentWindow: true
     }, function(asanaTabs) {
 
@@ -39,7 +39,7 @@ var urlFilter = {hostEquals: "app.asana.com"}
 
 
             chrome.tabs.executeScript(chosenAsanaTab.id, {
-              code: "window.postMessage('" + fragment + "', '*')"
+              code: "window.postMessage('fragment|" + fragment + "', '*')"
 
               // Monkey patch for an asana tab to make this work:
               // window.addEventListener("message", function(message) {srun(function() {env.datastore_manager.enactChange(FragmentChange.create({fragment: message.data}))})})

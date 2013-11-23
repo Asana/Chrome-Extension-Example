@@ -74,7 +74,7 @@ chrome.runtime.onMessage.addListener(
       return; 
     }
     console.log("got a fragment from a tab! woohoo");
-    navigateExistingAsana(request, -1, function(b) {});
+    navigateExistingAsana(request.fragment, -1, function(b) {});
     sendResponse("returned successfully");
   });
 

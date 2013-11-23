@@ -14,7 +14,7 @@
     {
       "matches": ["<all_urls>"],
       "exclude_matches": ["*://app.asana.com/*"],
-      "js": [ "jquery-1.7.1.min.js", "navigator.js", "click_commandeer.js" ],
+      "js": [ "jquery-1.7.1.min.js", "click_commandeer.js" ],
       "run_at": "document_end"
     }
   ],

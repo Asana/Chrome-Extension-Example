@@ -12,22 +12,26 @@ function navigateExistingAsana(fragment, tabToAvoid, callback) {
     url: "https://app.asana.com/*",
     currentWindow: true
   }, function(asanaTabs) {
+    chrome.tabs.getSelected(function (currentTab) {
 
-    // Filter out the tab that just opened, we don't want to reuse that!
-    asanaTabs = asanaTabs.filter(function (eachAsanaTab) {
-      return eachAsanaTab.id !== tabToAvoid
-    })
-
-    if (asanaTabs.length > 0) {
-      var chosenAsanaTab = asanaTabs[0]
-      chrome.tabs.highlight({tabs:chosenAsanaTab.index}, function() {})
-      chrome.tabs.executeScript(chosenAsanaTab.id, {
-        code: "window.postMessage('fragment|" + fragment + "', '*')"
+      asanaTabs = asanaTabs.filter(function (eachAsanaTab) {
+        // Filter out the tab that just opened, we don't want to reuse that!
+        return eachAsanaTab.id !== tabToAvoid &&
+            // Filter out the tab that's currently focused
+            eachAsanaTab.id !== currentTab.id;
       })
-      callback(true)
-    }
 
-    callback(false)
+      if (asanaTabs.length > 0) {
+        var chosenAsanaTab = asanaTabs[0]
+        chrome.tabs.highlight({tabs:chosenAsanaTab.index}, function() {})
+        chrome.tabs.executeScript(chosenAsanaTab.id, {
+          code: "window.postMessage('fragment|" + fragment + "', '*')"
+        })
+        callback(true)
+      }
+
+      callback(false)
+    })
   })
 }
 

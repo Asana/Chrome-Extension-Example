@@ -5,8 +5,13 @@ function hoverUrls() {
     return '<span class="asana-ext-link-wrapper"></span>'
   });
 
-  $('span[class="asana-ext-link-wrapper"]').append(
-      '<span class="asana-ext-link-arrow">^</span>');
+  $('span[class="asana-ext-link-wrapper"]').append(function() {
+    return'<span class="asana-ext-link-arrow">^</span>';
+  });
+
+  $('span[class="asana-ext-link-arrow"]').click(function() {
+    alert("Clicked arrow");
+  });
 }
 
 

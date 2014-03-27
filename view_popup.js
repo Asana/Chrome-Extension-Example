@@ -1,14 +1,12 @@
 /**
  * Code for the popup UI.
  */
-Popup = {
+Asana.ViewPopup = {
 
   // Options loaded when popup opened.
   options: null,
 
   // Data from API cached for this popup.
-  workspaces: null,
-  users: null,
   user_id: null,
 
   // Typeahead ui element
@@ -18,7 +16,7 @@ Popup = {
     //xcxc
   },
 
-  onLoad: function() {
+  onLoad: function(task_id) {
     var me = this;
 
     // Our default error handler.
@@ -38,12 +36,9 @@ Popup = {
             name: "ChromeExtension-ViewTask-Open"
           });
           //xcxc where do we get task ID?
-          me.showViewUi();
+          me.showTaskView(task_id);
         } else {
-          // The user is not even logged in. Prompt them to do so!
-          me.showLogin(
-              Asana.Options.loginUrl(options),
-              Asana.Options.signupUrl(options));
+          //xcxc show login ui like other popup?
         }
       });
     });
@@ -77,26 +72,31 @@ Popup = {
     });
   },
 
-  showViewUi: function(task_id) {
+  showTaskView: function(task_id) {
     var me = this;
+    me.task = null;
 
-    // Populate workspace selector and select default.
+    me.showView("task");
+
     Asana.ServerModel.me(function(user) {
       me.user_id = user.id;
-      me.showView("task");
+      Asana.ServerModel.task(task_id, function(task) {
+        me.task = task;
+        console.log("Got task", task);
+        $("#name_value").val(task.name);
+        $("#notes_value").html(task.notes);
+      });
     });
-  },
-
-  /**
-   * Show the login page.
-   */
-  showLogin: function(login_url, signup_url) {
-    var me = this;
-    me.showView("login");
   }
 
 };
 
 $(window).load(function() {
-  Popup.onLoad();
+  var query = {};
+  location.search.slice(1).split("&").forEach(function(pair) {
+    var kv = pair.split("=");
+    query[kv[0]] = kv[1];
+  });
+  var task_id = parseInt(query["task"], 10);
+  Asana.ViewPopup.onLoad(task_id);
 });

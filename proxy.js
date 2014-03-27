@@ -13,22 +13,27 @@ Asana.Proxy = {
       if (me.IS_SERVER) {
         return func.apply(this, arguments);
       } else {
-        var args = $A(arguments).slice(0, -1);
+        var args = $A(arguments);
         chrome.runtime.sendMessage({
           type: "call",
           object: object,
           method: method,
-          args: JSON.stringify(args)
+          args: JSON.stringify(args.slice(0, -1))
         }, args.slice(-1)[0]);
       }
     };
   },
 
   call: function(request, callback) {
-    var object = eval(request.object);
+    var object = window;
+    var paths = request.object.split(".");
+    paths.forEach(function(path) {
+      object = object[path];
+    });
     var method = object[request.method];
     var args = JSON.parse(request.args);
     args.push(callback);
+    console.info("Proxy call", object, args, callback);
     method.apply(object, args);
   }
 

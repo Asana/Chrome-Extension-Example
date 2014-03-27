@@ -118,6 +118,20 @@ Asana.ServerModel = {
   },
 
   /**
+   * Requests a task.
+   *
+   * @param callback {Function(task)} Callback on success.
+   *     task {dict}
+   */
+  task: function(task_id, callback, errback) {
+    var self = this;
+    Asana.ApiBridge.request("GET", "/tasks/" + task_id, {},
+        function(response) {
+          self._makeCallback(response, callback, errback);
+        });
+  },
+
+  /**
    * Makes an Asana API request to add a task in the system.
    *
    * @param task {dict} Task fields.

@@ -9,9 +9,12 @@ function hoverUrls() {
       matching_links.push(links[i]);
     }
   }
-  console.log(matching_links.map(function(a) {
-    return a.href;
-  }).join(","));
+
+  matching_links.forEach(function(link) {
+    var arrow = document.createElement("span").appendChild(
+        document.createTextNode("^"));
+    link.appendChild(arrow);
+  });
 }
 
 

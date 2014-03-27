@@ -5,18 +5,21 @@ function hoverUrls() {
     var url = this.href;
     console.info("wrapped: " + url);
     // TODO: url encode
+    // TODO: change position of container inside the wrapper rather than the
+    // wrapper itself to avoid mangling the webpages DOM
     return '<span class="asana-ext-link-wrapper" data="' + url +'"></span>'
   });
 
   $('span[class="asana-ext-link-wrapper"]').each(function(i, wrapper) {
-    var arrow = $(document.createElement("img"));
-    arrow.attr("src", chrome.extension.getURL("icon128.png"));
-    arrow.attr("height", 18);
-    arrow.attr("width", 18);
+    var arrow = $(document.createElement("span"));
+    var arrow_img = $(document.createElement("img"));
+    // TODO: Switch to use same asana logo from sprite
+    arrow_img.attr("src", chrome.extension.getURL("icon128.png"));
+    arrow_img.attr("height", "18px");
+    arrow_img.attr("width", "18px");
+    arrow_img.addClass("asana-ext-link-arrow-img");
+    arrow.append(arrow_img);
     arrow.addClass("asana-ext-link-arrow");
-//    arrow.append('<span class="asana-ext-link-a">a</span>');
-//    arrow.append('<span class="asana-ext-link-ellipsis">&#8942;</span>');
-//    arrow.html("&#8942;");
     arrow.click(function() {
       var url = $(wrapper).attr("data");
       viewTask(taskFromUrl(url), arrow);
@@ -49,8 +52,8 @@ function viewTask(id, arrow) {
   // TODO: be smart about where this appears based on where the element is
   // on the screen at the time. Or maybe it's always in a sidebar.
   view_frame.offset({
-    left: arrow_offset.left + 10,
-    top: arrow_offset.top - 10
+    left: arrow_offset.left,
+    top: arrow_offset.top
   });
   view_frame.css("position", "absolute");
   view_frame.css("width", "480px");

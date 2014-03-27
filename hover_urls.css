@@ -6,6 +6,24 @@
   display: none;
   position: absolute;
   cursor: pointer;
+  right: 100%;
+  bottom: 0;
+
+  height: 49px;
+  width: 49px;
+  background-color: #f2f2f2;
+  border: 1px solid #c0ccd7;
+  box-shadow: 0px 1px 0px 0px white;
+
+  --webkit-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+
+  // TODO: add button style hover effect
+}
+
+.asana-ext-link-wrapper .asana-ext-link-arrow .asana-ext-link-arrow-img {
+  margin-top: 16px;
+  margin-left: 16px;
 }
 
 .asana-ext-link-wrapper .asana-ext-link-arrow:hover {
@@ -15,7 +33,5 @@
 
 
 .asana-ext-link-wrapper:hover .asana-ext-link-arrow {
-  display: block;
-  left: 100%;
-  top: 0;
+  display: inline-block;
 }

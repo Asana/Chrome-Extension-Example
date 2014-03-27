@@ -20,6 +20,7 @@
     "scripts": [
       "jquery-1.7.1.min.js",
       "asana.js",
+      "proxy.js",
       "api_bridge.js",
       "extension_server.js",
       "server_model.js",

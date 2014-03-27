@@ -92,16 +92,6 @@ Popup = {
    */
   showLogin: function(login_url, signup_url) {
     var me = this;
-    $("#login_button").click(function() {
-      chrome.tabs.create({url: login_url});
-      window.close();
-      return false;
-    });
-    $("#signup_button").click(function() {
-      chrome.tabs.create({url: signup_url});
-      window.close();
-      return false;
-    });
     me.showView("login");
   }
 

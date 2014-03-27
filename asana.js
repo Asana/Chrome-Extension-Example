@@ -25,6 +25,9 @@ Asana = {
  * Things borrowed from asana library.
  */
 
+$A = function() {
+  return Array.prototype.concat.apply([], arguments);
+};
 
 Asana.update = function(to, from) {
   for (var k in from) {

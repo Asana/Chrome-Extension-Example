@@ -22,14 +22,6 @@ Asana.ApiBridge = {
   CACHE_TTL_MS: 15 * 60 * 1000,
 
   /**
-   * @type {Boolean} Set to true on the server (background page), which will
-   *     actually make the API requests. Clients will just talk to the API
-   *     through the ExtensionServer.
-   *
-   */
-  is_server: false,
-
-  /**
    * @type {dict} Map from API path to cache entry for recent GET requests.
    *     date {Date} When cache entry was last refreshed
    *     response {*} Cached request.
@@ -65,7 +57,7 @@ Asana.ApiBridge = {
 
     // If we're not the server page, send a message to it to make the
     // API request.
-    if (!me.is_server) {
+    if (!Asana.Proxy.IS_SERVER) {
       console.info("Client API Request", http_method, path, params);
       chrome.runtime.sendMessage({
         type: "api",

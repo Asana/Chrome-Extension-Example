@@ -28,7 +28,6 @@ function hoverUrls() {
         var url = $(wrapper).attr("data");
         viewTask(taskFromUrl(url), arrow);
       }
-      arrow.toggleClass("asana-ext-link-arrow-opened");
     });
     $(wrapper).append(arrow);
   });
@@ -44,6 +43,7 @@ var view = null;
 
 function closeView() {
   if (view !== null) {
+    view.get(0).arrow.toggleClass("asana-ext-link-arrow-opened");
     view.remove();
     view = null;
   }
@@ -52,21 +52,21 @@ function closeView() {
 function viewTask(id, arrow) {
   closeView();
   view = $(document.createElement("DIV"));
-  view.addClass("asana-view-node");
+  view.get(0).arrow = arrow;
+  arrow.toggleClass("asana-ext-link-arrow-opened");
+  view.addClass("asana-ext-view");
   var view_frame = $(document.createElement("IFRAME"));
-  var arrow_offset = arrow.offset();
-  // TODO: be smart about where this appears based on where the element is
-  // on the screen at the time. Or maybe it's always in a sidebar.
-  view_frame.offset({
-    left: arrow_offset.left,
-    top: arrow_offset.top + 49
-  });
-  view_frame.css("position", "absolute");
-  view_frame.css("width", "440px");
-  view_frame.css("height", "500px");
-  view_frame.css("padding", "0px");
-  view_frame.css("border", "0px");
+  view_frame.addClass("asana-ext-view-iframe");
   view_frame.attr("src", chrome.extension.getURL("view_popup.html?task=" + id));
   view.append(view_frame);
+
+  // TODO: be smart about where this appears based on where the element is
+  // on the screen at the time. Or maybe it's always in a sidebar.
+  var arrow_offset = arrow.offset();
+  view.offset({
+    left: arrow_offset.left,
+    top: arrow_offset.top + 22
+  });
+  arrow.parent().append(view);
   $(document.body).append(view);
 }

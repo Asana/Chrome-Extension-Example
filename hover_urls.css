@@ -2,37 +2,52 @@
   position: relative;
 }
 
-.asana-ext-link-wrapper .asana-ext-link-arrow {
+.asana-ext-link-arrow {
   display: none;
   position: absolute;
   cursor: pointer;
   right: 100%;
   bottom: 0;
 
-  height: 49px;
-  width: 49px;
+  height: 22px;
+  width: 22px;
   background-color: #f2f2f2;
   border: 1px solid #c0ccd7;
   box-shadow: 0px 1px 0px 0px white;
 
-  --webkit-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
   border-radius: 3px 3px 3px 3px;
 
   // TODO: add button style hover effect
 }
 
-.asana-ext-link-wrapper .asana-ext-link-arrow .asana-ext-link-arrow-img {
-  margin-top: 16px;
-  margin-left: 16px;
+.asana-ext-link-arrow-img {
+  margin-top: 2px;
+  margin-left: 2px;
 }
 
-.asana-ext-link-wrapper .asana-ext-link-arrow:hover {
+.asana-ext-link-arrow:hover {
   outline: none;
   box-shadow: 0px 0px 5px 1px rgba(#1F8DD6, 0.3);
 }
 
-
 .asana-ext-link-wrapper:hover .asana-ext-link-arrow,
-.asana-ext-link-arrow-opened {
+.asana-ext-link-arrow.asana-ext-link-arrow-opened {
   display: inline-block;
+}
+
+.asana-ext-view {
+  position: absolute;
+  background-color: white;
+  border-radius: 6px;
+  padding: 3px;
+  border: 1px solid #cccccc;
+  box-shadow: 0px 0px 8px 1px rgba(127,127,127, 0.3);
+}
+
+.asana-ext-view-iframe {
+  width: 440px;
+  height: 500px;
+  padding: 0px;
+  border: 0px;
 }

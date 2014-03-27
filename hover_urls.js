@@ -9,9 +9,14 @@ function hoverUrls() {
   });
 
   $('span[class="asana-ext-link-wrapper"]').each(function(i, wrapper) {
-    var arrow = $(document.createElement("span"));
+    var arrow = $(document.createElement("img"));
+    arrow.attr("src", chrome.extension.getURL("icon128.png"));
+    arrow.attr("height", 18);
+    arrow.attr("width", 18);
     arrow.addClass("asana-ext-link-arrow");
-    arrow.html("^");
+//    arrow.append('<span class="asana-ext-link-a">a</span>');
+//    arrow.append('<span class="asana-ext-link-ellipsis">&#8942;</span>');
+//    arrow.html("&#8942;");
     arrow.click(function() {
       var url = $(wrapper).attr("data");
       viewTask(taskFromUrl(url), arrow);

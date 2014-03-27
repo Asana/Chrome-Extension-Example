@@ -1,0 +1,21 @@
+.asana-ext-link-wrapper {
+  position: relative;
+}
+
+.asana-ext-link-wrapper .asana-ext-link-arrow {
+  display: none;
+  position: absolute;
+  cursor: pointer;
+}
+
+.asana-ext-link-wrapper .asana-ext-link-arrow:hover {
+  outline: none;
+  box-shadow: 0px 0px 5px 1px rgba(#1F8DD6, 0.3);
+}
+
+
+.asana-ext-link-wrapper:hover .asana-ext-link-arrow {
+  display: block;
+  left: 100%;
+  top: 0;
+}

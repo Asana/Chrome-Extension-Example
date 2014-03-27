@@ -2,19 +2,29 @@ hoverUrls();
 
 function hoverUrls() {
   $('a[href*="//app.asana.com"]').wrap(function() {
-    return '<span class="asana-ext-link-wrapper"></span>'
+    var url = this.href;
+    console.info("wrapped: " + url);
+    // TODO: url encode
+    return '<span class="asana-ext-link-wrapper" data="' + url +'"></span>'
   });
 
-  $('span[class="asana-ext-link-wrapper"]').append(
-      '<span class="asana-ext-link-arrow">^</span>');
-
-  $('span[class="asana-ext-link-arrow"]').click(
-      function(node) {
-
-      });
+  $('span[class="asana-ext-link-wrapper"]').each(function(i, wrapper) {
+    var arrow = $(document.createElement("span"));
+    arrow.addClass("asana-ext-link-arrow");
+    arrow.html("^");
+    arrow.click(function() {
+      var url = $(wrapper).attr("data");
+      viewTask(taskFromUrl(url));
+    });
+    $(wrapper).append(arrow);
+  });
 }
 
-
+function taskFromUrl(url) {
+  // TODO: make more robust
+  var parts = url.split("/");
+  return parseInt(parts.slice(-1)[0], 10);
+}
 
 var view_node = null;
 
@@ -35,4 +45,4 @@ function viewTask(id) {
   document.body.appendChild(view_node);
 }
 
-viewTask(11231435051899);
+//viewTask(11231435051899);

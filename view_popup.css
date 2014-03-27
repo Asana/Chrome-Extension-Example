@@ -1,0 +1,199 @@
+/* Styles for popup.html */
+
+/* Popup-specific layout */
+
+body {
+  overflow: hidden;
+  /* Also affects Asana.POPUP_UI_WIDTH and Asana.POPUP_UI_HEIGHT */
+  width: 410px;
+  height: 310px;  /* keep this correct for the window-based (non-button) version */
+  padding: 0px;
+  margin: 0px;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
+}
+
+a, input, textarea {
+  outline: none;
+}
+
+.sprite {
+  background-image: url('./sprite.png');
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .sprite {
+    background-image: url('./sprite-retina.png');
+    background-size: 250px 75px;
+  }
+}
+
+.left-column {
+  display: inline-block;
+  margin-left: 12px;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+.middle-column {
+  display: inline-block;
+  width: 304px;
+  padding: 0 8px 0 8px;
+  vertical-align: middle;
+}
+.right-column {
+  display: inline-block;
+  margin-right: 8px;
+  margin-left: 4px;
+  width: 32px;
+  height: 32px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.left-column .sprite {
+  margin-top: 3px;
+  height: 18px;
+  width: 24px;
+}
+
+/* Popup areas */
+
+.notes-row .left-column, .notes-row .middle-column, .notes-row .right-column,
+.assignee-row .left-column, .assignee-row .middle-column, .assignee-row .right-column {
+  vertical-align: top;
+}
+
+.icon-checkbox {
+  background-position: -25px 0px;
+}
+
+.sprite.icon-notes {
+  margin-top: 5px;
+  background-position: -50px 0px;
+}
+
+.sprite.icon-assignee {
+  margin-top: 6px;
+  background-position: -75px 0px;
+}
+
+.name-row {
+  padding-top: 11px;
+  padding-bottom: 12px;
+}
+
+.name-row .left-column .sprite { margin-top: 2px; }
+
+#name_input, #notes_input, #assignee, #assignee_input {
+  width: 100%;
+}
+
+.name-row #name_input {
+  font-size: 20px;
+}
+
+.notes-row {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 4px;
+}
+
+.assignee-row {
+  padding-top: 8px;
+}
+
+.notes-row #notes_input {
+  resize: none;
+  height: 96px;
+}
+
+
+#assignee {
+  font-weight: 600;
+}
+
+#assignee .user-photo-frame {
+  margin: -5px 7px -5px 0px;
+}
+
+#assignee .unassigned {
+  color: #a9a9a9;
+  font-weight: normal;
+}
+
+.user {
+  line-height: 34px;
+  font-size: 12px;
+  font-weight: 600;
+  padding-left: 54px;
+  cursor: pointer;
+}
+
+.user.selected {
+  background-color: #1F8DD6;
+  color: white;
+}
+
+.user-photo-frame {
+  height: 27px;
+  width: 27px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 7px;
+}
+.user-photo {
+  height: 27px;
+  width: 27px;
+  background-size: 27px 27px;
+  background-repeat: no-repeat;
+  border-radius: 2px;
+}
+.user-name {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#assignee_list_container {
+  /* Also affects Asana.POPUP_EXPANDED_UI_HEIGHT */
+  height: 121px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  border-bottom: 1px solid #e5e5e5;
+  margin-top: 8px;
+}
+
+.icon-success, .icon-error {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 3px;
+}
+
+.icon-success { background-position: -100px 0px; }
+.icon-error { background-position: -125px 0px; margin-right: 7px; }
+
+input, textarea, #assignee {
+  color: #212F40;
+  padding: 6px 5px;
+  border: 1px solid transparent;
+  -webkit-border-radius: 3px;
+  font-size: 14px;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
+  color: #212F40;
+  margin: 0;
+}
+
+input:hover, textarea:hover, #assignee:hover {
+  border: 1px solid #cccccc;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
+}
+
+input:focus, textarea:focus {
+  border: 1px solid #74C1ED;
+  box-shadow: 0px 0px 5px 1px rgba(31, 141, 214, 0.3);
+}

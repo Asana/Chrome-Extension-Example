@@ -14,7 +14,7 @@ function hoverUrls() {
     arrow.html("^");
     arrow.click(function() {
       var url = $(wrapper).attr("data");
-      viewTask(taskFromUrl(url));
+      viewTask(taskFromUrl(url), arrow);
     });
     $(wrapper).append(arrow);
   });
@@ -26,21 +26,31 @@ function taskFromUrl(url) {
   return parseInt(parts.slice(-1)[0], 10);
 }
 
-var view_node = null;
+var view = null;
 
 function closeView() {
-  if (view_node !== null) {
-    view_node.parentNode.removeChild(view_node);
-    view_node = null;
+  if (view !== null) {
+    view.remove();
+    view = null;
   }
 }
 
-function viewTask(id) {
+function viewTask(id, arrow) {
   closeView();
-  view_node = document.createElement("DIV");
-  view_node.className = "asana-view-node";
-  var view_frame = document.createElement("IFRAME");
-  view_frame.src = chrome.extension.getURL("view_popup.html?task=" + id);
-  view_node.appendChild(view_frame);
-  document.body.appendChild(view_node);
+  view = $(document.createElement("DIV"));
+  view.addClass("asana-view-node");
+  var view_frame = $(document.createElement("IFRAME"));
+  var arrow_offset = arrow.offset();
+  // TODO: be smart about where this appears based on where the element is
+  // on the screen at the time. Or maybe it's always in a sidebar.
+  view_frame.offset({
+    left: arrow_offset.left + 10,
+    top: arrow_offset.top - 10
+  });
+  view_frame.css("position", "absolute");
+  view_frame.css("width", "480px");
+  view_frame.css("height", "500px");
+  view_frame.attr("src", chrome.extension.getURL("view_popup.html?task=" + id));
+  view.append(view_frame);
+  $(document.body).append(view);
 }

@@ -57,7 +57,7 @@
         "<all_urls>"
       ],
       "exclude_matches": [
-        "*://*.asana.com/*"
+        "*://*.app.asana.com/*"
       ],
       "js": ["hover_urls.js"]
     }

@@ -123,12 +123,13 @@ Asana.ServerModel = {
    * @param callback {Function(task)} Callback on success.
    *     task {dict}
    */
-  task: function(task_id, callback, errback) {
+  task: function(task_id, callback, errback, options) {
     var self = this;
-    Asana.ApiBridge.request("GET", "/tasks/" + task_id, {},
+    Asana.ApiBridge.request("GET", "/tasks/" + task_id, options || {},
         function(response) {
           self._makeCallback(response, callback, errback);
-        });
+        },
+        { miss_cache: true });
   },
 
   /**

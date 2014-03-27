@@ -86,11 +86,17 @@ Asana.ViewPopup = {
         // xcxc escape these
         $("#name_value").html(task.name);
         $("#notes_value").html(task.notes);
-        Asana.ServerModel.users(task.workspace.id, function(users) {
-          me.typeahead.updateUsers(users);
-          me.typeahead.setSelectedUserId(task.assignee ? task.assignee.id : null);
-        });
-      });
+
+        var assignee = task.assignee;
+        if (assignee) {
+          if (assignee.photo) {
+            $("#assignee_value").append(UserTypeahead.photoForUser(assignee));
+          }
+          $("#assignee_value").append($('<div class="user-name">').text(assignee.name));
+        } else {
+          $("#assignee_value").append($('<span class="unassigned">').text("Unassigned"));
+        }
+      }, undefined, { opt_expand: "assignee" });
     });
   }
 

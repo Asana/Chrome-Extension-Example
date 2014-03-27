@@ -47,7 +47,9 @@
 
 .asana-ext-view-iframe {
   width: 440px;
-  height: 500px;
+  height: 60px;
   padding: 0px;
   border: 0px;
+  transition: height 300ms ease-out;
+  -webkit-transition: height 300ms ease-out;
 }

@@ -143,3 +143,43 @@ textarea::-webkit-scrollbar-thumb {
 textarea::-webkit-scrollbar-thumb:hover {
   background: rgba(116, 193, 237, 0.5);
 }
+
+.loader-dot {
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #cccccc;
+  border: none;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  opacity: .1;
+  border-radius: 9px;
+  box-shadow: inset 0px 1px 1px 0px rgba(0,0,0,.2);
+
+  -webkit-animation: loader-dot linear 1.5s 0 infinite;
+  animation: loader-dot linear 1.5s 0 infinite;
+}
+
+.loader-dot1 { animation-delay: 0s; }
+.loader-dot2 { animation-delay: .2s; }
+.loader-dot3 { animation-delay: .4s; margin-right: 0px; }
+
+
+@-webkit-keyframes loader-dot {
+  0% {opacity: .1;}
+  40% {opacity: 1;}
+  60% {opacity: 1;}
+  100% {opacity: .1;}
+}
+@-moz-keyframes loader-dot {
+  0% {opacity: .1;}
+  40% {opacity: 1;}
+  60% {opacity: 1;}
+  100% {opacity: .1;}
+}
+@keyframes loader-dot {
+  0% {opacity: .1;}
+  40% {opacity: 1;}
+  60% {opacity: 1;}
+  100% {opacity: .1;}
+}

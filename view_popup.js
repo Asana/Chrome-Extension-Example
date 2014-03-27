@@ -13,11 +13,13 @@ Asana.ViewPopup = {
   typeahead: null,
 
   close: function() {
-    //xcxc
+    window.parent.postMessage({ type: "asana_task_view.close" }, "*");
   },
 
-  onLoad: function(task_id) {
+  open: function(task_id) {
     var me = this;
+
+    me.showView("loading");
 
     // Our default error handler.
     Asana.ServerModel.onError = function(response) {
@@ -58,7 +60,7 @@ Asana.ViewPopup = {
     });
 
     // Close if the X is clicked.
-    $(".close-x").click(function() {
+    $("#close_popup").click(function() {
       me.close();
     });
 
@@ -66,8 +68,16 @@ Asana.ViewPopup = {
     me.typeahead = new UserTypeahead("assignee");
   },
 
+  onLoaded: function() {
+    var height = $(document.body).height();
+    window.parent.postMessage({
+      type: "asana_task_view.resize",
+      height: height
+    }, "*");
+  },
+
   showView: function(name) {
-    ["login", "task"].forEach(function(view_name) {
+    ["loading", "task"].forEach(function(view_name) {
       $("#" + view_name + "_view").css("display", view_name === name ? "" : "none");
     });
   },
@@ -75,8 +85,6 @@ Asana.ViewPopup = {
   showTaskView: function(task_id) {
     var me = this;
     me.task = null;
-
-    me.showView("task");
 
     Asana.ServerModel.me(function(user) {
       me.user_id = user.id;
@@ -99,7 +107,10 @@ Asana.ViewPopup = {
           $("#assignee_value").append($('<div class="user-name">').text(assignee.name));
         } else {
           $("#assignee_value").append($('<span class="unassigned">').text("Unassigned"));
+          $("#assignee_photo").append($('<span class="icon-assignee sprite"></span>'));
         }
+        me.showView("task");
+        me.onLoaded();
       }, undefined, { opt_expand: "assignee" });
     });
   }
@@ -113,5 +124,5 @@ $(window).load(function() {
     query[kv[0]] = kv[1];
   });
   var task_id = parseInt(query["task"], 10);
-  Asana.ViewPopup.onLoad(task_id);
+  Asana.ViewPopup.open(task_id);
 });

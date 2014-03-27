@@ -19,7 +19,13 @@
 
 <body>
 
-<div id="task_view">
+<div id="loading_view">
+  <div class="loader-dot loader-dot1"></div>
+  <div class="loader-dot loader-dot2"></div>
+  <div class="loader-dot loader-dot3"></div>
+</div>
+
+<div id="task_view" style="display:none">
   <div class="name-row">
     <div class="left-column">
       <span class="icon-checkbox sprite"></span>
@@ -28,6 +34,7 @@
       <div id="name_value"></div>
     </div>
     <div class="right-column">
+      <a id="close_popup" class="sprite close-x" tabindex="-1"></a>
     </div>
   </div>
   <div class="notes-row">

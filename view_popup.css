@@ -6,7 +6,6 @@ body {
   overflow: hidden;
   /* Also affects Asana.POPUP_UI_WIDTH and Asana.POPUP_UI_HEIGHT */
   width: 440px;
-  height: 500px;  /* keep this correct for the window-based (non-button) version */
   padding: 0px;
   margin: 0px;
   background-color: #fff;
@@ -29,6 +28,11 @@ a, input, textarea {
     background-image: url('./sprite-retina.png');
     background-size: 250px 75px;
   }
+}
+
+#loading_view {
+  padding-top: 20px;
+  padding-left: 180px;
 }
 
 .left-column {
@@ -106,8 +110,7 @@ a, input, textarea {
 }
 
 .notes-row #notes_value {
-  resize: none;
-  min-height: 96px;
+  min-height: 24px;
 }
 
 

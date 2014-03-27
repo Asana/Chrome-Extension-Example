@@ -70,3 +70,15 @@ function viewTask(id, arrow) {
   arrow.parent().append(view);
   $(document.body).append(view);
 }
+
+window.addEventListener("message", function(event) {
+  if (typeof(event.data) !== "object" || view === null) {
+    return;
+  }
+  if (event.data.type === "asana_task_view.close") {
+    closeView();
+  } else if (event.data.type === "asana_task_view.resize") {
+    console.log("adjusting height to " + event.data.height);
+    $(".asana-ext-view-iframe").css("height", event.data.height + "px");
+  }
+});

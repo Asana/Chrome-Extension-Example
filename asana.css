@@ -1,0 +1,145 @@
+/* Common widgets, from Asana app */
+
+.close-x {
+  display: block;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 8px 0px 0px -4px;
+  background-position: -175px 0px;
+}
+.close-x:hover {
+  background-position: -175px -25px;
+}
+
+.dropdown-arrow {
+  background-position: -150px 0px;
+  width: 16px;
+  height: 16px;
+  margin: 5px auto;
+}
+
+.dropdown-arrow:hover, #workspace_select:hover ~ .button .dropdown-arrow {
+  background-position: -150px -25px;
+}
+
+.dropdown-arrow:hover, #workspace_select:focus ~ .button .dropdown-arrow {
+  background-position: -150px -25px;
+}
+
+.button {
+  border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  box-shadow: inset 0px -1px rgba(0,0,0,0.12);
+  -webkit-box-shadow: inset 0px -1px rgba(0,0,0,0.12);
+  display:inline-block;
+  padding: 4px 10px 5px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  text-align: center;
+}
+.button .button-text {
+  display: inline-block;
+}
+
+.default-button {
+  color: #596573;
+  text-shadow: 0px 1px white;
+  border: 1px solid #C0CCD7;
+  background-color: #F2F2F2;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(white), color-stop(10%, #F2F2F2));
+}
+.default-button:hover {
+  background-color: #F2F2F2;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(white), color-stop(100%, #CED7E0));
+  border: 1px solid #C0CCD7;
+}
+.default-button:hover .button-text {
+  color: #596573;
+  text-shadow: 0px 1px white;
+}
+.default-button:focus {
+  box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  -webkit-box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  outline: none;
+}
+
+.primary-button {
+  color: white;
+  text-shadow: 0px -1px #114D97;
+  border: 1px solid #114D97;
+  background-color: #1F8DD6;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#74C1ED), color-stop(10%, #1F8DD6));
+}
+.primary-button:hover {
+  background-color: #1F8DD6;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#74C1ED), color-stop(100%, #1F8DD6));
+  border: 1px solid #114D97;
+}
+.primary-button:hover .button-text {
+  color: white;
+  text-shadow: 0px -1px #114D97;
+}
+.primary-button:focus {
+  box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  -webkit-box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  outline: none;
+}
+
+.primary-button.disabled, .primary-button.disabled:hover {
+  background: #F2F2F2;
+  border-color: #CCCCCC;
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.primary-button.disabled .button-text, .primary-button.disabled:hover .button-text {
+  color: #999999;
+  text-shadow: none;
+}
+
+.big-button {
+  padding: 10px 20px;
+  border-radius: 6px;
+}
+
+.big-button .button-text {
+  font-size: 18px;
+}
+
+a:link, a:visited {
+  color: #1F8DD6;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+::-webkit-scrollbar{
+  width: 14px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.05);
+  box-shadow: inset 0px -1px rgba(0,0,0,.12);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0, .08);
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(0,0,0, .05);
+}
+
+textarea::-webkit-scrollbar {
+  width: 7px;
+  background: #E5F1FF;
+}
+textarea::-webkit-scrollbar-thumb {
+  background: rgba(116, 193, 237, 0.3);
+}
+textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(116, 193, 237, 0.5);
+}

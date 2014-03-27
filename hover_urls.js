@@ -21,8 +21,14 @@ function hoverUrls() {
     arrow.append(arrow_img);
     arrow.addClass("asana-ext-link-arrow");
     arrow.click(function() {
-      var url = $(wrapper).attr("data");
-      viewTask(taskFromUrl(url), arrow);
+      var opened_class = "asana-ext-link-arrow-opened";
+      if (arrow.hasClass(opened_class)) {
+        closeView();
+      } else {
+        var url = $(wrapper).attr("data");
+        viewTask(taskFromUrl(url), arrow);
+      }
+      arrow.toggleClass("asana-ext-link-arrow-opened");
     });
     $(wrapper).append(arrow);
   });
@@ -53,7 +59,7 @@ function viewTask(id, arrow) {
   // on the screen at the time. Or maybe it's always in a sidebar.
   view_frame.offset({
     left: arrow_offset.left,
-    top: arrow_offset.top
+    top: arrow_offset.top + 49
   });
   view_frame.css("position", "absolute");
   view_frame.css("width", "480px");

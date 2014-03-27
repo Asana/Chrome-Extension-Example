@@ -32,6 +32,7 @@
 }
 
 
-.asana-ext-link-wrapper:hover .asana-ext-link-arrow {
+.asana-ext-link-wrapper:hover .asana-ext-link-arrow,
+.asana-ext-link-arrow-opened {
   display: inline-block;
 }

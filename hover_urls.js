@@ -62,8 +62,10 @@ function viewTask(id, arrow) {
     top: arrow_offset.top + 49
   });
   view_frame.css("position", "absolute");
-  view_frame.css("width", "480px");
+  view_frame.css("width", "440px");
   view_frame.css("height", "500px");
+  view_frame.css("padding", "0px");
+  view_frame.css("border", "0px");
   view_frame.attr("src", chrome.extension.getURL("view_popup.html?task=" + id));
   view.append(view_frame);
   $(document.body).append(view);

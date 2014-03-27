@@ -5,8 +5,8 @@
 body {
   overflow: hidden;
   /* Also affects Asana.POPUP_UI_WIDTH and Asana.POPUP_UI_HEIGHT */
-  width: 410px;
-  height: 310px;  /* keep this correct for the window-based (non-button) version */
+  width: 440px;
+  height: 500px;  /* keep this correct for the window-based (non-button) version */
   padding: 0px;
   margin: 0px;
   background-color: #fff;
@@ -40,7 +40,7 @@ a, input, textarea {
 }
 .middle-column {
   display: inline-block;
-  width: 304px;
+  width: 334px;
   padding: 0 8px 0 8px;
   vertical-align: middle;
 }

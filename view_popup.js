@@ -85,12 +85,16 @@ Asana.ViewPopup = {
         console.log("Got task", task);
         // xcxc escape these
         $("#name_value").html(task.name);
-        $("#notes_value").html(task.notes);
+        $("#notes_value").html(task.notes.replace(/\n/g, "<br/>"));
 
+        $("#assignee_value").empty();
+        $("#assignee_photo").empty();
         var assignee = task.assignee;
         if (assignee) {
           if (assignee.photo) {
-            $("#assignee_value").append(UserTypeahead.photoForUser(assignee));
+            $("#assignee_photo").append(UserTypeahead.photoForUser(assignee));
+          } else {
+            $("#assignee_photo").append($('<span class="icon-assignee sprite"></span>'));
           }
           $("#assignee_value").append($('<div class="user-name">').text(assignee.name));
         } else {

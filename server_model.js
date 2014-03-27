@@ -49,14 +49,14 @@ Asana.ServerModel = {
    * @param callback {Function(is_logged_in)} Called when request complete.
    *     is_logged_in {Boolean} True iff the user is logged in to Asana.
    */
-  isLoggedIn: function(callback) {
+  isLoggedIn: Asana.Proxy.method("Asana.ServerModel", "isLoggedIn", function(callback) {
     chrome.cookies.get({
       url: Asana.ApiBridge.baseApiUrl(),
       name: 'ticket'
     }, function(cookie) {
       callback(!!(cookie && cookie.value));
     });
-  },
+  }),
 
   /**
    * Get the URL of a task given some of its data.

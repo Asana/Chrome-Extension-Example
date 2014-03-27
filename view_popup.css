@@ -88,11 +88,11 @@ a, input, textarea {
 
 .name-row .left-column .sprite { margin-top: 2px; }
 
-#name_input, #notes_input, #assignee, #assignee_input {
+#name_value, #notes_value, #assignee, #assignee_input {
   width: 100%;
 }
 
-.name-row #name_input {
+.name-row #name_value {
   font-size: 20px;
 }
 
@@ -105,9 +105,9 @@ a, input, textarea {
   padding-top: 8px;
 }
 
-.notes-row #notes_input {
+.notes-row #notes_value {
   resize: none;
-  height: 96px;
+  min-height: 96px;
 }
 
 

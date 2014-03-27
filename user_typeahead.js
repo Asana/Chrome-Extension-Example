@@ -14,6 +14,7 @@
  *       typeahead.
  *
  * @param id {String} Base ID of the typeahead element.
+ * @param user_id {Integer} ID of the logged-in user
  * @constructor
  */
 UserTypeahead = function(id) {
@@ -25,12 +26,15 @@ UserTypeahead = function(id) {
   me.selected_user_id = null;
   me.user_id_to_select = null;
   me.has_focus = false;
+  me.user_id = null;
 
   // Store off UI elements.
   me.input = $("#" + id + "_input");
   me.label = $("#" + id);
   me.list = $("#" + id + "_list");
   me.list_container = $("#" + id + "_list_container");
+
+  me.onReassigned = null;
 
   // Open on focus.
   me.input.focus(function() {
@@ -55,13 +59,8 @@ UserTypeahead = function(id) {
   me.input.blur(function() {
     me.selected_user_id = me.user_id_to_select;
     me.has_focus = false;
-    if (!Popup.has_reassigned) {
-      Popup.has_reassigned = true;
-      Asana.ServerModel.logEvent({
-        name: (me.selected_user_id === Popup.user_id || me.selected_user_id === null) ?
-            "ChromeExtension-AssignToSelf" :
-            "ChromeExtension-AssignToOther"
-      });
+    if (me.onReassigned !== null) {
+      me.onReassigned();
     }
     me.render();
   });
@@ -172,7 +171,7 @@ Asana.update(UserTypeahead.prototype, {
     var users_without_this_user = [];
     me.user_id_to_user = {};
     users.forEach(function(user) {
-      if (user.id === Popup.user_id) {
+      if (user.id === me.user_id) {
         this_user = user;
       } else {
         users_without_this_user.push(user);

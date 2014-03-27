@@ -83,8 +83,13 @@ Asana.ViewPopup = {
       Asana.ServerModel.task(task_id, function(task) {
         me.task = task;
         console.log("Got task", task);
-        $("#name_value").val(task.name);
+        // xcxc escape these
+        $("#name_value").html(task.name);
         $("#notes_value").html(task.notes);
+        Asana.ServerModel.users(task.workspace.id, function(users) {
+          me.typeahead.updateUsers(users);
+          me.typeahead.setSelectedUserId(task.assignee ? task.assignee.id : null);
+        });
       });
     });
   }

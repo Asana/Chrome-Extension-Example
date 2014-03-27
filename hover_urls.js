@@ -44,5 +44,3 @@ function viewTask(id) {
   view_node.appendChild(view_frame);
   document.body.appendChild(view_node);
 }
-
-//viewTask(11231435051899);

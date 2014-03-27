@@ -35,4 +35,4 @@ function viewTask(id) {
   document.body.appendChild(view_node);
 }
 
-//  viewTask(11231435051899);
+viewTask(11231435051899);

@@ -85,12 +85,22 @@ a, input, textarea {
   background-position: -75px 0px;
 }
 
+.sprite.close-x {
+  margin-top: 4px;
+}
+
 .name-row {
   padding-top: 11px;
   padding-bottom: 12px;
 }
 
 .name-row .left-column .sprite { margin-top: 2px; }
+
+.name-row .left-column,
+.name-row .middle-column,
+.name-row .right-column {
+  vertical-align: top;
+}
 
 #name_value, #notes_value, #assignee, #assignee_input {
   width: 100%;

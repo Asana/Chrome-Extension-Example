@@ -45,5 +45,17 @@
         "default": "Alt+Shift+A"
       }
     }
-  }
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "exclude_matches": [
+        "*://*.asana.com/*"
+      ],
+      "js": ["hover_urls.js"]
+    }
+  ]
 }

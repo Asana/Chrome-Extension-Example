@@ -60,7 +60,10 @@
       "exclude_matches": [
         "*://*.app.asana.com/*"
       ],
-      "js": ["hover_urls.js"]
+      "js": [
+        "jquery-1.7.1.min.js",
+        "hover_urls.js"
+      ]
     }
   ]
 }

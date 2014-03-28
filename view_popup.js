@@ -109,6 +109,15 @@ Asana.ViewPopup = {
           $("#assignee_value").append($('<span class="unassigned">').text("Unassigned"));
           $("#assignee_photo").append($('<span class="icon-assignee sprite"></span>'));
         }
+        
+        var completed_at = task.completed_at;
+        if (completed_at !== null) {
+          $("#completion_value").addClass("complete");
+          $("#completion_value").text("Completed at: " + task.completed_at);
+        } else {
+          $("#completion_value").addClass("incomplete");
+          $("#completion_value").text("Incomplete")
+        }
         me.showView("task");
         me.onLoaded();
       }, undefined, { opt_expand: "assignee" });

@@ -137,6 +137,14 @@ a, input, textarea {
   font-weight: normal;
 }
 
+#completion_value.complete {
+  color: #34AD00;
+}
+
+#completion_value.incomplete {
+  color: #F22659;
+}
+
 .user {
   line-height: 34px;
   font-size: 12px;

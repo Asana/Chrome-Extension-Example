@@ -221,7 +221,8 @@ a, input, textarea {
 }
 
 .notes-row .left-column, .notes-row .middle-column, .notes-row .right-column,
-.assignee-row .left-column, .assignee-row .middle-column, .assignee-row .right-column {
+.assignee-row .left-column, .assignee-row .middle-column, .assignee-row .right-column,
+.project .left-column, .project-row .middle-column, .project-row .right-column {
   vertical-align: top;
 }
 
@@ -293,7 +294,7 @@ a, input, textarea {
 
 .name-row .left-column .sprite { margin-top: 2px; }
 
-#name_input, #notes_input, #assignee, #assignee_input {
+#name_input, #notes_input, #assignee, #assignee_input, #project, #project_input {
   width: 100%;
 }
 
@@ -306,7 +307,7 @@ a, input, textarea {
   padding-bottom: 4px;
 }
 
-.assignee-row {
+.assignee-row, .project-row {
   padding-top: 8px;
 }
 
@@ -364,20 +365,20 @@ a, input, textarea {
   left: 3px;
 }
 
-#assignee {
+#assignee, #project {
   font-weight: 600;
 }
 
-#assignee .user-photo-frame {
+#assignee .user-photo-frame, #assignee .item-photo-frame {
   margin: -5px 7px -5px 0px;
 }
 
-#assignee .unassigned {
+#assignee .unassigned, #project .unassigned {
   color: #a9a9a9;
   font-weight: normal;
 }
 
-.user {
+.user, .item {
   line-height: 34px;
   font-size: 12px;
   font-weight: 600;
@@ -385,32 +386,32 @@ a, input, textarea {
   cursor: pointer;
 }
 
-.user.selected {
+.user.selected, .item.selected {
   background-color: #1F8DD6;
   color: white;
 }
 
-.user-photo-frame {
+.user-photo-frame, .item-photo-frame {
   height: 27px;
   width: 27px;
   display: inline-block;
   vertical-align: middle;
   margin-right: 7px;
 }
-.user-photo {
+.user-photo, .item-photo {
   height: 27px;
   width: 27px;
   background-size: 27px 27px;
   background-repeat: no-repeat;
   border-radius: 2px;
 }
-.user-name {
+.user-name, .item-name {
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-#assignee_list_container {
+#assignee_list_container, #project_list_container {
   /* Also affects Asana.POPUP_EXPANDED_UI_HEIGHT */
   height: 121px;
   overflow-x: hidden;
@@ -477,7 +478,7 @@ a, input, textarea {
 .icon-success { background-position: -100px 0px; }
 .icon-error { background-position: -125px 0px; margin-right: 7px; }
 
-input, textarea, #assignee {
+input, textarea, #assignee, #project {
   color: #212F40;
   padding: 6px 5px;
   border: 1px solid transparent;
@@ -488,7 +489,7 @@ input, textarea, #assignee {
   margin: 0;
 }
 
-input:hover, textarea:hover, #assignee:hover {
+input:hover, textarea:hover, #assignee:hover, #project:hover {
   border: 1px solid #cccccc;
   -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
 }

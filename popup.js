@@ -682,7 +682,6 @@ Asana.update(ItemTypeahead.prototype, {
 
   _entryForItem: function(item, is_selected) {
     var me = this;
-    // TODO -> want to update the class/id names
     var node = $('<div id="user_' + item.id + '" class="item"></div>');
     if (item.photo)
     {

@@ -271,6 +271,11 @@ a, input, textarea {
   background-position: -75px 0px;
 }
 
+.sprite.icon-project {
+  margin-top: 6px;
+  background-position: -125px -25px;
+}
+
 #workspace_select_container {
   display: inline-block;
   vertical-align: middle;

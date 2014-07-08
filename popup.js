@@ -786,3 +786,4 @@ Asana.update(ItemTypeahead.prototype, {
 $(window).load(function() {
   Popup.onLoad();
 });
+

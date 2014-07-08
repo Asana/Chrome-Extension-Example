@@ -29,6 +29,7 @@ Popup = {
   
   // Typeahead ui element
   typeahead: null,
+  project_typehead: null,
 
   onLoad: function() {
     var me = this;
@@ -170,8 +171,9 @@ Popup = {
       }
     });
 
-    // Make a typeahead for assignee
-    me.typeahead = new UserTypeahead("assignee");
+    // Make a typeahead for assignee and project
+    me.typeahead = new ItemTypeahead("assignee");
+    me.project_typeahead = new ItemTypeahead("project");
   },
 
   maybeDisablePageDetailsButton: function() {
@@ -292,7 +294,7 @@ Popup = {
   resetFields: function() {
     $("#name_input").val("");
     $("#notes_input").val("");
-    this.typeahead.setSelectedUserId(this.user_id);
+    this.typeahead.setSelectedItemId(this.user_id);
   },
 
   /**
@@ -322,7 +324,13 @@ Popup = {
     // Update assignee list.
     me.setAddEnabled(false);
     Asana.ServerModel.users(workspace_id, function(users) {
-      me.typeahead.updateUsers(users);
+      me.typeahead.updateItems(users);
+
+    });
+
+    // Then update the projects list.
+    Asana.ServerModel.projects(workspace_id, function(project) {
+      me.project_typeahead.updateItems(project);
       me.setAddEnabled(true);
     });
   },
@@ -370,8 +378,12 @@ Popup = {
         {
           name: $("#name_input").val(),
           notes: $("#notes_input").val(),
-          // Default assignee to self
-          assignee: me.typeahead.selected_user_id || me.user_id
+          // Default assignee to self if we can't find another selection.
+          assignee: me.typeahead.selected_item_id || me.user_id,
+          // Default add to self's new tasks.
+          // TODO: better way to handle null case.
+          projects: (me.project_typeahead.selected_item_id ?
+              [me.project_typeahead.selected_item_id] : [])
         },
         function(task) {
           // Success! Show task success, then get ready for another input.
@@ -464,14 +476,14 @@ Popup = {
  * @param id {String} Base ID of the typeahead element.
  * @constructor
  */
-UserTypeahead = function(id) {
+ItemTypeahead = function(id) {
   var me = this;
   me.id = id;
-  me.users = [];
-  me.filtered_users = [];
-  me.user_id_to_user = {};
-  me.selected_user_id = null;
-  me.user_id_to_select = null;
+  me.items = [];
+  me.filtered_items = [];
+  me.item_id_to_item = {};
+  me.selected_item_id = null;
+  me.item_id_to_select = null;
   me.has_focus = false;
 
   // Store off UI elements.
@@ -482,32 +494,32 @@ UserTypeahead = function(id) {
 
   // Open on focus.
   me.input.focus(function() {
-    me.user_id_to_select = me.selected_user_id;
-    if (me.selected_user_id !== null) {
-      // If a user was already selected, fill the field with their name
+    me.item_id_to_select = me.selected_item_id;
+    if (me.selected_item_id !== null) {
+      // If a item was already selected, fill the field with their name
       // and select it all.
-      var assignee_name = me.user_id_to_user[me.selected_user_id].name;
+      var assignee_name = me.item_id_to_item[me.selected_item_id].name;
       me.input.val(assignee_name);
     } else {
       me.input.val("");
     }
     me.has_focus = true;
     Popup.setExpandedUi(true);
-    me._updateFilteredUsers();
+    me._updateFilteredItems();
     me.render();
-    me._ensureSelectedUserVisible();
+    me._ensureSelectedItemVisible();
   });
 
   // Close on blur. A natural blur does not cause us to accept the current
   // selection - there had to be a user action taken that causes us to call
-  // `confirmSelection`, which would have updated user_id_to_select.
+  // `confirmSelection`, which would have updated item_id_to_select.
   me.input.blur(function() {
-    me.selected_user_id = me.user_id_to_select;
+    me.selected_item_id = me.item_id_to_select;
     me.has_focus = false;
     if (!Popup.has_reassigned) {
       Popup.has_reassigned = true;
       Asana.ServerModel.logEvent({
-        name: (me.selected_user_id === Popup.user_id || me.selected_user_id === null) ?
+        name: (me.selected_item_id === Popup.user_id || me.selected_item_id === null) ?
             "ChromeExtension-AssignToSelf" :
             "ChromeExtension-AssignToOther"
       });
@@ -535,28 +547,28 @@ UserTypeahead = function(id) {
       return false;
     } else if (e.which === 40) {
       // Down: select next.
-      var index = me._indexOfSelectedUser();
-      if (index === -1 && me.filtered_users.length > 0) {
-        me.setSelectedUserId(me.filtered_users[0].id);
-      } else if (index >= 0 && index < me.filtered_users.length) {
-        me.setSelectedUserId(me.filtered_users[index + 1].id);
+      var index = me._indexOfSelectedItem();
+      if (index === -1 && me.filtered_items.length > 0) {
+        me.setSelectedItemId(me.filtered_items[0].id);
+      } else if (index >= 0 && index < me.filtered_items.length) {
+        me.setSelectedItemId(me.filtered_items[index + 1].id);
       }
-      me._ensureSelectedUserVisible();
+      me._ensureSelectedItemVisible();
       e.preventDefault();
     } else if (e.which === 38) {
       // Up: select prev.
-      var index = me._indexOfSelectedUser();
+      var index = me._indexOfSelectedItem();
       if (index > 0) {
-        me.setSelectedUserId(me.filtered_users[index - 1].id);
+        me.setSelectedItemId(me.filtered_items[index - 1].id);
       }
-      me._ensureSelectedUserVisible();
+      me._ensureSelectedItemVisible();
       e.preventDefault();
     }
   });
 
   // When the input changes value, update and re-render our filtered list.
   me.input.bind("input", function() {
-    me._updateFilteredUsers();
+    me._updateFilteredItems();
     me._renderList();
   });
 
@@ -570,24 +582,24 @@ UserTypeahead = function(id) {
   me.render();
 };
 
-Asana.update(UserTypeahead, {
+Asana.update(ItemTypeahead, {
 
   SILHOUETTE_URL: "./nopicture.png",
 
   /**
-   * @param user {dict}
+   * @param item {dict}
    * @returns {jQuery} photo element
    */
-  photoForUser: function(user) {
-    var photo = $('<div class="user-photo"></div>"');
-    var url = user.photo ? user.photo.image_60x60 : UserTypeahead.SILHOUETTE_URL;
+  photoForItem: function(item) {
+    var photo = $('<div class="item-photo"></div>"');
+    var url = item.photo ? item.photo.image_60x60 : ItemTypeahead.SILHOUETTE_URL;
     photo.css("background-image", "url(" + url + ")");
-    return $('<div class="user-photo-frame"></div>').append(photo);
+    return $('<div class="item-photo-frame"></div>').append(photo);
   }
 
 });
 
-Asana.update(UserTypeahead.prototype, {
+Asana.update(ItemTypeahead.prototype, {
 
   /**
    * Render the typeahead, changing elements and content as needed.
@@ -611,80 +623,85 @@ Asana.update(UserTypeahead.prototype, {
   },
 
   /**
-   * Update the set of all (unfiltered) users available in the typeahead.
+   * Update the set of all (unfiltered) items available in the typeahead.
    *
-   * @param users {dict[]}
+   * @param items {dict[]}
    */
-  updateUsers: function(users) {
+  updateItems: function(items) {
     var me = this;
-    // Build a map from user ID to user
-    var this_user = null;
-    var users_without_this_user = [];
-    me.user_id_to_user = {};
-    users.forEach(function(user) {
-      if (user.id === Popup.user_id) {
-        this_user = user;
+    // Build a map from item ID to item
+    var this_item = null;
+    var items_without_this_item = [];
+    me.item_id_to_item = {};
+    items.forEach(function(item) {
+      if (item.id === Popup.user_id) {
+        this_item = item;
       } else {
-        users_without_this_user.push(user);
+        items_without_this_item.push(item);
       }
-      me.user_id_to_user[user.id] = user;
+      me.item_id_to_item[item.id] = item;
     });
 
-    // Put current user at the beginning of the list.
-    // We really should have found this user, but if not .. let's not crash.
-    me.users = this_user ?
-        [this_user].concat(users_without_this_user) : users_without_this_user;
+    // Put current item at the beginning of the list.
+    // We really should have found this item, but if not .. let's not crash.
+    me.items = this_item ?
+        [this_item].concat(items_without_this_item) : items_without_this_item;
 
-    // If selected user is not in this workspace, unselect them.
-    if (!(me.selected_user_id in me.user_id_to_user)) {
-      me.selected_user_id = null;
+    // If selected item is not in this workspace, unselect them.
+    if (!(me.selected_item_id in me.item_id_to_item)) {
+      me.selected_item_id = null;
       me.input.val("");
     }
-    me._updateFilteredUsers();
+    me._updateFilteredItems();
     me.render();
   },
 
   _renderLabel: function() {
     var me = this;
     me.label.empty();
-    var selected_user = me.user_id_to_user[me.selected_user_id];
-    if (selected_user) {
-      if (selected_user.photo) {
-        me.label.append(UserTypeahead.photoForUser(selected_user));
+    var selected_item = me.item_id_to_item[me.selected_item_id];
+    if (selected_item) {
+      if (selected_item.photo) {
+        me.label.append(ItemTypeahead.photoForItem(selected_item));
       }
-      me.label.append($('<div class="user-name">').text(selected_user.name));
+      me.label.append($('<div class="item-name">').text(selected_item.name));
     } else {
-      me.label.append($('<span class="unassigned">').text("Assignee"));
+      me.label.append($('<span class="unassigned">').text(
+              me.id.charAt(0).toUpperCase() + me.id.slice(1)
+      ));
     }
   },
 
   _renderList: function() {
     var me = this;
     me.list.empty();
-    me.filtered_users.forEach(function(user) {
-      me.list.append(me._entryForUser(user, user.id === me.selected_user_id));
+    me.filtered_items.forEach(function(item) {
+      me.list.append(me._entryForItem(item, item.id === me.selected_item_id));
     });
   },
 
-  _entryForUser: function(user, is_selected) {
+  _entryForItem: function(item, is_selected) {
     var me = this;
-    var node = $('<div id="user_' + user.id + '" class="user"></div>');
-    node.append(UserTypeahead.photoForUser(user));
-    node.append($('<div class="user-name">').text(user.name));
+    var node = $('<div id="user_' + item.id + '" class="item"></div>');
+    if (item.photo)
+    {
+      node.append(ItemTypeahead.photoForItem(item));
+    }
+    node.append($('<div class="item-name">').text(item.name));
     if (is_selected) {
       node.addClass("selected");
     }
 
     // Select on mouseover.
     node.mouseenter(function() {
-      me.setSelectedUserId(user.id);
+      me.setSelectedItemId(item.id);
     });
 
     // Select and confirm on click. We listen to `mousedown` because a click
-    // will take focus away from the input, hiding the user list and causing
+    // will take focus away from the input, hiding the item list and causing
     // us not to get the ensuing `click` event.
     node.mousedown(function() {
-      me.setSelectedUserId(user.id);
+      me.setSelectedItemId(item.id);
       me._confirmSelection();
     });
     return node;
@@ -715,26 +732,26 @@ Asana.update(UserTypeahead.prototype, {
   },
 
   _confirmSelection: function() {
-    this.user_id_to_select = this.selected_user_id;
+    this.item_id_to_select = this.selected_item_id;
   },
 
-  _updateFilteredUsers: function() {
+  _updateFilteredItems: function() {
     var regexp = this._regexpFromFilterText(this.input.val());
-    this.filtered_users = this.users.filter(function(user) {
+    this.filtered_items = this.items.filter(function(item) {
       if (regexp !== null) {
-        var parts = user.name.split(regexp);
+        var parts = item.name.split(regexp);
         return parts.length > 1;
       } else {
-        return user.name.trim() !== "";  // no filter
+        return item.name.trim() !== "";  // no filter
       }
     });
   },
 
-  _indexOfSelectedUser: function() {
+  _indexOfSelectedItem: function() {
     var me = this;
-    var selected_user = me.user_id_to_user[me.selected_user_id];
-    if (selected_user) {
-      return me.filtered_users.indexOf(selected_user);
+    var selected_item = me.item_id_to_item[me.selected_item_id];
+    if (selected_item) {
+      return me.filtered_items.indexOf(selected_item);
     } else {
       return -1;
     }
@@ -743,30 +760,30 @@ Asana.update(UserTypeahead.prototype, {
   /**
    * Helper to call this when the selection was changed by something that
    * was not the mouse (which is pointing directly at a visible element),
-   * to ensure the selected user is always visible in the list.
+   * to ensure the selected item is always visible in the list.
    */
-  _ensureSelectedUserVisible: function() {
-    var index = this._indexOfSelectedUser();
+  _ensureSelectedItemVisible: function() {
+    var index = this._indexOfSelectedItem();
     if (index !== -1) {
       var node = this.list.children().get(index);
       Asana.Node.ensureBottomVisible(node);
     }
   },
 
-  setSelectedUserId: function(id) {
-    if (this.selected_user_id !== null) {
-      $("#user_" + this.selected_user_id).removeClass("selected");
+  setSelectedItemId: function(id) {
+    if (this.selected_item_id !== null) {
+      $("#user_" + this.selected_item_id).removeClass("selected");
     }
-    this.selected_user_id = id;
-    if (this.selected_user_id !== null) {
-      $("#user_" + this.selected_user_id).addClass("selected");
+    this.selected_item_id = id;
+    if (this.selected_item_id !== null) {
+      $("#user_" + this.selected_item_id).addClass("selected");
     }
     this._renderLabel();
   }
 
 });
 
-
 $(window).load(function() {
   Popup.onLoad();
 });
+

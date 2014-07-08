@@ -378,9 +378,9 @@ Popup = {
         {
           name: $("#name_input").val(),
           notes: $("#notes_input").val(),
-          // Default assignee to self
-          assignee: me.typeahead.selected_user_id || me.user_id,
-          // Default add to self's new tasks
+          // Default assignee to self if we can't find another selection.
+          assignee: me.typeahead.selected_item_id || me.user_id,
+          // Default add to self's new tasks.
           // TODO: better way to handle null case.
           projects: (me.project_typeahead.selected_item_id ?
               [me.project_typeahead.selected_item_id] : [])

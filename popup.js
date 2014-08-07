@@ -172,6 +172,7 @@ Popup = {
 
     // Make a typeahead for assignee
     me.typeahead = new UserTypeahead("assignee");
+
   },
 
   maybeDisablePageDetailsButton: function() {
@@ -247,6 +248,7 @@ Popup = {
         }
       });
     });
+
   },
 
   /**
@@ -325,6 +327,52 @@ Popup = {
       me.typeahead.updateUsers(users);
       me.setAddEnabled(true);
     });
+
+
+    // Instantiate the Bloodhound suggestion engine
+    var selectana = new Bloodhound({
+      datumTokenizer: function (datum) {
+        return Bloodhound.tokenizers.whitespace(datum.value);
+      },
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+        url: Asana.ApiBridge.baseApiUrl() + '/workspaces/'
+            + me.selectedWorkspaceId()
+            + '/typeahead?type=projects&query=%QUERY',
+        filter: function (results) {
+          return $.map(results.data, function (result) {
+            return {
+              value: result.name,
+              id: result.id
+            };
+          });
+        }
+      },
+      limit: 8,
+      ajax: {
+        beforeSend: function(){ alert("beforeSend callback called!"); },
+        complete: function(){ alert("complete callback called!"); }
+      }
+    });
+
+    // Initialize the Bloodhound suggestion engine
+    selectana.initialize();
+
+    var onSelected = function (eventObject, suggestionObject, suggestionDataset) {
+      console.log("ID: " + suggestionObject.id);
+      console.log("Name: " + suggestionObject.value);
+      $('#project_list').html(suggestionObject.id);
+    };
+
+    // Instantiate the Typeahead UI
+    $('#project_input').typeahead({
+      hint: true,
+      highlight: true
+    }, {
+      displayKey: 'value',
+      source: selectana.ttAdapter()
+    }).on('typeahead:selected', onSelected);
+
   },
 
   /**

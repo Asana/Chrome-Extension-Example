@@ -338,7 +338,7 @@ Popup = {
       remote: {
         url: Asana.ApiBridge.baseApiUrl() + '/workspaces/'
             + me.selectedWorkspaceId()
-            + '/typeahead?type=projects&query=%QUERY',
+            + '/typeahead?type=project&query=%QUERY',
         filter: function (results) {
           return $.map(results.data, function (result) {
             return {
@@ -412,14 +412,16 @@ Popup = {
         name: "ChromeExtension-CreateTask-MultipleTasks"
       });
     }
-
+      console.log("project::"  + $("project_input").val());
     Asana.ServerModel.createTask(
         me.selectedWorkspaceId(),
         {
-          name: $("#name_input").val(),
-          notes: $("#notes_input").val(),
-          // Default assignee to self
-          assignee: me.typeahead.selected_user_id || me.user_id
+            name: $("#name_input").val(),
+            notes: $("#notes_input").val(),
+            // Default assignee to self
+            assignee: me.typeahead.selected_user_id || me.user_id,
+            projects: (($("#project_input").val() !== "") ?
+                [$("#project_list").text()] : [])
         },
         function(task) {
           // Success! Show task success, then get ready for another input.

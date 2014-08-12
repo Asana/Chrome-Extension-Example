@@ -328,7 +328,6 @@ Popup = {
       me.setAddEnabled(true);
     });
 
-
     // Instantiate the Bloodhound suggestion engine
     var selectana = new Bloodhound({
       datumTokenizer: function (datum) {
@@ -412,7 +411,7 @@ Popup = {
         name: "ChromeExtension-CreateTask-MultipleTasks"
       });
     }
-      console.log("project::"  + $("project_input").val());
+
     Asana.ServerModel.createTask(
         me.selectedWorkspaceId(),
         {
@@ -819,4 +818,15 @@ Asana.update(UserTypeahead.prototype, {
 
 $(window).load(function() {
   Popup.onLoad();
+});
+
+// This is a workaround to add a loading indicator for typeahead.js.
+// See https://github.com/twitter/typeahead.js/issues/284
+$(document).ajaxSend(function(event, jqXHR, settings) {
+    // display spinner
+    $("#spinner").removeClass("indicator-hide");
+});
+
+$(document).ajaxComplete(function(event, jqXHR, settings) {
+    $("#spinner").addClass("indicator-hide");
 });

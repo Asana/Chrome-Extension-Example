@@ -207,6 +207,14 @@ a, input, textarea {
   width: 24px;
 }
 
+.right-column .indicator {
+    width: 24px;
+}
+
+.indicator-hide {
+    display: none;
+}
+
 /* Popup areas */
 
 .banner {
@@ -222,7 +230,7 @@ a, input, textarea {
 
 .notes-row .left-column, .notes-row .middle-column, .notes-row .right-column,
 .assignee-row .left-column, .assignee-row .middle-column, .assignee-row .right-column,
-.project .left-column, .project-row .middle-column, .project-row .right-column {
+.project-row .left-column, .project-row .middle-column, .project-row .right-column {
   vertical-align: top;
 }
 
@@ -426,7 +434,7 @@ a, input, textarea {
 }
 
 .footer {
-  padding: 14px 0px;
+  padding: 14px 0;
 }
 
 
@@ -504,32 +512,18 @@ input:focus, textarea:focus {
   box-shadow: 0px 0px 5px 1px rgba(31, 141, 214, 0.3);
 }
 
-/*typeahead css*/
-/*.typeahead, .tt-query, .tt-hint {*/
-  /*border: 2px solid #CCCCCC;*/
-  /*border-radius: 8px 8px 8px 8px;*/
-  /*font-size: 14px;*/
-  /*height: 30px;*/
-  /*line-height: 30px;*/
-  /*outline: medium none;*/
-  /*padding: 8px 12px;*/
-  /*width: 396px;*/
-/*}*/
-/*.typeahead {*/
-  /*background-color: #FFFFFF;*/
-/*}*/
-/*.typeahead:focus {*/
-  /*border: 2px solid #0097CF;*/
-/*}*/
 .twitter-typeahead {
     width: 100%;
 }
+
 .tt-query {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
 }
+
 .tt-hint {
   color: #999999;
 }
+
 .tt-dropdown-menu {
   background-color: #FFFFFF;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -537,18 +531,19 @@ input:focus, textarea:focus {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   margin-top: 12px;
   padding: 8px 0;
-  /*width: 422px;*/
-  /*width: 350px;*/
 }
+
 .tt-suggestion {
   font-size: 12px;
   line-height: 24px;
   padding: 3px 20px;
 }
+
 .tt-suggestion.tt-cursor {
   background-color: #0097CF;
   color: #FFFFFF;
 }
+
 .tt-suggestion p {
   margin: 0;
 }

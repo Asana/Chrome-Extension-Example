@@ -313,7 +313,6 @@ Popup = {
   onWorkspaceChanged: function() {
     var me = this;
     var workspace_id = me.selectedWorkspaceId();
-
     // Update selected workspace
     $("#workspace").html($("#workspace_select option:selected").text());
 
@@ -347,15 +346,20 @@ Popup = {
           });
         }
       },
-      limit: 8,
-      ajax: {
-        beforeSend: function(){ alert("beforeSend callback called!"); },
-        complete: function(){ alert("complete callback called!"); }
-      }
+      limit: 8
     });
 
-    // Initialize the Bloodhound suggestion engine
-    selectana.initialize();
+    var project_input = $('#project_input');
+    // Remove the existing typeahead, we need a new one.
+    project_input.typeahead('destroy');
+    // Clear suggestions and cache when switching workspaces.
+    selectana.clear();
+    selectana.clearRemoteCache();
+    selectana.clearPrefetchCache();
+
+    // Initialize the Bloodhound suggestion engine.
+    // This is a truthy call, which will recreate the engine as if it were the first call.
+    selectana.initialize(true);
 
     var onSelected = function (eventObject, suggestionObject, suggestionDataset) {
       console.log("ID: " + suggestionObject.id);
@@ -364,7 +368,7 @@ Popup = {
     };
 
     // Instantiate the Typeahead UI
-    $('#project_input').typeahead({
+    project_input.typeahead({
       hint: true,
       highlight: true
     }, {

@@ -133,7 +133,8 @@ Asana.ApiBridge = {
         url: url,
         timeout: 30000,   // 30 second timeout
         headers: {
-          "X-Requested-With": "XMLHttpRequest"
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Allow-Asana-Client": "1"
         },
         accept: "application/json",
         success: function(data, status, xhr) {

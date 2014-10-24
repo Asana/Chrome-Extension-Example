@@ -133,6 +133,14 @@ Asana.ApiBridge = {
         url: url,
         timeout: 30000,   // 30 second timeout
         headers: {
+          //********************************************************************
+          // WARNING: If you are using this extension as an example of
+          // connecting to Asana's API, please note that we recommend using the
+          // supported forms of authentication, which can be found at
+          // http://developer.asana.com/documentation/#Authentication
+          // We will be deprecating cookie authentication in the Chrome
+          // Extension in favor of Oauth2
+          //********************************************************************
           "X-Requested-With": "XMLHttpRequest",
           "X-Allow-Asana-Client": "1"
         },

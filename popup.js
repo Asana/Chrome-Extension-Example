@@ -337,6 +337,12 @@ Popup = {
         url: Asana.ApiBridge.baseApiUrl() + '/workspaces/'
             + me.selectedWorkspaceId()
             + '/typeahead?type=project&query=%QUERY',
+        ajax : {
+          beforeSend: function(jqXhr, settings){
+            // WARNING: This will be deprecated, please see api_bridge.js
+            jqXhr.setRequestHeader('X-Allow-Asana-Client', '1');
+          }
+        },
         filter: function (results) {
           return $.map(results.data, function (result) {
             return {
@@ -362,8 +368,6 @@ Popup = {
     selectana.initialize(true);
 
     var onSelected = function (eventObject, suggestionObject, suggestionDataset) {
-      console.log("ID: " + suggestionObject.id);
-      console.log("Name: " + suggestionObject.value);
       $('#project_list').html(suggestionObject.id);
     };
 

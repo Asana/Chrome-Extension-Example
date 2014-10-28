@@ -125,6 +125,13 @@ Asana.ServerModel = {
    */
   createTask: function(workspace_id, task, callback, errback) {
     var self = this;
+
+    // For now, if task isn't provided an assignee, remove that field so we
+    // can proceed with our API call.
+    if (task.assignee === "") {
+      delete task.assignee;
+    }
+
     Asana.ApiBridge.request(
         "POST",
         "/workspaces/" + workspace_id + "/tasks",

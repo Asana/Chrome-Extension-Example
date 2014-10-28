@@ -42,6 +42,7 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
         <a id="close_popup" class="sprite close-x" tabindex="-1"></a>
       </div>
     </div>
+
     <div class="name-row">
       <div class="left-column">
         <span class="icon-checkbox sprite"></span>
@@ -53,6 +54,7 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
         <div id="use_page_details" title="Insert page title and URL"><div class="icon-use-link-arrow sprite"></div><div class="icon-use-link"></div></div>
       </div>
     </div>
+
     <div class="notes-row">
       <div class="left-column">
         <span class="icon-notes sprite"></span>
@@ -62,20 +64,33 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
       </div>
       <div class="right-column"></div>
     </div>
+
+    <!--<div class="assignee-row">-->
+      <!--<div class="left-column">-->
+        <!--<span class="icon-assignee sprite"></span>-->
+      <!--</div>-->
+      <!--<div class="middle-column">-->
+        <!--<input id="assignee_input" placeholder="Assignee" />-->
+        <!--<div id="assignee" tabindex="0"></div>-->
+      <!--</div>-->
+      <!--<div class="right-column"></div>-->
+    <!--</div>-->
+
+    <!--<div id="assignee_list_container">-->
+      <!--<div id="assignee_list"></div>-->
+    <!--</div>-->
+
     <div class="assignee-row">
       <div class="left-column">
         <span class="icon-assignee sprite"></span>
       </div>
       <div class="middle-column">
-        <input id="assignee_input" placeholder="Assignee" />
-        <div id="assignee" tabindex="0"></div>
+        <input id="assignee_input" class="typeahead" placeholder="Assignee" />
       </div>
       <div class="right-column"></div>
     </div>
 
-    <div id="assignee_list_container">
-      <div id="assignee_list"></div>
-    </div>
+    <div id="assignee_list" style="display:none"></div>
 
     <div class="project-row">
       <div class="left-column">
@@ -84,9 +99,7 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
       <div class="middle-column">
         <input id="project_input" class="typeahead" placeholder="Project" />
       </div>
-      <div class="right-column">
-          <span><img src="spinner.gif" id="spinner" class="indicator indicator-hide"></span>
-      </div>
+      <div class="right-column"></div>
     </div>
 
     <div id="project_list" style="display:none"></div>
@@ -105,6 +118,9 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
           <div class="sprite icon-success"></div>
           Added <a id="new_task_link" target="_blank" href=""></a>
         </div>
+      </div>
+      <div class="right-column">
+        <span><img src="spinner.gif" id="spinner" class="indicator indicator-hide"></span>
       </div>
     </div>
   </div>

@@ -35,3 +35,8 @@ To install:
   3. Check the `Developer mode` toggle
   4. Click on `Load Unpacked Extension...`
   5. Select the folder containing the extension
+
+This package uses the following libraries:
+  * jQuery 1.7.1
+  * jQuery UI 1.8.10
+  * Typeahead.JS (https://twitter.github.io/typeahead.js/)

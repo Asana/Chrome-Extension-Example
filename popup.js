@@ -310,38 +310,33 @@ Popup = {
   },
 
   /**
-   * Creates a typeahead.js object with a bloodhound engine that is attached
-   * to the assignee input.
+   * Creates a Bloodhound suggestion engine which consumes typeahead data from a
+   * given endpoint.
+   *
+   * @param typeahead_endpoint {String} The API endpoint to get typeahead results from.
+   * @param filter_function {Function} Function to filter typeahead results into objects, for UI usage.
+   * @returns {Bloodhound} Initialized engine with typeahead endpoint.
+   * @private
    */
-  createUserTypeahead: function() {
+  _createBloodhoundObject: function(typeahead_endpoint, filter_function) {
     var me = this;
     // Instantiate the Bloodhound suggestion engine
+    // Use the typeahead endpoint and filter function
     var selectana = new Bloodhound({
       datumTokenizer: function (datum) {
         return Bloodhound.tokenizers.whitespace(datum.value);
       },
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       remote: {
-        url: Asana.ApiBridge.baseApiUrl() + '/workspaces/'
-          + me.selectedWorkspaceId()
-          + '/typeahead?type=user&query=%QUERY&opt_fields=name,photo.image_21x21',
+        url: Asana.ApiBridge.baseApiUrl() + '/workspaces/' + me.selectedWorkspaceId()
+          + typeahead_endpoint,
         ajax : {
           beforeSend: function(jqXhr, settings){
             // WARNING: This will be deprecated, please see api_bridge.js
             jqXhr.setRequestHeader('X-Allow-Asana-Client', '1');
           }
         },
-        filter: function (results) {
-          return $.map(results.data, function (result) {
-            console.log(result);
-            return {
-              value: result.name,
-              id: result.id,
-              photo_url: result.photo ? result.photo.image_21x21 : me.SILHOUETTE_URL
-
-            };
-          });
-        }
+        filter: filter_function
       },
       limit: 8
     });
@@ -350,21 +345,27 @@ Popup = {
     selectana.clear();
     selectana.clearRemoteCache();
     selectana.clearPrefetchCache();
-    // Initialize the Bloodhound suggestion engine.
-    // This is a truthy call, which will recreate the engine as if it were the first call.
+    // Initialize the Bloodhound suggestion engine. This is truthy, which
+    // will recreate the engine as if it were the first call.
     selectana.initialize(true);
 
-    var assignee_input = $('#assignee_input');
-    // Remove the existing typeahead, we need a new one.
-    assignee_input.typeahead('destroy');
+    return selectana;
+  },
 
-    var onSelected = function (eventObject, suggestionObject, suggestionDataset) {
-      console.log(suggestionObject.photo_url);
-      $('#assignee_list').html(suggestionObject.id);
-    };
+  /**
+   * Instantiates a Typeahead.JS UI object using a Bloodhound object as the
+   * data source.
+   * @param bloodhound_object {Bloodhound} Bloodhound object with typeahead endpoint.
+   * @param input_element {jQuery Object} Element to associate typeahead object.
+   * @param on_selected_function {Function} Function to update UI on selecting result.
+   * @private
+   */
+  _createTypeaheadUi: function(bloodhound_object, input_element, on_selected_function) {
+    // Remove the existing typeahead, we need a new one.
+    input_element.typeahead('destroy');
 
     // Instantiate the Typeahead UI
-    assignee_input.typeahead({
+    input_element.typeahead({
       hint: true,
       highlight: true
     }, {
@@ -372,8 +373,34 @@ Popup = {
         function(item) {
           return item.value;
         },
-      source: selectana.ttAdapter()
-    }).on('typeahead:selected', onSelected);
+      source: bloodhound_object.ttAdapter()
+    }).on('typeahead:selected', on_selected_function);
+  },
+
+  /**
+   * Creates a typeahead.js object with a bloodhound engine that is attached
+   * to the assignee input.
+   */
+  createUserTypeahead: function() {
+    var me = this;
+    var selectana = me._createBloodhoundObject(
+      '/typeahead?type=user&query=%QUERY&opt_fields=name,photo.image_21x21',
+      function (results) {
+        return $.map(results.data, function (result) {
+          return {
+            value: result.name,
+            id: result.id,
+            photo_url: result.photo ? result.photo.image_21x21 : me.SILHOUETTE_URL
+          };
+        });
+      }
+    );
+
+    me._createTypeaheadUi(selectana, $("#assignee_input"),
+      function (eventObject, suggestionObject, suggestionDataset) {
+        $('#assignee_list').html(suggestionObject.id);
+      }
+    );
   },
 
   /**
@@ -382,58 +409,23 @@ Popup = {
    */
   createProjectTypeahead: function() {
     var me = this;
-    // Instantiate the Bloodhound suggestion engine
-    var selectana = new Bloodhound({
-      datumTokenizer: function (datum) {
-        return Bloodhound.tokenizers.whitespace(datum.value);
-      },
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      remote: {
-        url: Asana.ApiBridge.baseApiUrl() + '/workspaces/'
-          + me.selectedWorkspaceId()
-          + '/typeahead?type=project&query=%QUERY',
-        ajax : {
-          beforeSend: function(jqXhr, settings){
-            // WARNING: This will be deprecated, please see api_bridge.js
-            jqXhr.setRequestHeader('X-Allow-Asana-Client', '1');
-          }
-        },
-        filter: function (results) {
-          return $.map(results.data, function (result) {
-            return {
-              value: result.name,
-              id: result.id
-            };
-          });
-        }
-      },
-      limit: 8
-    });
+    var selectana = me._createBloodhoundObject(
+      '/typeahead?type=project&query=%QUERY',
+      function (results) {
+        return $.map(results.data, function (result) {
+          return {
+            value: result.name,
+            id: result.id
+          };
+        });
+      }
+    );
 
-    // Clear suggestions and cache when switching workspaces.
-    selectana.clear();
-    selectana.clearRemoteCache();
-    selectana.clearPrefetchCache();
-    // Initialize the Bloodhound suggestion engine.
-    // This is a truthy call, which will recreate the engine as if it were the first call.
-    selectana.initialize(true);
-
-    var project_input = $('#project_input');
-    // Remove the existing typeahead, we need a new one.
-    project_input.typeahead('destroy');
-
-    var onSelected = function (eventObject, suggestionObject, suggestionDataset) {
-      $('#project_list').html(suggestionObject.id);
-    };
-
-    // Instantiate the Typeahead UI
-    project_input.typeahead({
-      hint: true,
-      highlight: true
-    }, {
-      displayKey: 'value',
-      source: selectana.ttAdapter()
-    }).on('typeahead:selected', onSelected);
+    me._createTypeaheadUi(selectana, $("#project_input"),
+      function (eventObject, suggestionObject, suggestionDataset) {
+        $('#project_list').html(suggestionObject.id);
+      }
+    );
   },
 
   /**

@@ -7,7 +7,10 @@
  */
 Asana.ServerModel = {
 
-  _cached_user: null,
+  // Make requests to API to refresh cache at this interval.
+  CACHE_REFRESH_INTERVAL_MS: 15 * 60 * 1000,
+
+  _url_to_cached_image: {},
 
   /**
    * Called by the model whenever a request is made and error occurs.
@@ -23,10 +26,21 @@ Asana.ServerModel = {
    * Requests the user's preferences for the extension.
    *
    * @param callback {Function(options)} Callback on completion.
-   *     workspaces {dict[]} See Asana.Options for details.
+   *     options {dict} See Asana.Options for details.
    */
   options: function(callback) {
     callback(Asana.Options.loadOptions());
+  },
+
+  /**
+   * Saves the user's preferences for the extension.
+   *
+   * @param options {dict} See Asana.Options for details.
+   * @param callback {Function()} Callback on completion.
+   */
+  saveOptions: function(options, callback) {
+    Asana.Options.saveOptions(options);
+    callback();
   },
 
   /**
@@ -65,12 +79,12 @@ Asana.ServerModel = {
    * @param callback {Function(workspaces)} Callback on success.
    *     workspaces {dict[]}
    */
-  workspaces: function(callback, errback) {
+  workspaces: function(callback, errback, options) {
     var self = this;
     Asana.ApiBridge.request("GET", "/workspaces", {},
         function(response) {
           self._makeCallback(response, callback, errback);
-        });
+        }, options);
   },
 
   /**
@@ -79,12 +93,14 @@ Asana.ServerModel = {
    * @param callback {Function(users)} Callback on success.
    *     users {dict[]}
    */
-  users: function(workspace_id, callback) {
+  users: function(workspace_id, callback, errback, options) {
     var self = this;
-    Asana.ApiBridge.request("GET", "/workspaces/" + workspace_id + "/users", {},
+    Asana.ApiBridge.request(
+        "GET", "/workspaces/" + workspace_id + "/users",
+        { opt_fields: "name,photo.image_60x60" },
         function(response) {
-          self._makeCallback(response, callback);
-        });
+          self._makeCallback(response, callback, errback);
+        }, options);
   },
 
   /**
@@ -93,19 +109,12 @@ Asana.ServerModel = {
    * @param callback {Function(user)} Callback on success.
    *     user {dict[]}
    */
-  me: function(callback) {
+  me: function(callback, errback, options) {
     var self = this;
-    if (self._cached_user !== null) {
-      callback(self._cached_user);
-    } else {
-      Asana.ApiBridge.request("GET", "/users/me", {},
-          function(response) {
-            if (!response.errors) {
-              self._cached_user = response.data;
-            }
-            self._makeCallback(response, callback);
-          });
-    }
+    Asana.ApiBridge.request("GET", "/users/me", {},
+        function(response) {
+          self._makeCallback(response, callback, errback);
+        }, options);
   },
 
   /**
@@ -125,12 +134,72 @@ Asana.ServerModel = {
         });
   },
 
+  logEvent: function(event) {
+    Asana.ApiBridge.request(
+        "POST",
+        "/logs",
+        event,
+        function(response) {});
+  },
+
   _makeCallback: function(response, callback, errback) {
     if (response.errors) {
       (errback || this.onError).call(null, response);
     } else {
       callback(response.data);
     }
+  },
+
+  _cacheUserPhoto: function(user) {
+    var me = this;
+    if (user.photo) {
+      var url = user.photo.image_60x60;
+      if (!(url in me._url_to_cached_image)) {
+        var image = new Image();
+        image.src = url;
+        me._url_to_cached_image[url] = image;
+      }
+    }
+  },
+
+  /**
+   * Start fetching all the data needed by the extension so it is available
+   * whenever a popup is opened.
+   */
+  startPrimingCache: function() {
+    var me = this;
+    me._cache_refresh_interval = setInterval(function() {
+      me.refreshCache();
+    }, me.CACHE_REFRESH_INTERVAL_MS);
+    me.refreshCache();
+  },
+
+  refreshCache: function() {
+    var me = this;
+    // Fetch logged-in user.
+    me.me(function(user) {
+      if (!user.errors) {
+        // Fetch list of workspaces.
+        me.workspaces(function(workspaces) {
+          if (!workspaces.errors) {
+            var i = 0;
+            // Fetch users in each workspace.
+            var fetchUsers = function() {
+              me.users(workspaces[i].id, function(users) {
+                // Prefetch images too
+                users.forEach(function(user) {
+                  me._cacheUserPhoto(user);
+                });
+                if (++i < workspaces.length) {
+                  fetchUsers();
+                }
+              }, null, { miss_cache: true });
+            };
+            fetchUsers();
+          }
+        }, null, { miss_cache: true })
+      }
+    }, null, { miss_cache: true });
   }
 
 };

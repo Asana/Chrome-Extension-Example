@@ -1,4 +1,13 @@
 <html>
+<!--
+This page is no longer in use.
+
+To enable it, simply add the following line to the top level dict
+in manifest.json:
+
+  "options_page": "options.html",
+
+-->
 <head><title>Asana Options</title>
 <script type="text/javascript" src="asana.js"></script>
 <script type="text/javascript" src="options.js"></script>
@@ -6,8 +15,7 @@
 <script type="text/javascript" src="api_bridge.js"></script>
 <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="jquery-ui-1.8.10.custom.min.js"></script>
-<link rel="stylesheet" href="common.css"/>
-<link rel="stylesheet" href="options_style.css"/>
+<link rel="stylesheet" href="options.css"/>
 <script type="text/javascript" src="options_page.js"></script>
 </head>
 
@@ -19,22 +27,6 @@
   <td id="options">
 
   <table class="form">
-    <tr>
-      <td class="field-name">Default Workspace:</td>
-      <td class="field-value">
-        <div id="domains_group">Loading...</div>
-      </td>
-    </tr>
-    <tr>
-      <td class="field-name"></td>
-      <td class="field-notes">
-        The default workspace where new tasks are added. You can always select
-        a different workspace when you're creating a task.
-      </td>
-    </tr>
-
-    <tr><td colspan="2" class="field-spacer"></td></tr>
-
     <tr>
       <td class="field-name">Asana Host:</td>
       <td class="field-value">

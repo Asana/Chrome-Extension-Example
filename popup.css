@@ -1,0 +1,526 @@
+/* Styles for popup.html */
+
+/* Common widgets, from Asana app */
+
+.close-x {
+  display: block;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 8px 0px 0px -4px;
+  background-position: -175px 0px;
+}
+.close-x:hover {
+  background-position: -175px -25px;
+}
+
+.dropdown-arrow {
+  background-position: -150px 0px;
+  width: 16px;
+  height: 16px;
+  margin: 5px auto;  
+}
+
+.dropdown-arrow:hover, #workspace_select:hover ~ .button .dropdown-arrow {
+  background-position: -150px -25px;
+}
+
+.dropdown-arrow:hover, #workspace_select:focus ~ .button .dropdown-arrow {
+  background-position: -150px -25px;
+}
+
+.button {
+  border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  box-shadow: inset 0px -1px rgba(0,0,0,0.12);
+  -webkit-box-shadow: inset 0px -1px rgba(0,0,0,0.12);
+  display:inline-block;
+  padding: 4px 10px 5px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  text-align: center;
+}
+.button .button-text {
+  display: inline-block;
+}
+
+.default-button {
+  color: #596573;
+  text-shadow: 0px 1px white;
+  border: 1px solid #C0CCD7;
+  background-color: #F2F2F2;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(white), color-stop(10%, #F2F2F2));
+}
+.default-button:hover {
+  background-color: #F2F2F2;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(white), color-stop(100%, #CED7E0));
+  border: 1px solid #C0CCD7;
+}
+.default-button:hover .button-text {
+  color: #596573;
+  text-shadow: 0px 1px white;
+}
+.default-button:focus {
+  box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  -webkit-box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  outline: none;
+}
+
+.primary-button {
+  color: white;
+  text-shadow: 0px -1px #114D97;
+  border: 1px solid #114D97;
+  background-color: #1F8DD6;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#74C1ED), color-stop(10%, #1F8DD6));
+}
+.primary-button:hover {
+  background-color: #1F8DD6;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#74C1ED), color-stop(100%, #1F8DD6));
+  border: 1px solid #114D97;
+}
+.primary-button:hover .button-text {
+  color: white;
+  text-shadow: 0px -1px #114D97;
+}
+.primary-button:focus {
+  box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  -webkit-box-shadow: 0px 0px 6px 3px rgba(31,141,214,0.3);
+  outline: none;
+}
+
+.primary-button.disabled, .primary-button.disabled:hover {
+  background: #F2F2F2;
+  border-color: #CCCCCC;
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.primary-button.disabled .button-text, .primary-button.disabled:hover .button-text {
+  color: #999999;
+  text-shadow: none;
+}
+
+.big-button {
+  padding: 10px 20px;
+  border-radius: 6px;
+}
+
+.big-button .button-text {
+  font-size: 18px;
+}
+
+a:link, a:visited {
+  color: #1F8DD6;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+::-webkit-scrollbar{
+  width: 14px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.05);
+  box-shadow: inset 0px -1px rgba(0,0,0,.12);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0, .08);
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(0,0,0, .05);
+}
+
+textarea::-webkit-scrollbar {
+  width: 7px;
+  background: #E5F1FF;
+}
+textarea::-webkit-scrollbar-thumb {
+  background: rgba(116, 193, 237, 0.3);
+}
+textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(116, 193, 237, 0.5);
+}
+
+
+/* Popup-specific layout */
+
+body {
+  overflow: hidden;
+  /* Also affects Asana.POPUP_UI_WIDTH and Asana.POPUP_UI_HEIGHT */
+  width: 410px;
+  height: 310px;  /* keep this correct for the window-based (non-button) version */
+  padding: 0px;
+  margin: 0px;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
+}
+
+a, input, textarea {
+  outline: none;
+}
+
+.sprite {
+  background-image: url('./sprite.png');
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	.sprite {
+    background-image: url('./sprite-retina.png');
+    background-size: 250px 75px;
+  }
+}
+
+.left-column {
+  display: inline-block;
+  margin-left: 12px;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+.middle-column {
+  display: inline-block;
+  width: 304px;
+  padding: 0 8px 0 8px;
+  vertical-align: middle;
+}
+.right-column {
+  display: inline-block;
+  margin-right: 8px;
+  margin-left: 4px;
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.left-column .sprite {
+  margin-top: 3px;
+  height: 18px;
+  width: 24px;
+}
+
+.right-column .indicator {
+    width: 24px;
+}
+
+.indicator-hide {
+    display: none;
+}
+
+/* Popup areas */
+
+.banner {
+  font-size: 19px;
+  font-weight: 600;
+  background-color:#f2f2f2;
+  color: #596573;
+  text-shadow: 0px 1px #fff;
+  border-bottom: 1px solid #c0ccd7;
+  -webkit-border-radius: 1px 1px 0px 0px;
+  background: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(100%, #edf1f4));
+}
+
+.notes-row .left-column, .notes-row .middle-column, .notes-row .right-column,
+.assignee-row .left-column, .assignee-row .middle-column, .assignee-row .right-column,
+.project-row .left-column, .project-row .middle-column, .project-row .right-column {
+  vertical-align: top;
+}
+
+.banner .middle-column {
+  line-height: 46px;
+  padding-top: 2px;
+}
+
+.banner .button {
+  height: 26px;
+  width: 26px;
+  border: 1px solid #c0ccd7;
+  box-shadow: 0px 1px 0px 0px white;
+  padding: 0;
+}
+
+#workspace_select:hover ~ .button {
+  border: 1px solid #afbcc8;
+  background: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(100%, #dde4ea));
+}
+
+#workspace_select:focus ~ .button {
+  border: 1px solid #74C1ED;
+  box-shadow: 0px 0px 5px 1px rgba(31, 141, 214, 0.3);
+}
+
+.banner-add {
+  position: relative;
+}
+
+.banner-add #workspace {
+  font-weight: 200;
+}
+
+.icon-checkbox {
+  background-position: -25px 0px;
+}
+
+.sprite.icon-notes {
+  margin-top: 5px;
+  background-position: -50px 0px;
+}
+
+.sprite.icon-assignee {
+  margin-top: 6px;
+  background-position: -75px 0px;
+}
+
+.sprite.icon-project {
+  margin-top: 6px;
+  background-position: -125px -25px;
+}
+
+#workspace_select_container {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 100%;
+}
+
+#workspace_select {
+  opacity: 0;
+  position: absolute;
+  right: 0px;
+  top: -4px;
+  padding: 8px 0px;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.name-row {
+  padding-top: 11px;
+  padding-bottom: 12px;
+}
+
+.name-row .left-column .sprite { margin-top: 2px; }
+
+#name_input, #notes_input, #assignee_input, #project, #project_input, .typeahead {
+  width: 100%;
+}
+
+.name-row #name_input {
+  font-size: 20px;
+}
+
+.notes-row {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 4px;
+}
+
+.assignee-row, .project-row {
+  padding-top: 8px;
+}
+
+.notes-row #notes_input {
+  resize: none;
+  height: 96px;
+}
+
+#use_page_details {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 5px 2px 3px 6px;
+  cursor: pointer;
+}
+
+#use_page_details:not(.disabled):hover {
+  border: 1px solid #e5e5e5;
+}
+
+#use_page_details.disabled {
+  opacity: .25;
+  cursor: default;
+}
+
+#use_page_details:not(.disabled):hover .icon-use-link-arrow {
+  background-position: -225px -25px;
+}
+
+.icon-use-link {
+  height: 16px;
+  width: 16px;
+  background-size: 16px 16px;
+}
+
+.icon-use-link.no-favicon {
+  height: 18px;
+  width: 18px;
+  background-position: -200px 0px;
+  background-size: auto auto;
+}
+
+#use_page_details:not(.disabled):hover .icon-use-link.no-favicon {
+  background-position: -200px -25px;
+}
+
+.icon-use-link-arrow {
+  height: 18px;
+  width: 18px;
+  background-position: -225px 0px;
+  position: absolute;
+  top: 7px;
+  left: 3px;
+}
+
+.user, .item {
+  line-height: 34px;
+  font-size: 12px;
+  font-weight: 600;
+  padding-left: 54px;
+  cursor: pointer;
+}
+
+.user.selected, .item.selected {
+  background-color: #1F8DD6;
+  color: white;
+}
+
+.user-photo-frame, .item-photo-frame {
+  height: 27px;
+  width: 27px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 7px;
+}
+.user-photo, .item-photo {
+  height: 27px;
+  width: 27px;
+  background-size: 27px 27px;
+  background-repeat: no-repeat;
+  border-radius: 2px;
+}
+.user-name, .item-name {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer {
+  padding: 14px 0;
+}
+
+#success, #error {
+  width: 175px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 15px;
+  font-size: 12px;
+  line-height: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#success a, #error a {
+  font-weight: 600;
+  text-decoration: none;
+  color: #5998c0;
+}
+
+#login_view {
+  width: 100%;
+  height: 100%;
+  background-color: #edf1f4;
+}
+
+#login_view .content {
+  padding-top: 65px;
+  width: 250px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 400;
+  color: #596573;
+}
+
+#login_view .button {
+  margin-top: 24px;
+}
+
+#login_view #signup_button {
+  margin-right: 8px;
+}
+
+.icon-success, .icon-error {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 3px;
+}
+
+.icon-success { background-position: -100px 0px; }
+.icon-error { background-position: -125px 0px; margin-right: 7px; }
+
+input, textarea, .typeahead {
+  color: #212F40;
+  padding: 6px 5px;
+  border: 1px solid transparent;
+  -webkit-border-radius: 3px;
+  font-size: 14px;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
+  color: #212F40;
+  margin: 0;
+}
+
+input:hover, textarea:hover, .typeahead:hover {
+  border: 1px solid #cccccc;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
+}
+
+input:focus, textarea:focus {
+  border: 1px solid #74C1ED;
+  box-shadow: 0px 0px 5px 1px rgba(31, 141, 214, 0.3);
+}
+
+.twitter-typeahead {
+    width: 100%;
+}
+
+.tt-query {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+
+.tt-hint {
+  color: #999999;
+}
+
+.tt-dropdown-menu {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px 8px 8px 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 12px;
+  padding: 8px 0;
+}
+
+.tt-suggestion {
+  font-size: 12px;
+  line-height: 24px;
+  padding: 3px 20px;
+}
+
+.tt-suggestion.tt-cursor {
+  background-color: #0097CF;
+  color: #FFFFFF;
+}
+
+.tt-suggestion p {
+  margin: 0;
+}

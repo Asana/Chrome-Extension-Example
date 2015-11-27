@@ -4,11 +4,10 @@ integrates Asana into your web experience in the following ways:
 
   * Creates a button in your button-bar which, when clicked, pops up a
     QuickAdd window to create a new task associated with the current web page.
-    It will populate the task name with the page title by default, and
-    put the URL in the notes, along with any text you may have selected
-    when you pressed the button.
+    You can click a button to populate the task name with the page title and
+    the URL and current selected text in the notes.
 
-  * Installs the special Asana TAB+Q keyboard shortcut. When this key combo
+  * Installs the special Asana ALT+A keyboard shortcut. When this key combo
     is pressed from any web page, it brings up the same popup.
     This functionality will operate on any window opened after the extension
     is loaded.
@@ -36,3 +35,8 @@ To install:
   3. Check the `Developer mode` toggle
   4. Click on `Load Unpacked Extension...`
   5. Select the folder containing the extension
+
+This package uses the following libraries:
+  * jQuery 1.7.1
+  * jQuery UI 1.8.10
+  * Typeahead.JS (https://twitter.github.io/typeahead.js/)

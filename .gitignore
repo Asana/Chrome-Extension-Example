@@ -1,0 +1,11 @@
+# Ignore IntelliJ
+*.iml
+*.idea
+
+# Ignore OS X
+*.DS_Store
+
+# Ignore vim
+*~
+*.swp
+*.swo

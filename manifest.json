@@ -1,12 +1,14 @@
 {
   "manifest_version": 2,
   "name": "Asana Extension for Chrome",
-  "version": "0.9.1",
-  "description": "Integrates Asana with your browsing experience.",
+  "version": "1.0.3",
+  "description": "Quickly add tasks to Asana from any web page.",
   "icons": {
-    "128": "icon128.png"
+    "128": "icon128.png",
+    "48": "icon48.png",
+    "16": "icon16.png"
   },
-  "minimum_chrome_version": "16",
+  "minimum_chrome_version": "25",
 
   "browser_action": {
     "default_icon": "icon19.png",
@@ -14,30 +16,34 @@
     "default_popup": "popup.html"
   },
   "background": {
-    "page": "background.html"
+    "persistent": true,
+    "scripts": [
+      "jquery-1.7.1.min.js",
+      "asana.js",
+      "api_bridge.js",
+      "extension_server.js",
+      "server_model.js",
+      "options.js",
+      "background.js"
+    ]
   },
-  "options_page": "options.html",
+  "incognito": "split",
+  "offline_enabled": false,
+
   "permissions": [
     "tabs",
-    "*://*/*",
     "cookies",
+    "webRequest",
+    "webRequestBlocking",
     "*://*.asana.com/*",
-    "*://localhost.org/*"
+    "*://use.typekit.net/*"
   ],
-
-  "content_scripts": [{
-    "matches": [
-      "<all_urls>"
-    ],
-    "exclude_matches": [
-      "*://*.asana.com/*"
-    ],
-    "js": [
-      "asana.js",
-      "selection_client.js",
-      "quick_add_client.js"
-    ],
-    "run_at": "document_start",
-    "all_frames": false
-  }]
+  "content_security_policy": "script-src 'self' https://use.typekit.net; object-src 'self'",
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      }
+    }
+  }
 }

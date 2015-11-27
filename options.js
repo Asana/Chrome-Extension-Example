@@ -24,6 +24,14 @@ Asana.Options = {
   },
 
   /**
+   * @param opt_options {dict} Options to use; if unspecified will be loaded.
+   * @return {String} The URL for the signup page.
+   */
+  signupUrl: function(opt_options) {
+    return 'http://asana.com/?utm_source=chrome&utm_medium=ext&utm_campaign=ext';
+  },
+
+  /**
    * @return {dict} Default options.
    */
   defaultOptions: function() {

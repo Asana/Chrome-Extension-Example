@@ -1,79 +1,134 @@
+<!DOCTYPE html>
+<!--
+The above DOCTYPE declaration is actually required for Chrome to
+properly resize the window as content size changes. See:
+http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
+-->
+
 <html>
 <head>
+  <link rel="stylesheet" href="popup.css"/>
   <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="jquery-ui-1.8.10.custom.min.js"></script>
+  <script type="text/javascript" src="typeahead.bundle.js"></script>
   <script type="text/javascript" src="asana.js"></script>
   <script type="text/javascript" src="options.js"></script>
   <script type="text/javascript" src="api_bridge.js"></script>
   <script type="text/javascript" src="server_model.js"></script>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="popup_style.css"/>
+  <script type="text/javascript" src="load_typekit.js"></script>
+  <title>
+    Asana Quick Add
+  </title>
 </head>
 
 <body>
 
-  <div id="banner">
-    Add to Asana
-    <a id="close-banner" class="close-x"></a>
+  <div id="add_view" style="display:none">
+    <div class="banner">
+      <div class="left-column">
+        <div id="logo" class="sprite"></div>
+      </div>
+      <div class="middle-column">
+        <span class="banner-add">
+          Add to
+          <span id="workspace"></span>
+          <div id="workspace_select_container">
+            <select id="workspace_select"><option>Loading...</option></select>
+            <div class="button"><div class="dropdown-arrow sprite"></div></div>
+          </div>
+        </span>
+      </div>
+      <div class="right-column">
+        <a id="close_popup" class="sprite close-x" tabindex="-1"></a>
+      </div>
+    </div>
+
+    <div class="name-row">
+      <div class="left-column">
+        <span class="icon-checkbox sprite"></span>
+      </div>
+      <div class="middle-column">
+        <input id="name_input" tabindex="0" placeholder="Task" />
+      </div>
+      <div class="right-column">
+        <div id="use_page_details" title="Insert page title and URL"><div class="icon-use-link-arrow sprite"></div><div class="icon-use-link"></div></div>
+      </div>
+    </div>
+
+    <div class="notes-row">
+      <div class="left-column">
+        <span class="icon-notes sprite"></span>
+      </div>
+      <div class="middle-column">
+        <textarea id="notes_input" tabindex="0" placeholder="Description"></textarea>
+      </div>
+      <div class="right-column"></div>
+    </div>
+
+    <div class="assignee-row">
+      <div class="left-column">
+        <span class="icon-assignee sprite"></span>
+      </div>
+      <div class="middle-column">
+        <input id="assignee_input" class="typeahead" placeholder="Assignee" />
+      </div>
+      <div class="right-column"></div>
+    </div>
+
+    <div id="assignee_list" style="display:none"></div>
+
+    <div class="project-row">
+      <div class="left-column">
+        <span class="icon-project sprite"></span>
+      </div>
+      <div class="middle-column">
+        <input id="project_input" class="typeahead" placeholder="Project" />
+      </div>
+      <div class="right-column"></div>
+    </div>
+
+    <div id="project_list" style="display:none"></div>
+
+    <div class="footer">
+      <div class="left-column"></div>
+      <div class="middle-column">
+        <div id="add_button" tabindex="0" class="button primary-button disabled">
+          <span class="button-text">Add to Asana</span>
+        </div>
+        <div id="error" style="display:none">
+          <div class="sprite icon-error"></div>
+          Error. Please try again.
+        </div>
+        <div id="success" style="display:none">
+          <div class="sprite icon-success"></div>
+          Added <a id="new_task_link" target="_blank" href=""></a>
+        </div>
+      </div>
+      <div class="right-column">
+        <span><img src="spinner.gif" id="spinner" class="indicator indicator-hide"></span>
+      </div>
+    </div>
   </div>
 
-  <div id="error" style="display:none">
-    <span class="error-icon"></span>
-    Sorry, an error occurred. Please try again later.
-  </div>
-
-  <div id="content">
-    <div id="add_view" style="display:none">
-      <table class="form">
-        <tr>
-          <td class="field-name">Name:</td>
-          <td class="field-value">
-            <input id="name"/>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="field-name">Notes:</td>
-          <td class="field-value">
-            <textarea id="notes"></textarea>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="field-name">Workspace:</td>
-          <td class="field-value">
-            <select id="workspace"><option>Loading...</option></select>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="field-name">Assignee:</td>
-          <td class="field-value">
-            <select id="assignee"><option>Loading...</option></select>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="field-name"></td>
-          <td class="field-value">
-            <div id="add_button" tabindex="0" class="button primary-button disabled">
-              <span class="button-text">Add to Asana</span>
-            </div>
-          </td>
-        </tr>
-      </table>
+  <div id="login_view" style="display:none">
+    <div class="banner">
+      <div class="left-column">
+        <div id="logo" class="sprite"></div>
+      </div>
+      <div class="middle-column">
+        <span class="banner-add">
+          Add to Asana
+        </span>
+      </div>
+      <div class="right-column">
+        <a id="close_login" class="sprite close-x" tabindex="-1"></a>
+      </div>
     </div>
-
-    <div id="success_view" style="display:none">
-      <span class="success-icon"></span>
-      Created task <a id="new_task_link" target="_blank" href=""></a>.
+    <div class="content">
+      You must log in to Asana before you can add tasks.
+      <span id="signup_button" class="primary-button button big-button"><span class="button-text">Sign Up</span></span>
+      <span id="login_button" class="default-button button big-button"><span class="button-text">Log In</span></span>
     </div>
-
-    <div id="login_view" style="display:none">
-      Please <a id="login_link" href="#">log into Asana</a> to start adding
-      tasks.
-    </div>
-
   </div>
 
 </body>

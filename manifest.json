@@ -28,7 +28,7 @@
    "minimum_chrome_version": "25",
    "name": "Asana Extension for Chrome",
    "offline_enabled": false,
-   "permissions": [ "tabs", "cookies", "webRequest", "webRequestBlocking", "*://*.asana.com/*", "*://use.typekit.net/*" ],
+   "permissions": [ "activeTab", "cookies", "webRequest", "webRequestBlocking", "*://*.asana.com/*", "*://use.typekit.net/*" ],
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.0.4"
+   "version": "1.0.5"
 }

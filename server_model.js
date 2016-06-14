@@ -140,49 +140,7 @@ Asana.ServerModel = {
   },
 
   /**
-   * Generates a regular expression that will match strings which contain words
-   * that start with the words in filter_text. The matching is case-insensitive
-   * and the matching words do not need to be consecutive but they must be in
-   * the same order as those in filter_text.
-   *
-   * @param filter_text {String|null} The input text used to generate the regular
-   *  expression.
-   * @returns {Regexp}
-   */
-  _regexpFromFilterText: function(filter_text) {
-    if (!filter_text || filter_text.trim() === '') {
-      return null;
-    } else {
-      var escaped_filter_text = RegExp.escape(
-          filter_text.trim(),
-          /*opt_do_not_escape_spaces=*/true);
-      var parts = escaped_filter_text.trim().split(/\s+/).map(function(word) {
-        return "(" + word + ")";
-      }).join("(.*\\s+)");
-      return new RegExp("(?:\\b|^|(?=\\W))" + parts, "i");
-    }
-  },
-
-  _filterUsers: function (workspace_id, query) {
-    var regexp = this._regexpFromFilterText(query);
-    var users = [];
-
-    for ( user_id in this._known_users[workspace_id] ) {
-      users.push(this._known_users[workspace_id][user_id]);
-    }
-
-    return users.filter(function(user) {
-      if (regexp !== null) {
-        var parts = user.name.split(regexp);
-        return parts.length > 1;
-      } else {
-        return user.name.trim() !== "";  // no filter
-      }
-    });
-  },
-
-  /**
-   * Requests type-ahead completions for a query.
+   * Requests user type-ahead completions for a query.
    */
   userTypeAhead: function(workspace_id, query, callback, errback) {
     var self = this;
@@ -212,9 +170,8 @@ Asana.ServerModel = {
           errback);
       },
       {
-        miss_cache: true,
+        miss_cache: true, // Always skip the cache.
       });
-    return this._filterUsers(workspace_id, query);
   },
 
   logEvent: function(event) {

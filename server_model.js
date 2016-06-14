@@ -10,8 +10,6 @@ Asana.ServerModel = {
   // Make requests to API to refresh cache at this interval.
   CACHE_REFRESH_INTERVAL_MS: 15 * 60 * 1000, // 15 minutes
 
-  _current_xhr: undefined,
-
   _url_to_cached_image: {},
 
   /**
@@ -145,11 +143,7 @@ Asana.ServerModel = {
   userTypeAhead: function(workspace_id, query, callback, errback) {
     var self = this;
 
-    if (this._current_xhr) {
-      this._current_xhr.abort();
-    }
-
-    this._current_xhr = Asana.ApiBridge.request(
+    Asana.ApiBridge.request(
       "GET",
       "/workspaces/" + workspace_id + "/typeahead",
       {

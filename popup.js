@@ -319,7 +319,7 @@ Popup = {
     Popup.options.default_workspace_id = workspace_id;
     Asana.ServerModel.saveOptions(me.options, function() {});
 
-    me.setAddEnabled(true)
+    me.setAddEnabled(true);
   },
 
   /**
@@ -482,7 +482,7 @@ UserTypeahead = function(id) {
     me.user_id_to_select = me.selected_user_id;
     if (me.selected_user_id !== null) {
       // If a user was already selected, fill the field with their name
-      // and select it all.
+      // and select it all.  The user_id_to_user dict may not be populated yet.
       if (me.user_id_to_user[me.selected_user_id]) {
         var assignee_name = me.user_id_to_user[me.selected_user_id].name;
         me.input.val(assignee_name);
@@ -520,25 +520,21 @@ UserTypeahead = function(id) {
   // Handle keyboard within input
   me.input.keydown(function(e) {
     if (e.which === 13) {
-      console.log("Enter button.");
       // Enter accepts selection, focuses next UI element.
       me._confirmSelection();
       $("#add_button").focus();
       return false;
     } else if (e.which === 9) {
-      console.log("Tab button.");
       // Tab accepts selection. Browser default behavior focuses next element.
       me._confirmSelection();
       return true;
     } else if (e.which === 27) {
-      console.log("Escape button");
       // Abort selection. Stop propagation to avoid closing the whole
       // popup window.
       e.stopPropagation();
       me.input.blur();
       return false;
     } else if (e.which === 40) {
-      console.log("Down button");
       // Down: select next.
       var index = me._indexOfSelectedUser();
       if (index === -1 && me.filtered_users.length > 0) {
@@ -549,7 +545,6 @@ UserTypeahead = function(id) {
       me._ensureSelectedUserVisible();
       e.preventDefault();
     } else if (e.which === 38) {
-      console.log("Up button");
       // Up: select prev.
       var index = me._indexOfSelectedUser();
       if (index > 0) {
@@ -649,7 +644,6 @@ Asana.update(UserTypeahead.prototype, {
 
     // Select on mouseover.
     node.mouseenter(function() {
-      console.log("Mouse enter for user: ", user);
       me.setSelectedUserId(user.id);
     });
 
@@ -657,7 +651,6 @@ Asana.update(UserTypeahead.prototype, {
     // will take focus away from the input, hiding the user list and causing
     // us not to get the ensuing `click` event.
     node.mousedown(function() {
-      console.log("Mouse down for user: ", user);
       me.setSelectedUserId(user.id);
       me._confirmSelection();
     });
@@ -670,11 +663,6 @@ Asana.update(UserTypeahead.prototype, {
 
   _updateUsers: function() {
     var me = this;
-    var query = this.input.val().trim();
-
-    if (query.length == 0) {
-      return;
-    }
 
     this._request_counter += 1;
     var current_request_counter = this._request_counter;

@@ -8,7 +8,9 @@
 Asana.ServerModel = {
 
   // Make requests to API to refresh cache at this interval.
-  CACHE_REFRESH_INTERVAL_MS: 15 * 60 * 1000,
+  CACHE_REFRESH_INTERVAL_MS: 15 * 60 * 1000, // 15 minutes
+
+  _current_xhr: undefined,
 
   _url_to_cached_image: {},
 
@@ -99,6 +101,9 @@ Asana.ServerModel = {
         "GET", "/workspaces/" + workspace_id + "/users",
         { opt_fields: "name,photo.image_60x60" },
         function(response) {
+          for (user in response) {
+            self._updateUser(workspace_id, user);
+          }
           self._makeCallback(response, callback, errback);
         }, options);
   },
@@ -134,12 +139,101 @@ Asana.ServerModel = {
         });
   },
 
+  /**
+   * Generates a regular expression that will match strings which contain words
+   * that start with the words in filter_text. The matching is case-insensitive
+   * and the matching words do not need to be consecutive but they must be in
+   * the same order as those in filter_text.
+   *
+   * @param filter_text {String|null} The input text used to generate the regular
+   *  expression.
+   * @returns {Regexp}
+   */
+  _regexpFromFilterText: function(filter_text) {
+    if (!filter_text || filter_text.trim() === '') {
+      return null;
+    } else {
+      var escaped_filter_text = RegExp.escape(
+          filter_text.trim(),
+          /*opt_do_not_escape_spaces=*/true);
+      var parts = escaped_filter_text.trim().split(/\s+/).map(function(word) {
+        return "(" + word + ")";
+      }).join("(.*\\s+)");
+      return new RegExp("(?:\\b|^|(?=\\W))" + parts, "i");
+    }
+  },
+
+  _filterUsers: function (workspace_id, query) {
+    var regexp = this._regexpFromFilterText(query);
+    var users = [];
+
+    for ( user_id in this._known_users[workspace_id] ) {
+      users.push(this._known_users[workspace_id][user_id]);
+    }
+
+    return users.filter(function(user) {
+      if (regexp !== null) {
+        var parts = user.name.split(regexp);
+        return parts.length > 1;
+      } else {
+        return user.name.trim() !== "";  // no filter
+      }
+    });
+  },
+
+  /**
+   * Requests type-ahead completions for a query.
+   */
+  userTypeAhead: function(workspace_id, query, callback, errback) {
+    var self = this;
+
+    if (this._current_xhr) {
+      this._current_xhr.abort();
+    }
+
+    this._current_xhr = Asana.ApiBridge.request(
+      "GET",
+      "/workspaces/" + workspace_id + "/typeahead",
+      {
+        type: 'user',
+        query: query,
+        count: 10,
+        opt_fields: "name,photo.image_60x60",
+      },
+      function(response) {
+        self._makeCallback(
+          response,
+          function (users) {
+            users.forEach(function (user) {
+              self._updateUser(workspace_id, user);
+            });
+            callback(users);
+          },
+          errback);
+      },
+      {
+        miss_cache: true,
+      });
+    return this._filterUsers(workspace_id, query);
+  },
+
   logEvent: function(event) {
     Asana.ApiBridge.request(
         "POST",
         "/logs",
         event,
         function(response) {});
+  },
+
+  /**
+   * All the users that have been seen so far, keyed by workspace and user.
+   */
+  _known_users: {},
+
+  _updateUser: function(workspace_id, user) {
+    this._known_users[workspace_id] = this._known_users[workspace_id] || {}
+    this._known_users[workspace_id][user.id] = user;
+    this._cacheUserPhoto(user);
   },
 
   _makeCallback: function(response, callback, errback) {
@@ -180,26 +274,8 @@ Asana.ServerModel = {
     me.me(function(user) {
       if (!user.errors) {
         // Fetch list of workspaces.
-        me.workspaces(function(workspaces) {
-          if (!workspaces.errors) {
-            var i = 0;
-            // Fetch users in each workspace.
-            var fetchUsers = function() {
-              me.users(workspaces[i].id, function(users) {
-                // Prefetch images too
-                users.forEach(function(user) {
-                  me._cacheUserPhoto(user);
-                });
-                if (++i < workspaces.length) {
-                  fetchUsers();
-                }
-              }, null, { miss_cache: true });
-            };
-            fetchUsers();
-          }
-        }, null, { miss_cache: true })
+        me.workspaces(function(workspaces) {}, null, { miss_cache: true })
       }
     }, null, { miss_cache: true });
   }
-
 };

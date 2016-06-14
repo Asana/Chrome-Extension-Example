@@ -114,6 +114,7 @@ Asana.ApiBridge = {
 
     console.log("Making request to API", http_method, url);
 
+    var xhr = undefined;
     chrome.cookies.get({
       url: url,
       name: 'ticket'
@@ -171,8 +172,9 @@ Asana.ApiBridge = {
         attrs.processData = false;
         attrs.contentType = "application/json";
       }
-      $.ajax(attrs);
+      xhr = $.ajax(attrs);
     });
+    return xhr;
   },
 
   _readCache: function(path, date) {

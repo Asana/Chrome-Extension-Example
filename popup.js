@@ -316,15 +316,10 @@ Popup = {
     $("#workspace").html($("#workspace_select option:selected").text());
 
     // Save selection as new default.
-    me.options.default_workspace_id = workspace_id;
+    Popup.options.default_workspace_id = workspace_id;
     Asana.ServerModel.saveOptions(me.options, function() {});
 
-    // Update assignee list.
-    me.setAddEnabled(false);
-    Asana.ServerModel.users(workspace_id, function(users) {
-      me.typeahead.updateUsers(users);
-      me.setAddEnabled(true);
-    });
+    me.setAddEnabled(true)
   },
 
   /**
@@ -474,6 +469,8 @@ UserTypeahead = function(id) {
   me.user_id_to_select = null;
   me.has_focus = false;
 
+  me._request_counter = 0;
+
   // Store off UI elements.
   me.input = $("#" + id + "_input");
   me.label = $("#" + id);
@@ -486,14 +483,18 @@ UserTypeahead = function(id) {
     if (me.selected_user_id !== null) {
       // If a user was already selected, fill the field with their name
       // and select it all.
-      var assignee_name = me.user_id_to_user[me.selected_user_id].name;
-      me.input.val(assignee_name);
+      if (me.user_id_to_user[me.selected_user_id]) {
+        var assignee_name = me.user_id_to_user[me.selected_user_id].name;
+        me.input.val(assignee_name);
+      } else {
+        me.input.val("");
+      }
     } else {
       me.input.val("");
     }
     me.has_focus = true;
     Popup.setExpandedUi(true);
-    me._updateFilteredUsers();
+    me._updateUsers();
     me.render();
     me._ensureSelectedUserVisible();
   });
@@ -519,21 +520,25 @@ UserTypeahead = function(id) {
   // Handle keyboard within input
   me.input.keydown(function(e) {
     if (e.which === 13) {
+      console.log("Enter button.");
       // Enter accepts selection, focuses next UI element.
       me._confirmSelection();
       $("#add_button").focus();
       return false;
     } else if (e.which === 9) {
+      console.log("Tab button.");
       // Tab accepts selection. Browser default behavior focuses next element.
       me._confirmSelection();
       return true;
     } else if (e.which === 27) {
+      console.log("Escape button");
       // Abort selection. Stop propagation to avoid closing the whole
       // popup window.
       e.stopPropagation();
       me.input.blur();
       return false;
     } else if (e.which === 40) {
+      console.log("Down button");
       // Down: select next.
       var index = me._indexOfSelectedUser();
       if (index === -1 && me.filtered_users.length > 0) {
@@ -544,6 +549,7 @@ UserTypeahead = function(id) {
       me._ensureSelectedUserVisible();
       e.preventDefault();
     } else if (e.which === 38) {
+      console.log("Up button");
       // Up: select prev.
       var index = me._indexOfSelectedUser();
       if (index > 0) {
@@ -556,7 +562,7 @@ UserTypeahead = function(id) {
 
   // When the input changes value, update and re-render our filtered list.
   me.input.bind("input", function() {
-    me._updateFilteredUsers();
+    me._updateUsers();
     me._renderList();
   });
 
@@ -610,40 +616,6 @@ Asana.update(UserTypeahead.prototype, {
     }
   },
 
-  /**
-   * Update the set of all (unfiltered) users available in the typeahead.
-   *
-   * @param users {dict[]}
-   */
-  updateUsers: function(users) {
-    var me = this;
-    // Build a map from user ID to user
-    var this_user = null;
-    var users_without_this_user = [];
-    me.user_id_to_user = {};
-    users.forEach(function(user) {
-      if (user.id === Popup.user_id) {
-        this_user = user;
-      } else {
-        users_without_this_user.push(user);
-      }
-      me.user_id_to_user[user.id] = user;
-    });
-
-    // Put current user at the beginning of the list.
-    // We really should have found this user, but if not .. let's not crash.
-    me.users = this_user ?
-        [this_user].concat(users_without_this_user) : users_without_this_user;
-
-    // If selected user is not in this workspace, unselect them.
-    if (!(me.selected_user_id in me.user_id_to_user)) {
-      me.selected_user_id = null;
-      me.input.val("");
-    }
-    me._updateFilteredUsers();
-    me.render();
-  },
-
   _renderLabel: function() {
     var me = this;
     me.label.empty();
@@ -677,6 +649,7 @@ Asana.update(UserTypeahead.prototype, {
 
     // Select on mouseover.
     node.mouseenter(function() {
+      console.log("Mouse enter for user: ", user);
       me.setSelectedUserId(user.id);
     });
 
@@ -684,50 +657,42 @@ Asana.update(UserTypeahead.prototype, {
     // will take focus away from the input, hiding the user list and causing
     // us not to get the ensuing `click` event.
     node.mousedown(function() {
+      console.log("Mouse down for user: ", user);
       me.setSelectedUserId(user.id);
       me._confirmSelection();
     });
     return node;
   },
 
-  /**
-   * Generates a regular expression that will match strings which contain words
-   * that start with the words in filter_text. The matching is case-insensitive
-   * and the matching words do not need to be consecutive but they must be in
-   * the same order as those in filter_text.
-   *
-   * @param filter_text {String|null} The input text used to generate the regular
-   *  expression.
-   * @returns {Regexp}
-   */
-  _regexpFromFilterText: function(filter_text) {
-    if (!filter_text || filter_text.trim() === '') {
-      return null;
-    } else {
-      var escaped_filter_text = RegExp.escape(
-          filter_text.trim(),
-          /*opt_do_not_escape_spaces=*/true);
-      var parts = escaped_filter_text.trim().split(/\s+/).map(function(word) {
-        return "(" + word + ")";
-      }).join("(.*\\s+)");
-      return new RegExp("(?:\\b|^|(?=\\W))" + parts, "i");
-    }
-  },
-
   _confirmSelection: function() {
     this.user_id_to_select = this.selected_user_id;
   },
 
-  _updateFilteredUsers: function() {
-    var regexp = this._regexpFromFilterText(this.input.val());
-    this.filtered_users = this.users.filter(function(user) {
-      if (regexp !== null) {
-        var parts = user.name.split(regexp);
-        return parts.length > 1;
-      } else {
-        return user.name.trim() !== "";  // no filter
-      }
-    });
+  _updateUsers: function() {
+    var me = this;
+    var query = this.input.val().trim();
+
+    if (query.length == 0) {
+      return;
+    }
+
+    this._request_counter += 1;
+    var current_request_counter = this._request_counter;
+    Asana.ServerModel.userTypeAhead(
+      Popup.options.default_workspace_id,
+      this.input.val(),
+      function (users) {
+        // Only update the list if no future requests have been initiated.
+        if (me._request_counter == current_request_counter) {
+          // Update the ID -> User map.
+          users.forEach(function (user) {
+            me.user_id_to_user[user.id] = user
+          });
+          // Insert new uers at the end.
+          me.filtered_users = users;
+          me._renderList();
+        }
+      });
   },
 
   _indexOfSelectedUser: function() {

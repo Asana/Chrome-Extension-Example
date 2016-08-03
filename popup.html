@@ -83,20 +83,26 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
     </div>
 
 
-    <div class="footer">
+    <div class="buttons">
       <div class="left-column"></div>
       <div class="middle-column">
-        <div id="add_button" tabindex="0" class="buttonView buttonView--primary buttonView--large disabled">
+        <div id="add_button" tabindex="0" class="buttonView buttonView--primary buttonView--large is-disabled">
           <span class="new-button-text">Add to Asana</span>
         </div>
-        <div id="error" style="display:none">
-          <div class="sprite icon-error"></div>
-          Error. Please try again.
-        </div>
-        <div id="success" style="display:none">
-          <div class="sprite icon-success"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div id="error" class="footer-status" style="display:none">
+        <span class="error-message">
+          Sorry, there was a problem. Please try again.
+        </span>
+      </div>
+      <div id="success" class="footer-status" style="display:none">
+        <div class="sprite icon-success"></div>
+        <span class="success-message">
           Added <a id="new_task_link" target="_blank" href=""></a>
-        </div>
+        </span>
       </div>
     </div>
 

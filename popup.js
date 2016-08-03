@@ -257,8 +257,7 @@ Popup = {
     var button = $("#add_button");
     if (enabled) {
       // Update appearance and add handlers.
-      button.removeClass("disabled");
-      button.addClass("enabled");
+      button.removeClass("is-disabled");
       button.click(function() {
         me.createTask();
         return false;
@@ -270,8 +269,7 @@ Popup = {
       });
     } else {
       // Update appearance and remove handlers.
-      button.removeClass("enabled");
-      button.addClass("disabled");
+      button.addClass("is-disabled");
       button.unbind('click');
       button.unbind('keydown');
     }

@@ -15,7 +15,7 @@
          }
       }
    },
-   "content_security_policy": "script-src 'self' https://use.typekit.net; object-src 'self'",
+   "content_security_policy": "script-src 'self'; object-src 'self'",
    "description": "Quickly add tasks to Asana from any web page.",
    "icons": {
       "128": "icon128.png",

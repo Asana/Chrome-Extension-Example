@@ -33,7 +33,9 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
           <span id="workspace"></span>
           <div id="workspace_select_container">
             <select id="workspace_select"><option>Loading...</option></select>
-            <div class="button"><div class="dropdown-arrow sprite"></div></div>
+            <svg class="svgIcon  svgIcon-dropdownarrow " viewBox="0 0 32 32" title="dropdownarrow">
+              <polygon points="28,12.5 25.5,10 16.586,18.914 7.5,10 5,12.5 16.5,24"></polygon>
+            </svg>
           </div>
         </span>
       </div>
@@ -46,7 +48,7 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
         <span class="icon-checkbox sprite"></span>
       </div>
       <div class="middle-column">
-        <input id="name_input" tabindex="0" placeholder="Task" />
+        <input id="name_input" class="generic-input" tabindex="0" placeholder="Task" />
       </div>
       <div class="right-column">
         <div id="use_page_details" title="Insert page title and URL"><div class="icon-use-link-arrow sprite"></div><div class="icon-use-link"></div></div>
@@ -57,7 +59,7 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
         <span class="icon-notes sprite"></span>
       </div>
       <div class="middle-column">
-        <textarea id="notes_input" tabindex="0" placeholder="Description"></textarea>
+        <textarea id="notes_input" class="generic-input" tabindex="0" placeholder="Description"></textarea>
       </div>
       <div class="right-column"></div>
     </div>
@@ -66,8 +68,12 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
         <span class="icon-assignee sprite"></span>
       </div>
       <div class="middle-column">
-        <input id="assignee_input" placeholder="Assignee" />
-        <div id="assignee" tabindex="0"></div>
+        <span class="token-area-view-container">
+          <div id="assignee_token_area" class="tokenAreaView generic-input" tabindex="0">
+            <input id="assignee_input" class="token-input" placeholder="Assignee" tabindex="-1"/>
+            <div id="assignee_token" class="tokenView"></div>
+          </div>
+        </span>
       </div>
       <div class="right-column"></div>
     </div>
@@ -80,8 +86,8 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
     <div class="footer">
       <div class="left-column"></div>
       <div class="middle-column">
-        <div id="add_button" tabindex="0" class="button primary-button disabled">
-          <span class="button-text">Add to Asana</span>
+        <div id="add_button" tabindex="0" class="buttonView buttonView--primary buttonView--large disabled">
+          <span class="new-button-text">Add to Asana</span>
         </div>
         <div id="error" style="display:none">
           <div class="sprite icon-error"></div>
@@ -113,8 +119,8 @@ http://stackoverflow.com/questions/9498685/resize-popup-html-in-chrome-extension
     </div>
     <div class="content">
       You must log in to Asana before you can add tasks.
-      <span id="signup_button" class="primary-button button big-button"><span class="button-text">Sign Up</span></span>
-      <span id="login_button" class="default-button button big-button"><span class="button-text">Log In</span></span>
+      <span id="signup_button" class="buttonView buttonView--large"><span class="new-button-text">Sign Up</span></span>
+      <span id="login_button" class="buttonView buttonView--primary buttonView--large"><span class="new-button-text">Log In</span></span>
     </div>
   </div>
 

@@ -257,8 +257,7 @@ Popup = {
     var button = $("#add_button");
     if (enabled) {
       // Update appearance and add handlers.
-      button.removeClass("disabled");
-      button.addClass("enabled");
+      button.removeClass("is-disabled");
       button.click(function() {
         me.createTask();
         return false;
@@ -270,8 +269,7 @@ Popup = {
       });
     } else {
       // Update appearance and remove handlers.
-      button.removeClass("enabled");
-      button.addClass("disabled");
+      button.addClass("is-disabled");
       button.unbind('click');
       button.unbind('keydown');
     }
@@ -476,7 +474,8 @@ UserTypeahead = function(id) {
 
   // Store off UI elements.
   me.input = $("#" + id + "_input");
-  me.label = $("#" + id);
+  me.token_area = $("#" + id + "_token_area");
+  me.token = $("#" + id + "_token");
   me.list = $("#" + id + "_list");
   me.list_container = $("#" + id + "_list_container");
 
@@ -496,6 +495,7 @@ UserTypeahead = function(id) {
     me._updateFilteredUsers();
     me.render();
     me._ensureSelectedUserVisible();
+    me.token_area.attr('tabindex', '-1');
   });
 
   // Close on blur. A natural blur does not cause us to accept the current
@@ -514,6 +514,7 @@ UserTypeahead = function(id) {
     }
     me.render();
     Popup.setExpandedUi(false);
+    me.token_area.attr('tabindex', '0');
   });
 
   // Handle keyboard within input
@@ -562,7 +563,7 @@ UserTypeahead = function(id) {
 
   // A user clicking or tabbing to the label should open the typeahead
   // and select what's already there.
-  me.label.focus(function() {
+  me.token_area.focus(function() {
     me.input.focus();
     me.input.get(0).setSelectionRange(0, me.input.val().length);
   });
@@ -576,13 +577,14 @@ Asana.update(UserTypeahead, {
 
   /**
    * @param user {dict}
+   * @param size {string} small, inbox, etc.
    * @returns {jQuery} photo element
    */
-  photoForUser: function(user) {
-    var photo = $('<div class="user-photo"></div>"');
+  photoForUser: function(user, size) {
+    var photo = $('<div class="Avatar Avatar--' + size + '">');
     var url = user.photo ? user.photo.image_60x60 : UserTypeahead.SILHOUETTE_URL;
     photo.css("background-image", "url(" + url + ")");
-    return $('<div class="user-photo-frame"></div>').append(photo);
+    return $('<div class="photo-view ' + size + ' tokenView-photo">').append(photo);
   }
 
 });
@@ -594,18 +596,15 @@ Asana.update(UserTypeahead.prototype, {
    */
   render: function() {
     var me = this;
-    me._renderLabel();
-
     if (this.has_focus) {
       // Focused - show the list and input instead of the label.
       me._renderList();
       me.input.show();
-      me.label.hide();
+      me.token.hide();
       me.list_container.show();
     } else {
       // Not focused - show the label, not the list or input.
-      me.input.hide();
-      me.label.show();
+      me._renderTokenOrPlaceholder();
       me.list_container.hide();
     }
   },
@@ -638,23 +637,39 @@ Asana.update(UserTypeahead.prototype, {
     // If selected user is not in this workspace, unselect them.
     if (!(me.selected_user_id in me.user_id_to_user)) {
       me.selected_user_id = null;
-      me.input.val("");
+      me._updateInput();
     }
     me._updateFilteredUsers();
     me.render();
   },
 
-  _renderLabel: function() {
+  _renderTokenOrPlaceholder: function() {
     var me = this;
-    me.label.empty();
     var selected_user = me.user_id_to_user[me.selected_user_id];
     if (selected_user) {
+      me.token.empty();
       if (selected_user.photo) {
-        me.label.append(UserTypeahead.photoForUser(selected_user));
+        me.token.append(UserTypeahead.photoForUser(selected_user, 'small'));
       }
-      me.label.append($('<div class="user-name">').text(selected_user.name));
+      me.token.append(
+          '<span class="tokenView-label">' +
+          '  <span class="tokenView-labelText">' + selected_user.name + '</span>' +
+          '</span>' +
+          '<a id = "' + me.id + '_token_remove" class="tokenView-remove">' +
+          '  <svg class="svgIcon tokenView-removeIcon" viewBox="0 0 32 32" title="remove">' +
+          '    <polygon points="23.778,5.393 16,13.172 8.222,5.393 5.393,8.222 13.172,16 5.393,23.778 8.222,26.607 16,18.828 23.778,26.607 26.607,23.778 18.828,16 26.607,8.222"></polygon>' +
+          '  </svg>' +
+          '</a>');
+      $('#' + me.id + '_token_remove').mousedown(function(e) {
+        me.selected_user_id = null;
+        me._updateInput();
+        me.input.focus();
+      });
+      me.token.show();
+      me.input.hide();
     } else {
-      me.label.append($('<span class="unassigned">').text("Assignee"));
+      me.token.hide();
+      me.input.show();
     }
   },
 
@@ -669,7 +684,7 @@ Asana.update(UserTypeahead.prototype, {
   _entryForUser: function(user, is_selected) {
     var me = this;
     var node = $('<div id="user_' + user.id + '" class="user"></div>');
-    node.append(UserTypeahead.photoForUser(user));
+    node.append(UserTypeahead.photoForUser(user, 'inbox'));
     node.append($('<div class="user-name">').text(user.name));
     if (is_selected) {
       node.addClass("selected");
@@ -753,6 +768,16 @@ Asana.update(UserTypeahead.prototype, {
     }
   },
 
+  _updateInput: function() {
+    var me = this;
+    var selected_user = me.user_id_to_user[me.selected_user_id];
+    if (selected_user) {
+      me.input.val(selected_user.name);
+    } else {
+      me.input.val("");
+    }
+  },
+
   setSelectedUserId: function(id) {
     if (this.selected_user_id !== null) {
       $("#user_" + this.selected_user_id).removeClass("selected");
@@ -761,7 +786,7 @@ Asana.update(UserTypeahead.prototype, {
     if (this.selected_user_id !== null) {
       $("#user_" + this.selected_user_id).addClass("selected");
     }
-    this._renderLabel();
+    this._updateInput();
   }
 
 });

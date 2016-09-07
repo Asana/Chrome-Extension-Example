@@ -4,7 +4,7 @@
       "scripts": [ "jquery-1.7.1.min.js", "asana.js", "api_bridge.js", "extension_server.js", "server_model.js", "options.js", "background.js" ]
    },
    "browser_action": {
-      "default_icon": "icon16.png",
+      "default_icon": "icon48.png",
       "default_popup": "popup.html",
       "default_title": "Asana"
    },
@@ -15,7 +15,7 @@
          }
       }
    },
-   "content_security_policy": "script-src 'self' https://use.typekit.net; object-src 'self'",
+   "content_security_policy": "script-src 'self'; object-src 'self'",
    "description": "Quickly add tasks to Asana from any web page.",
    "icons": {
       "128": "icon128.png",
@@ -28,7 +28,7 @@
    "minimum_chrome_version": "25",
    "name": "Asana Extension for Chrome",
    "offline_enabled": false,
-   "permissions": [ "activeTab", "cookies", "webRequest", "webRequestBlocking", "*://*.asana.com/*", "*://use.typekit.net/*" ],
+   "permissions": [ "activeTab", "cookies", "webRequest", "webRequestBlocking", "*://*.asana.com/*" ],
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.0.5"
+   "version": "1.1.0"
 }

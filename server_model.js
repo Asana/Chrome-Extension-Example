@@ -8,7 +8,7 @@
 Asana.ServerModel = {
 
   // Make requests to API to refresh cache at this interval.
-  CACHE_REFRESH_INTERVAL_MS: 15 * 60 * 1000,
+  CACHE_REFRESH_INTERVAL_MS: 15 * 60 * 1000, // 15 minutes
 
   _url_to_cached_image: {},
 
@@ -99,6 +99,9 @@ Asana.ServerModel = {
         "GET", "/workspaces/" + workspace_id + "/users",
         { opt_fields: "name,photo.image_60x60" },
         function(response) {
+          for (user in response) {
+            self._updateUser(workspace_id, user);
+          }
           self._makeCallback(response, callback, errback);
         }, options);
   },
@@ -134,12 +137,54 @@ Asana.ServerModel = {
         });
   },
 
+  /**
+   * Requests user type-ahead completions for a query.
+   */
+  userTypeahead: function(workspace_id, query, callback, errback) {
+    var self = this;
+
+    Asana.ApiBridge.request(
+      "GET",
+      "/workspaces/" + workspace_id + "/typeahead",
+      {
+        type: 'user',
+        query: query,
+        count: 10,
+        opt_fields: "name,photo.image_60x60",
+      },
+      function(response) {
+        self._makeCallback(
+          response,
+          function (users) {
+            users.forEach(function (user) {
+              self._updateUser(workspace_id, user);
+            });
+            callback(users);
+          },
+          errback);
+      },
+      {
+        miss_cache: true, // Always skip the cache.
+      });
+  },
+
   logEvent: function(event) {
     Asana.ApiBridge.request(
         "POST",
         "/logs",
         event,
         function(response) {});
+  },
+
+  /**
+   * All the users that have been seen so far, keyed by workspace and user.
+   */
+  _known_users: {},
+
+  _updateUser: function(workspace_id, user) {
+    this._known_users[workspace_id] = this._known_users[workspace_id] || {}
+    this._known_users[workspace_id][user.id] = user;
+    this._cacheUserPhoto(user);
   },
 
   _makeCallback: function(response, callback, errback) {
@@ -180,26 +225,8 @@ Asana.ServerModel = {
     me.me(function(user) {
       if (!user.errors) {
         // Fetch list of workspaces.
-        me.workspaces(function(workspaces) {
-          if (!workspaces.errors) {
-            var i = 0;
-            // Fetch users in each workspace.
-            var fetchUsers = function() {
-              me.users(workspaces[i].id, function(users) {
-                // Prefetch images too
-                users.forEach(function(user) {
-                  me._cacheUserPhoto(user);
-                });
-                if (++i < workspaces.length) {
-                  fetchUsers();
-                }
-              }, null, { miss_cache: true });
-            };
-            fetchUsers();
-          }
-        }, null, { miss_cache: true })
+        me.workspaces(function(workspaces) {}, null, { miss_cache: true })
       }
     }, null, { miss_cache: true });
   }
-
 };

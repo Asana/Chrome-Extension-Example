@@ -314,15 +314,10 @@ Popup = {
     $("#workspace").html($("#workspace_select option:selected").text());
 
     // Save selection as new default.
-    me.options.default_workspace_id = workspace_id;
+    Popup.options.default_workspace_id = workspace_id;
     Asana.ServerModel.saveOptions(me.options, function() {});
 
-    // Update assignee list.
-    me.setAddEnabled(false);
-    Asana.ServerModel.users(workspace_id, function(users) {
-      me.typeahead.updateUsers(users);
-      me.setAddEnabled(true);
-    });
+    me.setAddEnabled(true);
   },
 
   /**
@@ -472,6 +467,8 @@ UserTypeahead = function(id) {
   me.user_id_to_select = null;
   me.has_focus = false;
 
+  me._request_counter = 0;
+
   // Store off UI elements.
   me.input = $("#" + id + "_input");
   me.token_area = $("#" + id + "_token_area");
@@ -484,15 +481,19 @@ UserTypeahead = function(id) {
     me.user_id_to_select = me.selected_user_id;
     if (me.selected_user_id !== null) {
       // If a user was already selected, fill the field with their name
-      // and select it all.
-      var assignee_name = me.user_id_to_user[me.selected_user_id].name;
-      me.input.val(assignee_name);
+      // and select it all.  The user_id_to_user dict may not be populated yet.
+      if (me.user_id_to_user[me.selected_user_id]) {
+        var assignee_name = me.user_id_to_user[me.selected_user_id].name;
+        me.input.val(assignee_name);
+      } else {
+        me.input.val("");
+      }
     } else {
       me.input.val("");
     }
     me.has_focus = true;
     Popup.setExpandedUi(true);
-    me._updateFilteredUsers();
+    me._updateUsers();
     me.render();
     me._ensureSelectedUserVisible();
     me.token_area.attr('tabindex', '-1');
@@ -557,7 +558,7 @@ UserTypeahead = function(id) {
 
   // When the input changes value, update and re-render our filtered list.
   me.input.bind("input", function() {
-    me._updateFilteredUsers();
+    me._updateUsers();
     me._renderList();
   });
 
@@ -705,44 +706,30 @@ Asana.update(UserTypeahead.prototype, {
     return node;
   },
 
-  /**
-   * Generates a regular expression that will match strings which contain words
-   * that start with the words in filter_text. The matching is case-insensitive
-   * and the matching words do not need to be consecutive but they must be in
-   * the same order as those in filter_text.
-   *
-   * @param filter_text {String|null} The input text used to generate the regular
-   *  expression.
-   * @returns {Regexp}
-   */
-  _regexpFromFilterText: function(filter_text) {
-    if (!filter_text || filter_text.trim() === '') {
-      return null;
-    } else {
-      var escaped_filter_text = RegExp.escape(
-          filter_text.trim(),
-          /*opt_do_not_escape_spaces=*/true);
-      var parts = escaped_filter_text.trim().split(/\s+/).map(function(word) {
-        return "(" + word + ")";
-      }).join("(.*\\s+)");
-      return new RegExp("(?:\\b|^|(?=\\W))" + parts, "i");
-    }
-  },
-
   _confirmSelection: function() {
     this.user_id_to_select = this.selected_user_id;
   },
 
-  _updateFilteredUsers: function() {
-    var regexp = this._regexpFromFilterText(this.input.val());
-    this.filtered_users = this.users.filter(function(user) {
-      if (regexp !== null) {
-        var parts = user.name.split(regexp);
-        return parts.length > 1;
-      } else {
-        return user.name.trim() !== "";  // no filter
-      }
-    });
+  _updateUsers: function() {
+    var me = this;
+
+    this._request_counter += 1;
+    var current_request_counter = this._request_counter;
+    Asana.ServerModel.userTypeahead(
+      Popup.options.default_workspace_id,
+      this.input.val(),
+      function (users) {
+        // Only update the list if no future requests have been initiated.
+        if (me._request_counter == current_request_counter) {
+          // Update the ID -> User map.
+          users.forEach(function (user) {
+            me.user_id_to_user[user.id] = user
+          });
+          // Insert new uers at the end.
+          me.filtered_users = users;
+          me._renderList();
+        }
+      });
   },
 
   _indexOfSelectedUser: function() {

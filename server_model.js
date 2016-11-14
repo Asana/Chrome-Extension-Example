@@ -140,7 +140,7 @@ Asana.ServerModel = {
   /**
    * Requests user type-ahead completions for a query.
    */
-  userTypeAhead: function(workspace_id, query, callback, errback) {
+  userTypeahead: function(workspace_id, query, callback, errback) {
     var self = this;
 
     Asana.ApiBridge.request(

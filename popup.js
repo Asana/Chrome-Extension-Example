@@ -715,7 +715,7 @@ Asana.update(UserTypeahead.prototype, {
 
     this._request_counter += 1;
     var current_request_counter = this._request_counter;
-    Asana.ServerModel.userTypeAhead(
+    Asana.ServerModel.userTypeahead(
       Popup.options.default_workspace_id,
       this.input.val(),
       function (users) {

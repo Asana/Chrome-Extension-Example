@@ -99,9 +99,9 @@ Asana.ServerModel = {
         "GET", "/workspaces/" + workspace_id + "/users",
         { opt_fields: "name,photo.image_60x60" },
         function(response) {
-          for (user in response) {
+          response.forEach(function (user) {
             self._updateUser(workspace_id, user);
-          }
+          });
           self._makeCallback(response, callback, errback);
         }, options);
   },

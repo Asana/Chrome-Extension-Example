@@ -720,7 +720,7 @@ Asana.update(UserTypeahead.prototype, {
       this.input.val(),
       function (users) {
         // Only update the list if no future requests have been initiated.
-        if (me._request_counter == current_request_counter) {
+        if (me._request_counter === current_request_counter) {
           // Update the ID -> User map.
           users.forEach(function (user) {
             me.user_id_to_user[user.id] = user

@@ -1,43 +1,34 @@
 {
-  "manifest_version": 2,
-  "name": "Asana Extension for Chrome",
-  "version": "0.9.1",
-  "description": "Integrates Asana with your browsing experience.",
-  "icons": {
-    "128": "icon128.png"
-  },
-  "minimum_chrome_version": "16",
-
-  "browser_action": {
-    "default_icon": "icon19.png",
-    "default_title": "Asana",
-    "default_popup": "popup.html"
-  },
-  "background": {
-    "page": "background.html"
-  },
-  "options_page": "options.html",
-  "permissions": [
-    "tabs",
-    "*://*/*",
-    "cookies",
-    "*://*.asana.com/*",
-    "*://localhost.org/*"
-  ],
-
-  "content_scripts": [{
-    "matches": [
-      "<all_urls>"
-    ],
-    "exclude_matches": [
-      "*://*.asana.com/*"
-    ],
-    "js": [
-      "asana.js",
-      "selection_client.js",
-      "quick_add_client.js"
-    ],
-    "run_at": "document_start",
-    "all_frames": false
-  }]
+   "background": {
+      "persistent": true,
+      "scripts": [ "jquery-1.7.1.min.js", "asana.js", "api_bridge.js", "extension_server.js", "server_model.js", "options.js", "background.js" ]
+   },
+   "browser_action": {
+      "default_icon": "icon48.png",
+      "default_popup": "popup.html",
+      "default_title": "Asana"
+   },
+   "commands": {
+      "_execute_browser_action": {
+         "suggested_key": {
+            "default": "Alt+Shift+A"
+         }
+      }
+   },
+   "content_security_policy": "script-src 'self'; object-src 'self'",
+   "description": "Quickly add tasks to Asana from any web page.",
+   "icons": {
+      "128": "icon128.png",
+      "16": "icon16.png",
+      "48": "icon48.png"
+   },
+   "incognito": "split",
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4sI7XDofuEsAUZM1sM8mT0DSprcta07RgHfxG1PDJm5WJv5WmF6STIyE4xkSZY42UI+Ogei/YZeG4F7VWiB5k5pMLbktMoKE8GZRzD5/Jpyx9W7F7auYct1Pqf35wdC1atN7bVwxnsAK/KNXQvSI7kW3JUqGGg4wSGW4ADbJaYwIDAQAB",
+   "manifest_version": 2,
+   "minimum_chrome_version": "25",
+   "name": "Asana Extension for Chrome",
+   "offline_enabled": false,
+   "permissions": [ "activeTab", "cookies", "webRequest", "webRequestBlocking", "*://*.asana.com/*" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.2.0"
 }

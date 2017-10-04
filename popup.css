@@ -1,0 +1,644 @@
+/* Styles for popup.html */
+
+/* Fonts */
+
+@font-face {
+  font-family: 'proxima-nova';
+  src: url("https://app.asana.com/-/static/apps/asana/media/fonts/proxima-nova/ProximaNova-ThinWeb.woff") format('woff');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: 'proxima-nova';
+  src: url("https://app.asana.com/-/static/apps/asana/media/fonts/proxima-nova/ProximaNova-RegWeb.woff") format('woff');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'proxima-nova';
+  src: url("https://app.asana.com/-/static/apps/asana/media/fonts/proxima-nova/ProximaNova-SboldWeb.woff") format('woff');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'proxima-nova';
+  src: url("https://app.asana.com/-/static/apps/asana/media/fonts/proxima-nova/ProximaNova-BoldWeb.woff") format('woff');
+  font-weight: 700;
+}
+
+
+/* Common widgets, from Asana app */
+
+.buttonView {
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+  -webkit-box-sizing: border-box;
+  align-items: center;
+  border-radius: 3px;
+  border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  min-width: 60px;
+  transition: background 200ms,border 200ms,box-shadow 200ms,color 200ms;
+}
+
+.buttonView:focus, .buttonView:hover {
+  outline: none;
+}
+
+.buttonView.buttonView--primary {
+  background: #1AAFD0;
+  border-color: #1AAFD0;
+  color: #fff;
+}
+
+.buttonView.buttonView--primary.is-disabled {
+  -webkit-box-shadow: inset 0 0 transparent,0 0 0 0 transparent;
+  background: #EFF0F1;
+  border: 1px solid #E1E2E4;
+  color: #898E95;
+  fill: #898E95;
+  cursor: default;
+}
+
+.buttonView.buttonView--primary:focus:not(.is-disabled),
+.buttonView.buttonView--primary:hover:not(.is-disabled) {
+  background: #02ceff;
+  border-color: #02ceff;
+  -webkit-box-shadow: inset 0 0 transparent,0 0 0 3px #80E6FF;
+}
+
+.buttonView.buttonView--primary:active:not(.is-disabled) {
+  -webkit-box-shadow: inset 0 1px rgba(0,0,0,0.2),0 0 0 0 transparent;
+}
+
+.buttonView.buttonView--large {
+  height: 40px;
+  padding: 0 15px;
+}
+
+.Avatar {
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+  align-items: center;
+  background: center/cover #cdcfd2;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
+  box-sizing: border-box;
+  color: #fff;
+  display: inline-flex;
+  justify-content: center;
+  position: relative;
+  vertical-align: top;
+}
+
+.Avatar--small {
+  font-size: 12px;
+  height: 24px;
+  width: 24px;
+}
+
+.Avatar--inbox {
+  font-size: 12px;
+  height: 30px;
+  width: 30px;
+}
+
+.generic-input {
+  -webkit-border-radius: 3px 3px 3px 3px;
+  -webkit-box-sizing: border-box;
+  border: 1px solid #CDCFD2;
+  color: #1B2432;
+  display: inline-block;
+}
+.generic-input:hover {
+  border-color: #A1A4AA;
+  transition: border-color 150ms;
+}
+.generic-input:focus {
+  -webkit-box-shadow: inset 0 1px #E1E2E4;
+  animation: input-outline-glow 0.5s ease-out 75ms;
+  outline: none;
+  border-color: #A1A4AA;
+}
+
+.tokenAreaView {
+  background: #fff;
+  cursor: text;
+  padding: 5px 0 0 5px;
+  min-width: 100px;
+}
+
+.tokenView {
+  background: #E8F7FB;
+  border-color: #80E6FF;
+  color: #1AAFD0;
+
+  -webkit-box-align: center;
+  align-items: center;
+  -ms-flex-align: center;
+  border: 1px solid;
+  border-radius: 15px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  height: 30px;
+  padding-left: 15px;
+  position: relative;
+}
+.tokenView:hover {
+  background: #E8F7FB;
+  border-color: #02ceff;
+  color: #02ceff;
+  transition: background .15s,border .15s,color .15s,fill .15s;
+}
+.tokenView:focus {
+  background: #02ceff;
+  border-color: #02ceff;
+  color: #fff;
+  fill: #fff;
+  outline:none;
+}
+.tokenAreaView .tokenView {
+  margin: 0 5px 5px 0;
+}
+
+.tokenView-label {
+  -webkit-box-align: center;
+  align-items: center;
+  display: flex;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tokenView-label .tokenView-labelText {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.tokenView-remove {
+  -webkit-box-align: center;
+  -webkit-box-sizing: border-box;
+  align-items: center;
+  border-radius: 50%;
+  display: inline-flex;
+  fill: #B9BCC0;
+  height: 16px;
+  -webkit-box-pack: center;
+  justify-content: center;
+  margin: 0 5px;
+  padding: 3px;
+  width: 16px;
+}
+.tokenView .tokenView-remove {
+  fill: #80E6FF;
+}
+.tokenView:focus .tokenView-remove {
+  fill: #fff;
+}
+.tokenView .tokenView-remove:hover {
+  fill: #fff;
+  background: #80E6FF;
+}
+
+.photo-view {
+  -webkit-box-sizing: border-box;
+  display: inline-block;
+}
+.photo-view.small {
+  height: 24px;
+  width: 24px;
+}
+.photo-view.inbox {
+  height: 30px;
+  width: 30px;
+}
+
+.tokenView-photo {
+  margin-left: -13px;
+  margin-right: 5px;
+}
+
+.tokenAreaView .token-input {
+  -webkit-box-sizing: border-box;
+  -webkit-box-shadow: none;
+  border: none;
+  color: #1B2432;
+  height: 30px;
+  line-height: 30px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  padding-left: 2px;
+  resize: none;
+  vertical-align: top;
+}
+
+.svgIcon {
+  height: 16px;
+  width: 16px;
+}
+
+
+.close-x {
+  display: block;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 8px 0px 0px -4px;
+  background-position: -175px 0px;
+}
+.close-x:hover {
+  background-position: -175px -25px;
+}
+
+.svgIcon-dropdownarrow {
+  width: 16px;
+  height: 16px;
+  fill: #898E95;
+}
+.svgIcon-dropdownarrow:hover {
+  fill: #80E6FF;
+}
+
+
+a:link, a:visited {
+  color: #1AAFD0;
+  cursor: pointer;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+::-webkit-scrollbar{
+  width: 14px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.05);
+  box-shadow: inset 0px -1px rgba(0,0,0,.12);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0, .08);
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(0,0,0, .05);
+}
+
+textarea::-webkit-scrollbar {
+  width: 7px;
+  background: #E5F1FF;
+}
+textarea::-webkit-scrollbar-thumb {
+  background: rgba(116, 193, 237, 0.3);
+}
+textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(116, 193, 237, 0.5);
+}
+
+
+/* Popup-specific layout */
+
+body {
+  overflow: hidden;
+  /* Also affects Asana.POPUP_UI_WIDTH and Asana.POPUP_UI_HEIGHT */
+  width: 410px;
+  height: 310px;  /* keep this correct for the window-based (non-button) version */
+  padding: 0px;
+  margin: 0px;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
+}
+
+a, input, textarea {
+  outline: none;
+}
+
+.sprite {
+  background-image: url('./sprite.png');
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	.sprite {
+    background-image: url('./sprite-retina.png');
+    background-size: 250px 75px;
+  }
+}
+
+.left-column {
+  display: inline-block;
+  margin-left: 12px;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+.middle-column {
+  display: inline-block;
+  width: 304px;
+  padding: 0 8px 0 8px;
+  vertical-align: middle;
+}
+.right-column {
+  display: inline-block;
+  margin-right: 8px;
+  margin-left: 4px;
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.left-column .sprite {
+  margin-top: 3px;
+  height: 18px;
+  width: 24px;
+}
+
+/* Popup areas */
+
+.banner {
+  font-size: 19px;
+  font-weight: 600;
+  background-color:#f2f2f2;
+  color: #596573;
+  text-shadow: 0px 1px #fff;
+  border-bottom: 1px solid #c0ccd7;
+  -webkit-border-radius: 1px 1px 0px 0px;
+  background: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(100%, #edf1f4));
+}
+
+.notes-row .left-column, .notes-row .middle-column, .notes-row .right-column,
+.assignee-row .left-column, .assignee-row .middle-column, .assignee-row .right-column {
+  vertical-align: top;
+}
+
+.banner .middle-column {
+  line-height: 46px;
+  padding-top: 2px;
+}
+
+.banner .button {
+  height: 26px;
+  width: 26px;
+  border: 1px solid #c0ccd7;
+  box-shadow: 0px 1px 0px 0px white;
+  padding: 0;
+}
+
+.banner-add {
+  position: relative;
+}
+
+.banner-add #workspace {
+  font-weight: 200;
+}
+
+.icon-checkbox {
+  background-position: -25px 0px;
+}
+
+.sprite.icon-notes {
+  margin-top: 5px;
+  background-position: -50px 0px;
+}
+
+.sprite.icon-assignee {
+  margin-top: 12px;
+  background-position: -75px 0px;
+}
+
+#workspace_select_container {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 100%;
+}
+
+#workspace_select {
+  opacity: 0;
+  position: absolute;
+  right: 0px;
+  top: -4px;
+  padding: 8px 0px;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.name-row {
+  padding-top: 11px;
+  padding-bottom: 12px;
+}
+
+.name-row .left-column .sprite { margin-top: 2px; }
+
+#name_input, #notes_input, #assignee {
+  width: 100%;
+}
+
+.name-row #name_input {
+  font-size: 20px;
+}
+
+.notes-row {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 8px;
+}
+
+.assignee-row {
+  padding-top: 12px;
+}
+
+.notes-row #notes_input {
+  resize: none;
+  height: 96px;
+}
+
+#use_page_details {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 5px 2px 3px 6px;
+  cursor: pointer;
+}
+
+#use_page_details:not(.disabled):hover {
+  border: 1px solid #e5e5e5;
+}
+
+#use_page_details.disabled {
+  opacity: .25;
+  cursor: default;
+}
+
+#use_page_details:not(.disabled):hover .icon-use-link-arrow {
+  background-position: -225px -25px;
+}
+
+.icon-use-link {
+  height: 16px;
+  width: 16px;
+  background-size: 16px 16px;
+}
+
+.icon-use-link.no-favicon {
+  height: 18px;
+  width: 18px;
+  background-position: -200px 0px;
+  background-size: auto auto;
+}
+
+#use_page_details:not(.disabled):hover .icon-use-link.no-favicon {
+  background-position: -200px -25px;
+}
+
+.icon-use-link-arrow {
+  height: 18px;
+  width: 18px;
+  background-position: -225px 0px;
+  position: absolute;
+  top: 7px;
+  left: 3px;
+}
+
+#assignee {
+  font-weight: 600;
+}
+
+#assignee .unassigned {
+  color: #a9a9a9;
+  font-weight: normal;
+}
+
+.user {
+  height: 32px;
+  font-size: 14px;
+  padding: 8px 0 8px 54px;
+  cursor: pointer;
+}
+
+.user.selected {
+  background-color: #1AAFD0;
+  color: white;
+}
+
+.user .Avatar {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.user-name {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 3px;
+}
+
+#assignee_list_container {
+  /* Also affects Asana.POPUP_EXPANDED_UI_HEIGHT */
+  height: 121px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  border-bottom: 1px solid #e5e5e5;
+  margin-top: 8px;
+}
+
+.buttons {
+  padding: 14px 0 0 0;
+}
+
+.footer {
+  padding: 14px 0 0 0;
+}
+
+.footer-status {
+  width: 100%;
+  color: #1B2432;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer-status a {
+  font-weight: 600;
+  text-decoration: none;
+  color: #5998c0;
+}
+
+#success {
+  background-color: #fff;
+}
+
+#error {
+  background-color: #FD9A00;
+  color: #fff;
+}
+
+#login_view {
+  width: 100%;
+  height: 100%;
+  background-color: #edf1f4;
+}
+
+#login_view .content {
+  padding-top: 65px;
+  width: 250px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 400;
+  color: #596573;
+}
+
+#login_view .buttonView {
+  margin-top: 24px;
+}
+
+#login_view #signup_button {
+  margin-right: 8px;
+}
+
+.icon-success, .icon-error {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 3px;
+}
+
+.icon-success { background-position: -100px 0px; }
+.icon-error { background-position: -125px 0px; margin-right: 7px; }
+
+input, textarea, #assignee {
+  color: #212F40;
+  padding: 6px 5px;
+  border: 1px solid transparent;
+  -webkit-border-radius: 3px;
+  font-size: 14px;
+  font-family: proxima-nova, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+}
+
+input:hover, textarea:hover, #assignee:hover {
+  border: 1px solid #cccccc;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
+}
+
+input:focus, textarea:focus {
+  border: 1px solid #74C1ED;
+  box-shadow: 0px 0px 5px 1px rgba(31, 141, 214, 0.3);
+}

@@ -258,6 +258,8 @@ Popup = {
     if (enabled) {
       // Update appearance and add handlers.
       button.removeClass("is-disabled");
+      button.unbind("click");
+      button.unbind("keydown");
       button.click(function() {
         me.createTask();
         return false;
@@ -270,8 +272,8 @@ Popup = {
     } else {
       // Update appearance and remove handlers.
       button.addClass("is-disabled");
-      button.unbind('click');
-      button.unbind('keydown');
+      button.unbind("click");
+      button.unbind("keydown");
     }
   },
 

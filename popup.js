@@ -208,14 +208,14 @@ Popup = {
 
     // Populate workspace selector and select default.
     Asana.ServerModel.me(function(user) {
-      me.user_id = user.id;
+      me.user_id = user.gid;
       Asana.ServerModel.workspaces(function(workspaces) {
         me.workspaces = workspaces;
         var select = $("#workspace_select");
         select.html("");
         workspaces.forEach(function(workspace) {
           $("#workspace_select").append(
-              "<option value='" + workspace.id + "'>" + workspace.name + "</option>");
+              "<option value='" + workspace.gid + "'>" + workspace.name + "</option>");
         });
         if (workspaces.length > 1) {
           $("workspace_select_container").show();
@@ -624,12 +624,12 @@ Asana.update(UserTypeahead.prototype, {
     var users_without_this_user = [];
     me.user_id_to_user = {};
     users.forEach(function(user) {
-      if (user.id === Popup.user_id) {
+      if (user.gid === Popup.user_id) {
         this_user = user;
       } else {
         users_without_this_user.push(user);
       }
-      me.user_id_to_user[user.id] = user;
+      me.user_id_to_user[user.gid] = user;
     });
 
     // Put current user at the beginning of the list.
